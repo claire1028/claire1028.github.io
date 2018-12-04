@@ -134,7 +134,7 @@
   
   <div class="article-entry" itemprop="articleBody">
     
-      <p><strong>Action</strong>：事件触发，更改Store 里的数据。<br><strong>State</strong>: 数据的存储。<br><strong>Reaction</strong>：相当于UI的改变。</p>
+      <p><img src="/images/mobx.png" alt=""><br><strong>Action</strong>：事件触发，更改Store 里的数据。<br><strong>State</strong>: 数据的存储。<br><strong>Reaction</strong>：相当于UI的改变。</p>
 <p>和redux最主要不同的地方就是action触发，直接修改数据，UI界面更新。背后的原理是proxy，在set 和get 相应的属性上进行截，所以observable对象或者数组中通过用. 或者[]访问的属性都可被检测到变化。<br>而不需像redux中需手动书写纯函数返回新的state。手动书写纯函数感觉太麻烦了~</p>
 <p>在mobx中，所有的方法都可以采用decorator实现， 采用decorator则需要配置babel <code>&quot;@babel/plugin-proposal-decorators&quot;</code>，个人更倾向于decorator，简单，快速，明了。</p>
 <h3 id="mobx主要的方法："><a href="#mobx主要的方法：" class="headerlink" title="mobx主要的方法："></a>mobx主要的方法：</h3><ul>
