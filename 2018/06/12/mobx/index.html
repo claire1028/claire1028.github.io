@@ -3,20 +3,20 @@
 <head>
   <meta charset="utf-8">
   
-  <title>mobx | Ting&#39;s blog</title>
+  <title>mobx概览 | Ting&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="mobxxxxxxxx!">
+  <meta name="description" content="Action：事件触发，更改Store 里的数据。State: 数据的存储。Reaction：相当于UI的改变。 和redux最主要不同的地方就是action触发，直接修改数据，UI界面更新。背后的原理是proxy，在set 和get 相应的属性上进行截，所以observable对象或者数组中通过用. 或者[]访问的属性都可被检测到变化。而不需像redux中需手动书写纯函数返回新的state。手动">
 <meta name="keywords" content="JS">
 <meta property="og:type" content="article">
-<meta property="og:title" content="mobx">
+<meta property="og:title" content="mobx概览">
 <meta property="og:url" content="https://claire1028.github.io/2018/06/12/mobx/index.html">
 <meta property="og:site_name" content="Ting&#39;s blog">
-<meta property="og:description" content="mobxxxxxxxx!">
+<meta property="og:description" content="Action：事件触发，更改Store 里的数据。State: 数据的存储。Reaction：相当于UI的改变。 和redux最主要不同的地方就是action触发，直接修改数据，UI界面更新。背后的原理是proxy，在set 和get 相应的属性上进行截，所以observable对象或者数组中通过用. 或者[]访问的属性都可被检测到变化。而不需像redux中需手动书写纯函数返回新的state。手动">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-06-12T04:06:43.238Z">
+<meta property="og:updated_time" content="2018-12-04T06:48:38.066Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="mobx">
-<meta name="twitter:description" content="mobxxxxxxxx!">
+<meta name="twitter:title" content="mobx概览">
+<meta name="twitter:description" content="Action：事件触发，更改Store 里的数据。State: 数据的存储。Reaction：相当于UI的改变。 和redux最主要不同的地方就是action触发，直接修改数据，UI界面更新。背后的原理是proxy，在set 和get 相应的属性上进行截，所以observable对象或者数组中通过用. 或者[]访问的属性都可被检测到变化。而不需像redux中需手动书写纯函数返回新的state。手动">
   
     <link rel="alternate" href="/atom.xml" title="Ting&#39;s blog" type="application/atom+xml">
   
@@ -65,7 +65,7 @@
         <section id="main"><article id="post-mobx" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2018/06/12/mobx/" class="article-date">
-  <time datetime="2018-06-12T04:06:09.905Z" itemprop="datePublished">2018-06-12</time>
+  <time datetime="2018-06-12T04:10:00.000Z" itemprop="datePublished">2018-06-12</time>
 </a>
     
   </div>
@@ -76,7 +76,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      mobx
+      mobx概览
     </h1>
   
 
@@ -84,12 +84,35 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>mobxxxxxxxx!</p>
+        <p><strong>Action</strong>：事件触发，更改Store 里的数据。<br><strong>State</strong>: 数据的存储。<br><strong>Reaction</strong>：相当于UI的改变。</p>
+<p>和redux最主要不同的地方就是action触发，直接修改数据，UI界面更新。背后的原理是proxy，在set 和get 相应的属性上进行截，所以observable对象或者数组中通过用. 或者[]访问的属性都可被检测到变化。<br>而不需像redux中需手动书写纯函数返回新的state。手动书写纯函数感觉太麻烦了~</p>
+<p>在mobx中，所有的方法都可以采用decorator实现， 采用decorator则需要配置babel <code>&quot;@babel/plugin-proposal-decorators&quot;</code>，个人更倾向于decorator，简单，快速，明了。</p>
+<h3 id="mobx主要的方法："><a href="#mobx主要的方法：" class="headerlink" title="mobx主要的方法："></a>mobx主要的方法：</h3><ul>
+<li><p><strong>Observable</strong>：包含object，array， map，boxed value（原始值，函数，原型对象)。</p>
+</li>
+<li><p><strong>autorun</strong>：一个响应式函数，自动运行，不会产生新的值，返回值为disposer，需手动回收，如打印日志。</p>
+</li>
+<li><p><strong>computed</strong>：当需要通过另一个observable属性计算获取一个新值，如form表单中验证submit button 是否valid。</p>
+</li>
+<li><p><strong>action</strong>：一般为事件触发，改变数据，异步采用runInAction（如async/await中）。</p>
+</li>
+<li><p><strong>when</strong>：<code>when(()=&gt;boolean, ()=&gt; effect)</code>，当第一个函数执行为true时，才会执行第二个函数，且只执行一遍。</p>
+</li>
+<li><p><strong>reaction</strong>： 是对autorun更精确的响应，<code>reaction(() =&gt; data, (data, reaction) =&gt; { sideEffect }, options?)</code>，第一个函数用来追踪并返回数据作为第二个函数的输入。 不同于 autorun 的是当创建时效果 函数不会直接运行，只有在数据表达式首次返回一个新值后才会运行。 在执行效果函数时访问的任何observable都不会被追踪。</p>
+</li>
+</ul>
+<h3 id="set-vs-extendObservable-vs-decorate"><a href="#set-vs-extendObservable-vs-decorate" class="headerlink" title="set vs extendObservable vs decorate"></a>set vs extendObservable vs decorate</h3><p>他们都可以对对象上还不存在的属性进行添加并observable<br>区别：</p>
+<ul>
+<li><strong>set</strong>：<code>set(obj, key, val)</code>,如果要获取新添加的key值，必须使用<code>get(obj, key)</code>，否则获取不到新加的属性值。</li>
+<li><strong>extendObservable</strong>: 用在直接在目标实例上引入属性。4.x版本<code>object.keys</code>或者<code>for...in</code>并不能自动获取添加的属性。在最新的版本中可以自动获取新加的属性。</li>
+<li><strong>decorate</strong>：用在目标上的原型引入属性。<br>当然mobx建议<strong>最佳的方法</strong>就是使用<code>Observable.map</code>, 它本身创建的就是一个动态的映射关系。</li>
+</ul>
+<h3 id="注意点："><a href="#注意点：" class="headerlink" title="注意点："></a>注意点：</h3><p>observable里的array<strong>并不是</strong>array对象，是mobx自己创建的一个类数组对象，并拥有相应的方法，如果需转为普通的array对象，则可以采用<code>slice()</code>方法。</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2018/06/12/mobx/" data-id="cjib7v6s90000a4jghykmbg1c" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2018/06/12/mobx/" data-id="cjp9e3j7y0004qgjgtxsof4oe" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JS/">JS</a></li></ul>
@@ -99,15 +122,6 @@
   
     
 <nav id="article-nav">
-  
-    <a href="/2018/09/18/css-animation/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          浅析Css中动画优化原理
-        
-      </div>
-    </a>
   
   
     <a href="/2018/06/11/babel-ES6-IE8/" id="article-nav-older" class="article-nav-link-wrap">
@@ -131,7 +145,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/CSS/">CSS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JS/">JS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JS-设计模式/">JS-设计模式</a></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/JS/">JS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JS-设计模式/">JS-设计模式</a></li></ul>
     </div>
   </div>
 
@@ -141,7 +155,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/CSS/" style="font-size: 10px;">CSS</a> <a href="/tags/JS/" style="font-size: 20px;">JS</a> <a href="/tags/JS-设计模式/" style="font-size: 10px;">JS-设计模式</a>
+      <a href="/tags/JS/" style="font-size: 20px;">JS</a> <a href="/tags/JS-设计模式/" style="font-size: 10px;">JS-设计模式</a>
     </div>
   </div>
 
@@ -150,7 +164,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li></ul>
     </div>
   </div>
 
@@ -163,11 +177,7 @@
       <ul>
         
           <li>
-            <a href="/2018/09/18/css-animation/">浅析Css中动画优化原理</a>
-          </li>
-        
-          <li>
-            <a href="/2018/06/12/mobx/">mobx</a>
+            <a href="/2018/06/12/mobx/">mobx概览</a>
           </li>
         
           <li>
@@ -175,7 +185,7 @@
           </li>
         
           <li>
-            <a href="/2017/12/21/js-µ•¿˝ƒ£ Ω/">JavaScript单例模式</a>
+            <a href="/2017/12/21/js-单例模式/">JavaScript单例模式</a>
           </li>
         
           <li>
