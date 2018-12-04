@@ -58,7 +58,68 @@
 </header>
       <div class="outer">
         <section id="main">
-  
+          
+          <article id="post-ts-学习笔记" class="article article-type-post" itemscope itemprop="blogPost">
+            <div class="article-meta">
+              <a href="/2018/09/20/ts-学习笔记/" class="article-date">
+            <time datetime="2018-09-20T04:10:00.000Z" itemprop="datePublished">2018-09-20</time>
+          </a>
+              
+            </div>
+            <div class="article-inner">
+              
+              
+                <header class="article-header">
+                  
+            
+              <h1 itemprop="name">
+                <a class="article-title" href="/2018/09/20/ts-学习笔记/">TS学习笔记</a>
+              </h1>
+            
+          
+                </header>
+              
+              <div class="article-entry" itemprop="articleBody">
+                
+                  <p>在学习ts过程中，接口和类傻傻分不清楚，记录如下：</p>
+          <p>类<code>implements</code>接口: 接口不提供实现，类进行实现，接口仅校验实例部分 </p>
+          <p>接口<code>extends</code> 接口：校验继承</p>
+          <p>接口<code>extends</code>类：接口继承了类，则该接口只能被这个类自己或类的子类所implements, 接口也可以作为变量类型检测</p>
+          <p>抽象类: abstract关键字修饰，不会被实例化，作为其他类的基类使用，定义的abstract方法必须在派生类中实现</p>
+          <p>类当作接口使用: 仅类的实例部分作类型检测</p>
+          <h3 id="关键字"><a href="#关键字" class="headerlink" title="关键字"></a>关键字</h3><ul>
+          <li><strong>declare</strong>： 全局变量声明，或第三方定义的变量</li>
+          <li><strong>namespace</strong>：全局下的一个JS对象，若需通过namespace访问，则需要export</li>
+          <li><strong>module</strong>：<code>import * as abc from &#39;abc&#39;</code>, 当第三方库abc用js，而没有声明文件时，可以<code>declare  module &#39;abc&#39;</code>;</li>
+          </ul>
+          <p><strong>Q:既然<code>class</code>和<code>interface</code>都能用来做类型检测，那么<code>declare class</code> 和 <code>interface</code> 有什么区别呢？</strong></p>
+          <p>A:<code>declare class</code> 一般用在第三方库（用非ts实现）的声明文件中描述class中有哪些方法以及属性。而interface一般用在我们定义作类型检测</p>
+          <p>在学习过程中，使用tsc命令运行文件，总是报错，如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// index.ts</span><br><span class="line">  var a: T1 = &#123;</span><br><span class="line">      name: &apos;123&apos;</span><br><span class="line">  &#125;;</span><br></pre></td></tr></table></figure></p>
+          <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// ts.d.ts</span><br><span class="line">interface T1 &#123;</span><br><span class="line">    name: string;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+          <p>运行结果：<br><img src="/images/ts1.png" alt=""><br>使用tsc 竟然报错，但是使用ts-loader + webpack ，可以编译成功？莫非ts-loader 和tsc编译的机制不一样，不应该呀！！！</p>
+          <p>仔细阅读官网，有这样一句话：<strong>tsc当命令行上指定了输入文件，tsconfig.json文件会被忽略</strong>，<br>解决方法有：<br>1.直接输入tsc命令，会按照相应的配置文件tsconfig.json 来查找文件并生成。</p>
+          <p>2.采用三斜线命令，在index.ts文件中写入<code>///&lt;reference path=&quot;..&quot;/&gt;</code>。</p>
+          <p>3.将.d.ts文件采用import模块的方式引入。</p>
+          <p>4.命令行上同时包含待执行的文件和相应的.d.ts文件。</p>
+          <p>但是，这边有个坑，如果执行的文件叫index.ts ,而相应的声明文件叫index.d.ts，运行tsc命令，则会报错找不到相应的类型定义。</p>
+          <p><img src="/images/ts2.png" alt=""></p>
+          <p>查看官网，会发现有如下的解释：需要注意编译器不会去引入那些可能做为输出的文件；比如，假设我们包含了index.ts，那么index.d.ts和index.js会被排除在外。 通常来讲，不推荐只有扩展名的不同来区分同目录下的文件。<br>所以声明文件index.d.ts 并未被在编译的时候包含进去，所以报错。<br>现在可以发现，tsc和ts-loader的编译机制并没有不一样。都是按照相应的tsconfig.json配置文件来查找并执行。</p>
+          <p><img src="/images/ts3.png" alt=""></p>
+          <p>学习ts晋升的一个好的方法就是查看别人写的.d.ts文件，并从中思考为何要这样写，这样可以从中发现很多自己的不足。<br>比如node.d.ts文件中，declare module ‘querystring’里 interface前加不加export 有什么区别，自己在本地试了下，不加export也可以通过modulename加.的属性来访问接口，猜测是由于之前ts没有考虑es6的export属性，估计之前的版本默认是export，为了兼容之前的版本所以export可加可不加，仅猜测…</p>
+          
+                
+              </div>
+              <footer class="article-footer">
+                <a data-url="https://claire1028.github.io/2018/09/20/ts-学习笔记/" data-id="cjp9g2df400055cjgtrs7wash" class="article-share-link">Share</a>
+                
+                
+            <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TS/">TS</a></li></ul>
+          
+              </footer>
+            </div>
+            
+          </article>
+
     <article id="post-css-animation" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2018/09/18/css-animation/" class="article-date">
