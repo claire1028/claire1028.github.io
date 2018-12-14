@@ -58,178 +58,183 @@
 </header>
       <div class="outer">
         <section id="main">
+  
+    <article id="post-react-ref" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/09/25/react-ref/" class="article-date">
+  <time datetime="2018-09-25T04:10:00.000Z" itemprop="datePublished">2018-09-25</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/09/25/react-ref/">React中的几种Ref比较</a>
+    </h1>
+  
 
-            <article id="post-react-ref" class="article article-type-post" itemscope itemprop="blogPost">
-                <div class="article-meta">
-                  <a href="/2018/09/25/react-ref/" class="article-date">
-                <time datetime="2018-09-25T04:10:00.000Z" itemprop="datePublished">2018-09-25</time>
-              </a>
-                  
-                </div>
-                <div class="article-inner">
-                  
-                  
-                    <header class="article-header">
-                      
-                
-                  <h1 itemprop="name">
-                    <a class="article-title" href="/2018/09/25/react-ref/">React中的几种Ref比较</a>
-                  </h1>
-                
-              
-                    </header>
-                  
-                  <div class="article-entry" itemprop="articleBody">
-                    
-                      <p>React中的refs</p>
-              <ul>
-              <li><p><strong>1. ref用string 来表示</strong><br>React中已将它废弃, 静态类型检测不支持</p>
-              </li>
-              <li><p><strong>2.React.createRef()</strong><br>ref 是一个 <strong>特殊的属性</strong> 在react里。</p>
-              <p>当<code>React.createRef()</code>应用在html dom元素上的时候，dom元素赋值给 <code>React.createRef().current</code>属性上。<br><code>&lt;Com ref={} /&gt;</code>，当<code>React.createRef()</code>应用在Component上时，<code>React.createRef().current</code>上的值是Component的实例，所以不能将<code>React.createRef()</code>生成的值赋给Function Component，即无状态组件，因为他们没有实例。</p>
-              </li>
-              <li><p><strong>3.React.forwardRef()</strong><br>(1).作用在HOC组件中传递ref 到子组件中，第二参数ref传递的是组件的实例。</p>
-              <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">return React.forwardRef((props, ref) =&gt; </span><br><span class="line">	&lt;ComA &#123;...props&#125; forwardRef=&#123;ref&#125;/&gt;</span><br><span class="line"> );</span><br></pre></td></tr></table></figure>
-              <p>(2).作用在直接访问DOM node 。</p>
-              </li>
-              <li><p><strong>4.callback Ref</strong><br><code>&lt;input type=&quot;text&quot;  ref= {el =&gt; this.ref = el }/&gt;</code><br>也可以通过像一个props <strong>命名可以为任何字符除了ref</strong> 传递给其他component <code>&lt;Com inputRef={el =&gt; this.ref = el } /&gt;</code>，也可以在HOC中传递</p>
-              </li>
-              </ul>
-              
-                    
-                  </div>
-                  <footer class="article-footer">
-                    <a data-url="https://claire1028.github.io/2018/09/25/react-ref/" data-id="cjp9hvwu70008kkjggg5n3veh" class="article-share-link">Share</a>
-                    
-                    
-                <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/React/">React</a></li></ul>
-              
-                  </footer>
-                </div>
-                
-              </article>
-              
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>React中的refs</p>
+<ul>
+<li><p><strong>1. ref用string 来表示</strong><br>React中已将它废弃, 静态类型检测不支持</p>
+</li>
+<li><p><strong>2.React.createRef()</strong><br>ref 是一个 <strong>特殊的属性</strong> 在react里。</p>
+<p>当<code>React.createRef()</code>应用在html dom元素上的时候，dom元素赋值给 <code>React.createRef().current</code>属性上。<br><code>&lt;Com ref={} /&gt;</code>，当<code>React.createRef()</code>应用在Component上时，<code>React.createRef().current</code>上的值是Component的实例，所以不能将<code>React.createRef()</code>生成的值赋给Function Component，即无状态组件，因为他们没有实例。</p>
+</li>
+<li><p><strong>3.React.forwardRef()</strong><br>(1).作用在HOC组件中传递ref 到子组件中，第二参数ref传递的是组件的实例。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">return React.forwardRef((props, ref) =&gt; </span><br><span class="line">	&lt;ComA &#123;...props&#125; forwardRef=&#123;ref&#125;/&gt;</span><br><span class="line"> );</span><br></pre></td></tr></table></figure>
+<p>(2).作用在直接访问DOM node 。</p>
+</li>
+<li><p><strong>4.callback Ref</strong><br><code>&lt;input type=&quot;text&quot;  ref= {el =&gt; this.ref = el }/&gt;</code><br>也可以通过像一个props <strong>命名可以为任何字符除了ref</strong> 传递给其他component <code>&lt;Com inputRef={el =&gt; this.ref = el } /&gt;</code>，也可以在HOC中传递</p>
+</li>
+</ul>
 
-            <article id="post-node-进程" class="article article-type-post" itemscope itemprop="blogPost">
-                <div class="article-meta">
-                  <a href="/2018/09/21/node-进程/" class="article-date">
-                <time datetime="2018-09-21T04:10:00.000Z" itemprop="datePublished">2018-09-21</time>
-              </a>
-                  
-                </div>
-                <div class="article-inner">
-                  
-                  
-                    <header class="article-header">
-                      
-                
-                  <h1 itemprop="name">
-                    <a class="article-title" href="/2018/09/21/node-进程/">Node中子进程的创建和cluster原理</a>
-                  </h1>
-                
-              
-                    </header>
-                  
-                  <div class="article-entry" itemprop="articleBody">
-                    
-                      <p>node虽然是单进程单线程运行的，但是也提供创建子进程让程序运行的更加快速，稳健。创建方法如下：</p>
-              <h4 id="spawn："><a href="#spawn：" class="headerlink" title="spawn："></a>spawn：</h4><p>用法：<code>spawn(command[, args][, options])</code>，具体的参数请看官网。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">// app.js</span><br><span class="line">const &#123; spawn &#125; = require(&apos;child_process&apos;);</span><br><span class="line">var sp1 = spawn(&apos;node&apos;, [&apos;test.js&apos;, &apos;one&apos;, &apos;two&apos;,&apos;three&apos;],&#123;stdio:[&apos;pipe&apos;,&apos;ipc&apos;, &apos;ignore&apos;]&#125;);</span><br><span class="line">var sp2 = spawn(&apos;node&apos;,[&apos;test1.js&apos;],&#123;stdio:[&apos;pipe&apos;]&#125;);</span><br><span class="line"></span><br><span class="line">sp1.on(&apos;message&apos;, function(data)&#123;</span><br><span class="line">  console.log(&apos;child out:&apos;+data);</span><br><span class="line">  sp2.stdin.write(data);</span><br><span class="line">&#125;);</span><br><span class="line">sp1.on(&apos;exit&apos;,function(code, signal)&#123;</span><br><span class="line">  console.log(&apos;exit:&apos; +code);</span><br><span class="line">  process.exit();</span><br><span class="line">&#125;);</span><br><span class="line">sp1.on(&apos;error&apos;, function(err)&#123;</span><br><span class="line">  console.log(&apos;error:&apos;+err);</span><br><span class="line">  process.exit();</span><br><span class="line">&#125;);</span><br><span class="line">sp1.on(&apos;disconnect&apos;,function()&#123;</span><br><span class="line">  console.log(&apos;ipc closed&apos;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
-              <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// test.js</span><br><span class="line">process.send(&apos;cwd:&apos;+ process.cwd());</span><br><span class="line">process.argv.forEach(function(val, index)&#123;</span><br><span class="line">   process.send(&apos;\r\n&apos;+index+&apos;:&apos;+val);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-              <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">// test1.js</span><br><span class="line"></span><br><span class="line">var fs = require(&apos;fs&apos;);</span><br><span class="line">var out = fs.createWriteStream(&apos;./space.txt&apos;);</span><br><span class="line">process.stdin.on(&apos;data&apos;,function(data)&#123;</span><br><span class="line">  out.write(data);</span><br><span class="line">&#125;);</span><br><span class="line">process.stdin.on(&apos;end&apos;,function()&#123;</span><br><span class="line">  process.exit();</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-              <p>这时直接运行：<br><img src="/images/node1.png" alt=""></p>
-              <p>发现test.js 中的data还没发送完成到父进程，程序就exit 了，查看官网exit事件，有一句解释 <strong>当 ‘exit’ 事件被触发时，子进程的 stdio 流可能依然是打开的</strong> 。也就是说，子进程一旦结束就触发exit事件，但是数据有可能还没传输完成，这样就解释的通了，<br>我们注释掉exit事件，再看看运行结果：</p>
-              <p><img src="/images/node2.png" alt=""></p>
-              <p>这样就运行正确了。</p>
-              <h4 id="fork"><a href="#fork" class="headerlink" title="fork:"></a>fork:</h4><p>用法：<code>fork(modulePath[, args][, options])</code><br><code>[options]silent</code>： false继承父进程的stdio，设置为true，子进程的stdin、stdout和stderr都会通过管道传递到父进程，否则他们将会从父进程继承。<br><code>[options]stdio</code>：[0,1,2,’ipc’], 如果要设置该属性值，则必须有个值为‘ipc’，否则报错。<br>该方法默认建立IPC通道<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">// app.js</span><br><span class="line"></span><br><span class="line">const &#123; fork &#125; = require(&apos;child_process&apos;);</span><br><span class="line">var sp1 = fork(&apos;test.js&apos;, [&apos;one&apos;, &apos;two&apos;,&apos;three&apos;]);</span><br><span class="line">var sp2 = fork(&apos;test1.js&apos;,&#123;silent: true&#125;);</span><br><span class="line"></span><br><span class="line">sp1.on(&apos;message&apos;, function(data)&#123;</span><br><span class="line">  console.log(&apos;child out:&apos;+data);</span><br><span class="line">  sp2.send(data);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">sp2.stdout.on(&apos;data&apos;,function(data)&#123;</span><br><span class="line">  console.log(data.toString() + &apos;\r\n&apos;);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">sp1.on(&apos;error&apos;, function(err)&#123;</span><br><span class="line">  console.log(&apos;error:&apos;+err);</span><br><span class="line">  process.exit();</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">sp1.on(&apos;disconnect&apos;,function()&#123;</span><br><span class="line">  console.log(&apos;ipc closed&apos;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
-              <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// test.js</span><br><span class="line">process.send(&apos;cwd:&apos;+ process.cwd());</span><br><span class="line">process.argv.forEach(function(val, index)&#123;</span><br><span class="line">  console.log(&apos;44444&apos;);</span><br><span class="line">   process.send(&apos;\r\n&apos;+index+&apos;:&apos;+val);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-              <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">// test1.js</span><br><span class="line">var fs = require(&apos;fs&apos;);</span><br><span class="line">var out = fs.createWriteStream(&apos;./space.txt&apos;);</span><br><span class="line">var i = 0;</span><br><span class="line">process.on(&apos;message&apos;,function(data)&#123;</span><br><span class="line">  console.log(&apos;xxx&apos;+ i);</span><br><span class="line">  i++;</span><br><span class="line">  out.write(data);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-              <p>运行结果如下：<br><img src="/images/node3.png" alt=""></p>
-              <p>可以看到<code>silent：false</code>时，和父进程共享stdio，silent为true时，子进程的stdio事件被传递到父进程上，通过监听stdio上的data事件可获取子进程中的输出数据。输出的结果杂乱无序，可以看出多进程是各自运行的。</p>
-              <h4 id="exec"><a href="#exec" class="headerlink" title="exec:"></a>exec:</h4><p>用法：<code>exec(command[, options][, callback])</code><br><code>exec</code>通过命令生成一个shell来运行相关的子进程。和<code>spawn</code>的区别是<code>exec</code>子进程返回的<code>stdio</code>数据是同步的，而<code>spawn</code>是异步的。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">// app.js</span><br><span class="line">const &#123; exec &#125; = require(&apos;child_process&apos;);</span><br><span class="line">var sp1 = exec(&apos;node test.js one two three&apos;,function(err, stdout, stderr)&#123;</span><br><span class="line">  if(err) &#123;</span><br><span class="line">    console.log(&apos;error:&apos; + err);</span><br><span class="line">    process.exit();</span><br><span class="line">  &#125;else &#123;</span><br><span class="line">    console.log(&apos;child output:&apos;+stdout.toString());</span><br><span class="line">    sp2.stdin.write(stdout.toString());</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;);</span><br><span class="line">var sp2 = exec(&apos;node test1.js&apos;,function(err, stdout, stderr)&#123;</span><br><span class="line">  process.exit();</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
-              <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// test.js</span><br><span class="line">process.stdout.write(&apos;cwd:&apos;+ process.cwd());</span><br><span class="line">process.argv.forEach(function(val, index)&#123;</span><br><span class="line">   process.stdout.write(&apos;\r\n&apos;+index+&apos;:&apos;+val);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-              <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">// test1.js</span><br><span class="line">var fs = require(&apos;fs&apos;);</span><br><span class="line">var out = fs.createWriteStream(&apos;./space.txt&apos;);</span><br><span class="line">process.stdin.on(&apos;data&apos;,function(data)&#123;</span><br><span class="line">  out.write(data);</span><br><span class="line">  process.exit();</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-              <p>运行结果：<br><img src="/images/node4.png" alt=""></p>
-              <h4 id="execFile"><a href="#execFile" class="headerlink" title="execFile:"></a>execFile:</h4><p>用法：<code>execFile(file[, args][, options][, callback])</code><br>file参数是可执行的文件，在windows中如.bat文件。<br>和exec的区别是execFile直接通过可执行文件来生成子进程，相比exec稍微高效点。</p>
-              <p><strong>翻看源码exec是对execFile的封装，而execFile和fork底层都是调用的spawn。</strong></p>
-              <h3 id="cluster"><a href="#cluster" class="headerlink" title="cluster:"></a>cluster:</h3><p>node提供cluster模块充分利用多核cpu对子进程处理。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">// app.js</span><br><span class="line">var cluster = require(&apos;cluster&apos;);</span><br><span class="line">var http = require(&apos;http&apos;);</span><br><span class="line">const numCPUs = require(&apos;os&apos;).cpus().length;</span><br><span class="line">if(cluster.isMaster)&#123;</span><br><span class="line">  for (var i = 0; i &lt; numCPUs; i++) &#123;         </span><br><span class="line">    cluster.fork();                           </span><br><span class="line">  &#125;   </span><br><span class="line">  console.log(&apos;run in main process&apos;);</span><br><span class="line">&#125; else &#123;</span><br><span class="line">  http.createServer(function(req, res)&#123;</span><br><span class="line">    if(req.url !== &apos;/favicon.ico&apos;) &#123;</span><br><span class="line">      res.writeHead(200, &#123;&apos;Content-Type&apos;: &apos;text/html&apos;&#125;);</span><br><span class="line">      res.write(&apos;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;/&gt;&lt;/head&gt;&apos;);</span><br><span class="line">      res.end(&apos;hello\n&apos;);</span><br><span class="line">      console.log(&apos;run in child process&apos;);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;).listen(1337);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-              <p>运行node app, 先输出 run in main process, 然后打开浏览器localhost:1337,则会发现输出 run in child process.</p>
-              <p><img src="/images/node5.png" alt=""></p>
-              <p>对于操作系统中其实是不允许多个进程对同一个端口进行监听的，cluster生成子进程其实是利用的<code>child_process.fork()</code>，实现的原理其实是 <strong>利用主进程process.send方法中的第二个参数process.send(message [, sendHandle])将服务器对象或者socket对象传输给子进程，从而创建的子进程们都监听同一个socket端口对象。</strong></p>
-              
-                    
-                  </div>
-                  <footer class="article-footer">
-                    <a data-url="https://claire1028.github.io/2018/09/21/node-进程/" data-id="cjp9h42k8000b8sjg7p8dtgr0" class="article-share-link">Share</a>
-                    
-                    
-                <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/node/">node</a></li></ul>
-              
-                  </footer>
-                </div>
-                
-              </article>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://claire1028.github.io/2018/09/25/react-ref/" data-id="cjpnkpj0q0003ajwzmbij8kqc" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/React/">React</a></li></ul>
 
-          <article id="post-ts-学习笔记" class="article article-type-post" itemscope itemprop="blogPost">
-            <div class="article-meta">
-              <a href="/2018/09/20/ts-学习笔记/" class="article-date">
-            <time datetime="2018-09-20T04:10:00.000Z" itemprop="datePublished">2018-09-20</time>
-          </a>
-              
-            </div>
-            <div class="article-inner">
-              
-              
-                <header class="article-header">
-                  
-            
-              <h1 itemprop="name">
-                <a class="article-title" href="/2018/09/20/ts-学习笔记/">TS学习笔记</a>
-              </h1>
-            
-          
-                </header>
-              
-              <div class="article-entry" itemprop="articleBody">
-                
-                  <p>在学习ts过程中，接口和类傻傻分不清楚，记录如下：</p>
-          <p>类<code>implements</code>接口: 接口不提供实现，类进行实现，接口仅校验实例部分 </p>
-          <p>接口<code>extends</code> 接口：校验继承</p>
-          <p>接口<code>extends</code>类：接口继承了类，则该接口只能被这个类自己或类的子类所implements, 接口也可以作为变量类型检测</p>
-          <p>抽象类: abstract关键字修饰，不会被实例化，作为其他类的基类使用，定义的abstract方法必须在派生类中实现</p>
-          <p>类当作接口使用: 仅类的实例部分作类型检测</p>
-          <h3 id="关键字"><a href="#关键字" class="headerlink" title="关键字"></a>关键字</h3><ul>
-          <li><strong>declare</strong>： 全局变量声明，或第三方定义的变量</li>
-          <li><strong>namespace</strong>：全局下的一个JS对象，若需通过namespace访问，则需要export</li>
-          <li><strong>module</strong>：<code>import * as abc from &#39;abc&#39;</code>, 当第三方库abc用js，而没有声明文件时，可以<code>declare  module &#39;abc&#39;</code>;</li>
-          </ul>
-          <p><strong>Q:既然<code>class</code>和<code>interface</code>都能用来做类型检测，那么<code>declare class</code> 和 <code>interface</code> 有什么区别呢？</strong></p>
-          <p>A:<code>declare class</code> 一般用在第三方库（用非ts实现）的声明文件中描述class中有哪些方法以及属性。而interface一般用在我们定义作类型检测</p>
-          <p>在学习过程中，使用tsc命令运行文件，总是报错，如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// index.ts</span><br><span class="line">  var a: T1 = &#123;</span><br><span class="line">      name: &apos;123&apos;</span><br><span class="line">  &#125;;</span><br></pre></td></tr></table></figure></p>
-          <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// ts.d.ts</span><br><span class="line">interface T1 &#123;</span><br><span class="line">    name: string;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-          <p>运行结果：<br><img src="/images/ts1.png" alt=""><br>使用tsc 竟然报错，但是使用ts-loader + webpack ，可以编译成功？莫非ts-loader 和tsc编译的机制不一样，不应该呀！！！</p>
-          <p>仔细阅读官网，有这样一句话：<strong>tsc当命令行上指定了输入文件，tsconfig.json文件会被忽略</strong>，<br>解决方法有：<br>1.直接输入tsc命令，会按照相应的配置文件tsconfig.json 来查找文件并生成。</p>
-          <p>2.采用三斜线命令，在index.ts文件中写入<code>///&lt;reference path=&quot;..&quot;/&gt;</code>。</p>
-          <p>3.将.d.ts文件采用import模块的方式引入。</p>
-          <p>4.命令行上同时包含待执行的文件和相应的.d.ts文件。</p>
-          <p>但是，这边有个坑，如果执行的文件叫index.ts ,而相应的声明文件叫index.d.ts，运行tsc命令，则会报错找不到相应的类型定义。</p>
-          <p><img src="/images/ts2.png" alt=""></p>
-          <p>查看官网，会发现有如下的解释：需要注意编译器不会去引入那些可能做为输出的文件；比如，假设我们包含了index.ts，那么index.d.ts和index.js会被排除在外。 通常来讲，不推荐只有扩展名的不同来区分同目录下的文件。<br>所以声明文件index.d.ts 并未被在编译的时候包含进去，所以报错。<br>现在可以发现，tsc和ts-loader的编译机制并没有不一样。都是按照相应的tsconfig.json配置文件来查找并执行。</p>
-          <p><img src="/images/ts3.png" alt=""></p>
-          <p>学习ts晋升的一个好的方法就是查看别人写的.d.ts文件，并从中思考为何要这样写，这样可以从中发现很多自己的不足。<br>比如node.d.ts文件中，declare module ‘querystring’里 interface前加不加export 有什么区别，自己在本地试了下，不加export也可以通过modulename加.的属性来访问接口，猜测是由于之前ts没有考虑es6的export属性，估计之前的版本默认是export，为了兼容之前的版本所以export可加可不加，仅猜测…</p>
-          
-                
-              </div>
-              <footer class="article-footer">
-                <a data-url="https://claire1028.github.io/2018/09/20/ts-学习笔记/" data-id="cjp9g2df400055cjgtrs7wash" class="article-share-link">Share</a>
-                
-                
-            <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TS/">TS</a></li></ul>
-          
-              </footer>
-            </div>
-            
-          </article>
+    </footer>
+  </div>
+  
+</article>
 
+
+  
+    <article id="post-node-进程" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/09/21/node-进程/" class="article-date">
+  <time datetime="2018-09-21T04:10:00.000Z" itemprop="datePublished">2018-09-21</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/09/21/node-进程/">Node中子进程的创建和cluster原理</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>node虽然是单进程单线程运行的，但是也提供创建子进程让程序运行的更加快速，稳健。创建方法如下：</p>
+<h4 id="spawn："><a href="#spawn：" class="headerlink" title="spawn："></a>spawn：</h4><p>用法：<code>spawn(command[, args][, options])</code>，具体的参数请看官网。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">// app.js</span><br><span class="line">const &#123; spawn &#125; = require(&apos;child_process&apos;);</span><br><span class="line">var sp1 = spawn(&apos;node&apos;, [&apos;test.js&apos;, &apos;one&apos;, &apos;two&apos;,&apos;three&apos;],&#123;stdio:[&apos;pipe&apos;,&apos;ipc&apos;, &apos;ignore&apos;]&#125;);</span><br><span class="line">var sp2 = spawn(&apos;node&apos;,[&apos;test1.js&apos;],&#123;stdio:[&apos;pipe&apos;]&#125;);</span><br><span class="line"></span><br><span class="line">sp1.on(&apos;message&apos;, function(data)&#123;</span><br><span class="line">  console.log(&apos;child out:&apos;+data);</span><br><span class="line">  sp2.stdin.write(data);</span><br><span class="line">&#125;);</span><br><span class="line">sp1.on(&apos;exit&apos;,function(code, signal)&#123;</span><br><span class="line">  console.log(&apos;exit:&apos; +code);</span><br><span class="line">  process.exit();</span><br><span class="line">&#125;);</span><br><span class="line">sp1.on(&apos;error&apos;, function(err)&#123;</span><br><span class="line">  console.log(&apos;error:&apos;+err);</span><br><span class="line">  process.exit();</span><br><span class="line">&#125;);</span><br><span class="line">sp1.on(&apos;disconnect&apos;,function()&#123;</span><br><span class="line">  console.log(&apos;ipc closed&apos;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// test.js</span><br><span class="line">process.send(&apos;cwd:&apos;+ process.cwd());</span><br><span class="line">process.argv.forEach(function(val, index)&#123;</span><br><span class="line">   process.send(&apos;\r\n&apos;+index+&apos;:&apos;+val);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">// test1.js</span><br><span class="line"></span><br><span class="line">var fs = require(&apos;fs&apos;);</span><br><span class="line">var out = fs.createWriteStream(&apos;./space.txt&apos;);</span><br><span class="line">process.stdin.on(&apos;data&apos;,function(data)&#123;</span><br><span class="line">  out.write(data);</span><br><span class="line">&#125;);</span><br><span class="line">process.stdin.on(&apos;end&apos;,function()&#123;</span><br><span class="line">  process.exit();</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>这时直接运行：<br><img src="/images/node1.png" alt=""></p>
+<p>发现test.js 中的data还没发送完成到父进程，程序就exit 了，查看官网exit事件，有一句解释 <strong>当 ‘exit’ 事件被触发时，子进程的 stdio 流可能依然是打开的</strong> 。也就是说，子进程一旦结束就触发exit事件，但是数据有可能还没传输完成，这样就解释的通了，<br>我们注释掉exit事件，再看看运行结果：</p>
+<p><img src="/images/node2.png" alt=""></p>
+<p>这样就运行正确了。</p>
+<h4 id="fork"><a href="#fork" class="headerlink" title="fork:"></a>fork:</h4><p>用法：<code>fork(modulePath[, args][, options])</code><br><code>[options]silent</code>： false继承父进程的stdio，设置为true，子进程的stdin、stdout和stderr都会通过管道传递到父进程，否则他们将会从父进程继承。<br><code>[options]stdio</code>：[0,1,2,’ipc’], 如果要设置该属性值，则必须有个值为‘ipc’，否则报错。<br>该方法默认建立IPC通道<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">// app.js</span><br><span class="line"></span><br><span class="line">const &#123; fork &#125; = require(&apos;child_process&apos;);</span><br><span class="line">var sp1 = fork(&apos;test.js&apos;, [&apos;one&apos;, &apos;two&apos;,&apos;three&apos;]);</span><br><span class="line">var sp2 = fork(&apos;test1.js&apos;,&#123;silent: true&#125;);</span><br><span class="line"></span><br><span class="line">sp1.on(&apos;message&apos;, function(data)&#123;</span><br><span class="line">  console.log(&apos;child out:&apos;+data);</span><br><span class="line">  sp2.send(data);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">sp2.stdout.on(&apos;data&apos;,function(data)&#123;</span><br><span class="line">  console.log(data.toString() + &apos;\r\n&apos;);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">sp1.on(&apos;error&apos;, function(err)&#123;</span><br><span class="line">  console.log(&apos;error:&apos;+err);</span><br><span class="line">  process.exit();</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">sp1.on(&apos;disconnect&apos;,function()&#123;</span><br><span class="line">  console.log(&apos;ipc closed&apos;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// test.js</span><br><span class="line">process.send(&apos;cwd:&apos;+ process.cwd());</span><br><span class="line">process.argv.forEach(function(val, index)&#123;</span><br><span class="line">  console.log(&apos;44444&apos;);</span><br><span class="line">   process.send(&apos;\r\n&apos;+index+&apos;:&apos;+val);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">// test1.js</span><br><span class="line">var fs = require(&apos;fs&apos;);</span><br><span class="line">var out = fs.createWriteStream(&apos;./space.txt&apos;);</span><br><span class="line">var i = 0;</span><br><span class="line">process.on(&apos;message&apos;,function(data)&#123;</span><br><span class="line">  console.log(&apos;xxx&apos;+ i);</span><br><span class="line">  i++;</span><br><span class="line">  out.write(data);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>运行结果如下：<br><img src="/images/node3.png" alt=""></p>
+<p>可以看到<code>silent：false</code>时，和父进程共享stdio，silent为true时，子进程的stdio事件被传递到父进程上，通过监听stdio上的data事件可获取子进程中的输出数据。输出的结果杂乱无序，可以看出多进程是各自运行的。</p>
+<h4 id="exec"><a href="#exec" class="headerlink" title="exec:"></a>exec:</h4><p>用法：<code>exec(command[, options][, callback])</code><br><code>exec</code>通过命令生成一个shell来运行相关的子进程。和<code>spawn</code>的区别是<code>exec</code>子进程返回的<code>stdio</code>数据是同步的，而<code>spawn</code>是异步的。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">// app.js</span><br><span class="line">const &#123; exec &#125; = require(&apos;child_process&apos;);</span><br><span class="line">var sp1 = exec(&apos;node test.js one two three&apos;,function(err, stdout, stderr)&#123;</span><br><span class="line">  if(err) &#123;</span><br><span class="line">    console.log(&apos;error:&apos; + err);</span><br><span class="line">    process.exit();</span><br><span class="line">  &#125;else &#123;</span><br><span class="line">    console.log(&apos;child output:&apos;+stdout.toString());</span><br><span class="line">    sp2.stdin.write(stdout.toString());</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;);</span><br><span class="line">var sp2 = exec(&apos;node test1.js&apos;,function(err, stdout, stderr)&#123;</span><br><span class="line">  process.exit();</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// test.js</span><br><span class="line">process.stdout.write(&apos;cwd:&apos;+ process.cwd());</span><br><span class="line">process.argv.forEach(function(val, index)&#123;</span><br><span class="line">   process.stdout.write(&apos;\r\n&apos;+index+&apos;:&apos;+val);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">// test1.js</span><br><span class="line">var fs = require(&apos;fs&apos;);</span><br><span class="line">var out = fs.createWriteStream(&apos;./space.txt&apos;);</span><br><span class="line">process.stdin.on(&apos;data&apos;,function(data)&#123;</span><br><span class="line">  out.write(data);</span><br><span class="line">  process.exit();</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>运行结果：<br><img src="/images/node4.png" alt=""></p>
+<h4 id="execFile"><a href="#execFile" class="headerlink" title="execFile:"></a>execFile:</h4><p>用法：<code>execFile(file[, args][, options][, callback])</code><br>file参数是可执行的文件，在windows中如.bat文件。<br>和exec的区别是execFile直接通过可执行文件来生成子进程，相比exec稍微高效点。</p>
+<p><strong>翻看源码exec是对execFile的封装，而execFile和fork底层都是调用的spawn。</strong></p>
+<h3 id="cluster"><a href="#cluster" class="headerlink" title="cluster:"></a>cluster:</h3><p>node提供cluster模块充分利用多核cpu对子进程处理。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">// app.js</span><br><span class="line">var cluster = require(&apos;cluster&apos;);</span><br><span class="line">var http = require(&apos;http&apos;);</span><br><span class="line">const numCPUs = require(&apos;os&apos;).cpus().length;</span><br><span class="line">if(cluster.isMaster)&#123;</span><br><span class="line">  for (var i = 0; i &lt; numCPUs; i++) &#123;         </span><br><span class="line">    cluster.fork();                           </span><br><span class="line">  &#125;   </span><br><span class="line">  console.log(&apos;run in main process&apos;);</span><br><span class="line">&#125; else &#123;</span><br><span class="line">  http.createServer(function(req, res)&#123;</span><br><span class="line">    if(req.url !== &apos;/favicon.ico&apos;) &#123;</span><br><span class="line">      res.writeHead(200, &#123;&apos;Content-Type&apos;: &apos;text/html&apos;&#125;);</span><br><span class="line">      res.write(&apos;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;/&gt;&lt;/head&gt;&apos;);</span><br><span class="line">      res.end(&apos;hello\n&apos;);</span><br><span class="line">      console.log(&apos;run in child process&apos;);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;).listen(1337);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>运行node app, 先输出 run in main process, 然后打开浏览器localhost:1337,则会发现输出 run in child process.</p>
+<p><img src="/images/node5.png" alt=""></p>
+<p>对于操作系统中其实是不允许多个进程对同一个端口进行监听的，cluster生成子进程其实是利用的<code>child_process.fork()</code>，实现的原理其实是 <strong>利用主进程process.send方法中的第二个参数process.send(message [, sendHandle])将服务器对象或者socket对象传输给子进程，从而创建的子进程们都监听同一个socket端口对象。</strong></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://claire1028.github.io/2018/09/21/node-进程/" data-id="cjpnkpj0n0001ajwz4dp2gkvd" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/node/">node</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-ts-学习笔记" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/09/20/ts-学习笔记/" class="article-date">
+  <time datetime="2018-09-20T04:10:00.000Z" itemprop="datePublished">2018-09-20</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/09/20/ts-学习笔记/">TS学习笔记</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>在学习ts过程中，接口和类傻傻分不清楚，记录如下：</p>
+<p>类<code>implements</code>接口: 接口不提供实现，类进行实现，接口仅校验实例部分 </p>
+<p>接口<code>extends</code> 接口：校验继承</p>
+<p>接口<code>extends</code>类：接口继承了类，则该接口只能被这个类自己或类的子类所implements, 接口也可以作为变量类型检测</p>
+<p>抽象类: abstract关键字修饰，不会被实例化，作为其他类的基类使用，定义的abstract方法必须在派生类中实现</p>
+<p>类当作接口使用: 仅类的实例部分作类型检测</p>
+<h3 id="关键字"><a href="#关键字" class="headerlink" title="关键字"></a>关键字</h3><ul>
+<li><strong>declare</strong>： 全局变量声明，或第三方定义的变量</li>
+<li><strong>namespace</strong>：全局下的一个JS对象，若需通过namespace访问，则需要export</li>
+<li><strong>module</strong>：<code>import * as abc from &#39;abc&#39;</code>, 当第三方库abc用js，而没有声明文件时，可以<code>declare  module &#39;abc&#39;</code>;</li>
+</ul>
+<p><strong>Q:既然<code>class</code>和<code>interface</code>都能用来做类型检测，那么<code>declare class</code> 和 <code>interface</code> 有什么区别呢？</strong></p>
+<p>A:<code>declare class</code> 一般用在第三方库（用非ts实现）的声明文件中描述class中有哪些方法以及属性。而interface一般用在我们定义作类型检测</p>
+<p>在学习过程中，使用tsc命令运行文件，总是报错，如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// index.ts</span><br><span class="line">  var a: T1 = &#123;</span><br><span class="line">      name: &apos;123&apos;</span><br><span class="line">  &#125;;</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// ts.d.ts</span><br><span class="line">interface T1 &#123;</span><br><span class="line">    name: string;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：<br><img src="/images/ts1.png" alt=""><br>使用tsc 竟然报错，但是使用ts-loader + webpack ，可以编译成功？莫非ts-loader 和tsc编译的机制不一样，不应该呀！！！</p>
+<p>仔细阅读官网，有这样一句话：<strong>tsc当命令行上指定了输入文件，tsconfig.json文件会被忽略</strong>，<br>解决方法有：<br>1.直接输入tsc命令，会按照相应的配置文件tsconfig.json 来查找文件并生成。</p>
+<p>2.采用三斜线命令，在index.ts文件中写入<code>///&lt;reference path=&quot;..&quot;/&gt;</code>。</p>
+<p>3.将.d.ts文件采用import模块的方式引入。</p>
+<p>4.命令行上同时包含待执行的文件和相应的.d.ts文件。</p>
+<p>但是，这边有个坑，如果执行的文件叫index.ts ,而相应的声明文件叫index.d.ts，运行tsc命令，则会报错找不到相应的类型定义。</p>
+<p><img src="/images/ts2.png" alt=""></p>
+<p>查看官网，会发现有如下的解释：需要注意编译器不会去引入那些可能做为输出的文件；比如，假设我们包含了index.ts，那么index.d.ts和index.js会被排除在外。 通常来讲，不推荐只有扩展名的不同来区分同目录下的文件。<br>所以声明文件index.d.ts 并未被在编译的时候包含进去，所以报错。<br>现在可以发现，tsc和ts-loader的编译机制并没有不一样。都是按照相应的tsconfig.json配置文件来查找并执行。</p>
+<p><img src="/images/ts3.png" alt=""></p>
+<p>学习ts晋升的一个好的方法就是查看别人写的.d.ts文件，并从中思考为何要这样写，这样可以从中发现很多自己的不足。<br>比如node.d.ts文件中，declare module ‘querystring’里 interface前加不加export 有什么区别，自己在本地试了下，不加export也可以通过modulename加.的属性来访问接口，猜测是由于之前ts没有考虑es6的export属性，估计之前的版本默认是export，为了兼容之前的版本所以export可加可不加，仅猜测…</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://claire1028.github.io/2018/09/20/ts-学习笔记/" data-id="cjpnkwetd0008ajwzxbpdttmo" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TS/">TS</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-css-animation" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2018/09/18/css-animation/" class="article-date">
@@ -286,26 +291,26 @@
     <article id="post-mobx" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2018/06/12/mobx/" class="article-date">
-  <time datetime="2018-06-12T04:06:09.905Z" itemprop="datePublished">2018-06-12</time>
+  <time datetime="2018-06-12T04:10:00.000Z" itemprop="datePublished">2018-06-12</time>
 </a>
     
   </div>
   <div class="article-inner">
     
     
-    <header class="article-header">
-      
-
-  <h1 itemprop="name">
-    <a class="article-title" href="/2018/06/12/mobx/">mobx概览</a>
-  </h1>
-
-
-    </header>
+      <header class="article-header">
+        
   
-  <div class="article-entry" itemprop="articleBody">
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/06/12/mobx/">mobx概览</a>
+    </h1>
+  
+
+      </header>
     
-      <p><img src="/images/mobx.png" alt=""><br><strong>Action</strong>：事件触发，更改Store 里的数据。<br><strong>State</strong>: 数据的存储。<br><strong>Reaction</strong>：相当于UI的改变。</p>
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><img src="/images/mobx.png" alt=""><br><strong>Action</strong>：事件触发，更改Store 里的数据。<br><strong>State</strong>: 数据的存储。<br><strong>Reaction</strong>：相当于UI的改变。</p>
 <p>和redux最主要不同的地方就是action触发，直接修改数据，UI界面更新。背后的原理是proxy，在set 和get 相应的属性上进行截，所以observable对象或者数组中通过用. 或者[]访问的属性都可被检测到变化。<br>而不需像redux中需手动书写纯函数返回新的state。手动书写纯函数感觉太麻烦了~</p>
 <p>在mobx中，所有的方法都可以采用decorator实现， 采用decorator则需要配置babel <code>&quot;@babel/plugin-proposal-decorators&quot;</code>，个人更倾向于decorator，简单，快速，明了。</p>
 <h3 id="mobx主要的方法："><a href="#mobx主要的方法：" class="headerlink" title="mobx主要的方法："></a>mobx主要的方法：</h3><ul>
@@ -330,16 +335,16 @@
 </ul>
 <h3 id="注意点："><a href="#注意点：" class="headerlink" title="注意点："></a>注意点：</h3><p>observable里的array<strong>并不是</strong>array对象，是mobx自己创建的一个类数组对象，并拥有相应的方法，如果需转为普通的array对象，则可以采用<code>slice()</code>方法。</p>
 
-    
-  </div>
-  <footer class="article-footer">
-    <a data-url="https://claire1028.github.io/2018/06/12/mobx/" data-id="cjp9e3j7y0004qgjgtxsof4oe" class="article-share-link">Share</a>
-    
-    
-<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JS/">JS</a></li></ul>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://claire1028.github.io/2018/06/12/mobx/" data-id="cjib7v6s90000a4jghykmbg1c" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JS/">JS</a></li></ul>
 
-  </footer>
-</div>
+    </footer>
+  </div>
   
 </article>
 
@@ -418,9 +423,55 @@
 
 
   
-    <article id="post-js-µ•¿˝ƒ£ Ω" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-js-state-mod" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2017/12/21/js-µ•¿˝ƒ£ Ω/" class="article-date">
+    <a href="/2017/12/21/js-state-mod/" class="article-date">
+  <time datetime="2017-12-21T10:10:00.000Z" itemprop="datePublished">2017-12-21</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/12/21/js-state-mod/">JavaScript状态模式</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="状态模式："><a href="#状态模式：" class="headerlink" title="状态模式："></a>状态模式：</h3><p>将对应的状态信息和状态变化保存在各自的类中，在主控制的类中，只需对所有的状态进行初始化即可，这样可一眼在构造函数中看出有多少种状态变化，避免了在主类中编写过多的if, else 条件语句来控制状态的变化，同时符合了代码的开放-封闭原则。</p>
+<h4 id="那么什么是状态？"><a href="#那么什么是状态？" class="headerlink" title="那么什么是状态？"></a>那么什么是状态？</h4><p>状态在日常生活中很常见，比如看电视时遥控器的按钮对应着暂停和播放，第一次按下按钮暂停，再按下即播放。暂停和播放就是相应的状态。</p>
+<p>最近买了电动牙刷，有这3种状态，开始按下即启动了默认模式 ，再次按下会变成敏感模式， 第三次按下即是关闭状态。如下图所示：</p>
+<p><img src="/images/state1.png" alt=""></p>
+<p>采用状态模式实现代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"> class OffState &#123;</span><br><span class="line">    constructor(toothbrush)&#123;</span><br><span class="line">        this.toothbrush = toothbrush;</span><br><span class="line">    &#125;</span><br><span class="line">    clickButton() &#123;</span><br><span class="line">        console.log(&apos;电动牙刷启动&apos;);</span><br><span class="line">        this.toothbrush.set(this.toothbrush.onState);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">class OnState &#123;</span><br><span class="line">    constructor(toothbrush)&#123;</span><br><span class="line">        this.toothbrush = toothbrush;</span><br><span class="line">    &#125;</span><br><span class="line">    clickButton() &#123;</span><br><span class="line">        console.log(&apos;刷牙模式切换为敏感模式&apos;);</span><br><span class="line">        this.toothbrush.set(this.toothbrush.sensitiveState);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class SensitiveState &#123;</span><br><span class="line">    constructor(toothbrush)&#123;</span><br><span class="line">        this.toothbrush = toothbrush;</span><br><span class="line">    &#125;</span><br><span class="line">    clickButton() &#123;</span><br><span class="line">        console.log(&apos;电动牙刷关闭&apos;);</span><br><span class="line">        this.toothbrush.set(this.toothbrush.offState);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class ElecToothbrush &#123;</span><br><span class="line">    constructor()&#123;</span><br><span class="line">        this.onState = new OnState(this);</span><br><span class="line">        this.offState = new OffState(this);</span><br><span class="line">        this.sensitiveState = new SensitiveState(this);</span><br><span class="line">        this.curState = this.offState;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    set(newState)&#123;</span><br><span class="line">        this.curState = newState;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var tb = new ElecToothbrush();</span><br></pre></td></tr></table></figure></p>
+<p>将tb实例上当前状态的clickButton事件绑定到button上，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;button onclick=&quot;tb.curState.clickButton()&quot;&gt;开关&lt;/button&gt;</span><br></pre></td></tr></table></figure></p>
+<p>打开控制台可以看见每按一次button，就会显示相应的状态变化。</p>
+<p>如果不采用状态模式实现，那么在主类toothbrush中会有个click方法在切换对应的状态实现，就像下面这样会有很多if，else语句分支，如果未来再添加新的状态模式，则又需要添加相应的分支，之后该函数会变得越来越大，同时维护麻烦。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">if(this.state===&apos;off&apos;)&#123;</span><br><span class="line">     console.log(&apos;牙刷启动默认模式&apos;);</span><br><span class="line">     this.state=&apos;on&apos;;</span><br><span class="line">&#125;else if(this.state===&apos;on&apos;)&#123;</span><br><span class="line">    console.log(&apos;sensitive mode&apos;);</span><br><span class="line">    this.state=&apos;senstive&apos;;</span><br><span class="line">&#125; else if(this.state === &apos;senstive&apos;)&#123;</span><br><span class="line"> 	console.log(&apos;off&apos;);</span><br><span class="line">    this.state = &apos;off&apos;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://claire1028.github.io/2017/12/21/js-state-mod/" data-id="cjpnkyqlm000bajwz6hesrpft" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JS-设计模式/">JS-设计模式</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-js-single-mode" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/12/21/js-single-mode/" class="article-date">
   <time datetime="2017-12-21T07:10:00.000Z" itemprop="datePublished">2017-12-21</time>
 </a>
     
@@ -432,7 +483,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/12/21/js-µ•¿˝ƒ£ Ω/">JavaScript单例模式</a>
+      <a class="article-title" href="/2017/12/21/js-single-mode/">JavaScript单例模式</a>
     </h1>
   
 
@@ -451,7 +502,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2017/12/21/js-µ•¿˝ƒ£ Ω/" data-id="cjm7q91bv0003xswzj9dl0bz9" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2017/12/21/js-single-mode/" data-id="cjpnkpj0d0000ajwztsevhr42" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JS-设计模式/">JS-设计模式</a></li></ul>
@@ -519,7 +570,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/CSS/">CSS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JS/">JS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JS-设计模式/">JS-设计模式</a></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/CSS/">CSS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JS/">JS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JS-设计模式/">JS-设计模式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/React/">React</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TS/">TS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/node/">node</a></li></ul>
     </div>
   </div>
 
@@ -529,7 +580,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/CSS/" style="font-size: 10px;">CSS</a> <a href="/tags/JS/" style="font-size: 20px;">JS</a> <a href="/tags/JS-设计模式/" style="font-size: 10px;">JS-设计模式</a>
+      <a href="/tags/CSS/" style="font-size: 10px;">CSS</a> <a href="/tags/JS/" style="font-size: 20px;">JS</a> <a href="/tags/JS-设计模式/" style="font-size: 15px;">JS-设计模式</a> <a href="/tags/React/" style="font-size: 10px;">React</a> <a href="/tags/TS/" style="font-size: 10px;">TS</a> <a href="/tags/node/" style="font-size: 10px;">node</a>
     </div>
   </div>
 
@@ -551,23 +602,23 @@
       <ul>
         
           <li>
+            <a href="/2018/09/25/react-ref/">React中的几种Ref比较</a>
+          </li>
+        
+          <li>
+            <a href="/2018/09/21/node-进程/">Node中子进程的创建和cluster原理</a>
+          </li>
+        
+          <li>
+            <a href="/2018/09/20/ts-学习笔记/">TS学习笔记</a>
+          </li>
+        
+          <li>
             <a href="/2018/09/18/css-animation/">浅析Css中动画优化原理</a>
           </li>
         
           <li>
-            <a href="/2018/06/12/mobx/">mobx</a>
-          </li>
-        
-          <li>
-            <a href="/2018/06/11/babel-ES6-IE8/">Babel介绍</a>
-          </li>
-        
-          <li>
-            <a href="/2017/12/21/js-µ•¿˝ƒ£ Ω/">JavaScript单例模式</a>
-          </li>
-        
-          <li>
-            <a href="/2017/12/14/js-this/">JavaScript 中的 This 指向</a>
+            <a href="/2018/06/12/mobx/">mobx概览</a>
           </li>
         
       </ul>
