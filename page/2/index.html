@@ -59,6 +59,51 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-js-single-mode" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/12/21/js-single-mode/" class="article-date">
+  <time datetime="2017-12-21T07:10:00.000Z" itemprop="datePublished">2017-12-21</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/12/21/js-single-mode/">JavaScript单例模式</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>单例模式的定义是：保证一个类仅有一个实例，并提供一个全局访问的访问点。</p>
+<h3 id="方法一"><a href="#方法一" class="headerlink" title="方法一"></a>方法一</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">  var  Account = function(name)&#123;</span><br><span class="line"></span><br><span class="line">    this.name = name;</span><br><span class="line"></span><br><span class="line">    this.instance = null;</span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  Account.create = function(name)&#123;</span><br><span class="line"></span><br><span class="line">    if(!this.instance)&#123;</span><br><span class="line"></span><br><span class="line">      this.instance = new Account(name);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return this.instance;</span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">var a = Account.create(&apos;a&apos;);</span><br><span class="line"></span><br><span class="line">var b = Account.create(&apos;b&apos;);</span><br><span class="line"></span><br><span class="line">console.log(a === b);  //true</span><br></pre></td></tr></table></figure>
+<p>不过这个方法有个缺点就是我们通常都是用new 来实例化对象，而这边需用create方法来创建。</p>
+<h3 id="方法二"><a href="#方法二" class="headerlink" title="方法二"></a>方法二</h3><p>那我们将代码改进，将实例对象使用new来创建：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">var  Account = ( function(name)&#123;</span><br><span class="line"></span><br><span class="line">  var instance = null;    </span><br><span class="line"></span><br><span class="line">  var getSingleInstance = function(name)&#123;</span><br><span class="line"></span><br><span class="line">     if(instance)</span><br><span class="line"></span><br><span class="line">      return instance;</span><br><span class="line"></span><br><span class="line">      return instance = new Acc(name);</span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  var  Acc = function(name)&#123;</span><br><span class="line"></span><br><span class="line">    this.name = name;</span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"> return getSingleInstance;</span><br><span class="line"></span><br><span class="line">&#125;)();</span><br><span class="line"></span><br><span class="line">var a = new Account(&apos;a&apos;);</span><br><span class="line"></span><br><span class="line">var b = new Account(&apos;b&apos;);</span><br><span class="line"></span><br><span class="line">console.log(a===b); //true</span><br></pre></td></tr></table></figure></p>
+<p>上述代码采用的是闭包的形式来创建单例的，阅读起来相对比较麻烦，并且该函数不能公用。所以可以将创建单例的函数抽出来作为一个公共的function。</p>
+<h3 id="方法三"><a href="#方法三" class="headerlink" title="方法三"></a>方法三</h3><p>代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">  var  Account = function(name)&#123;</span><br><span class="line"></span><br><span class="line">     this.name = name;</span><br><span class="line"></span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">var  createSingleInstance =function (fn)&#123;</span><br><span class="line"></span><br><span class="line">   var instance ;    </span><br><span class="line"></span><br><span class="line">  return function()&#123;</span><br><span class="line"></span><br><span class="line">     if(instance)</span><br><span class="line"></span><br><span class="line">      return instance;</span><br><span class="line"></span><br><span class="line">    return  instance = new fn(arguments); //将函数委托给createSingleInstance构造</span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">var getSingle = createSingleInstance(Account);</span><br><span class="line"></span><br><span class="line">var a = getSingle(&apos;a&apos;);</span><br><span class="line"></span><br><span class="line">var b = getSingle(&apos;b&apos;);</span><br><span class="line"></span><br><span class="line">console.log( b === a);</span><br></pre></td></tr></table></figure></p>
+<p>总之：单例模式就是类构造出来的实例只有一个。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://claire1028.github.io/2017/12/21/js-single-mode/" data-id="cjprv5dvo000aa8jglej6aoie" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JS-设计模式/">JS-设计模式</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-js-this" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/12/14/js-this/" class="article-date">
@@ -129,7 +174,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/CSS/" style="font-size: 10px;">CSS</a> <a href="/tags/JS/" style="font-size: 20px;">JS</a> <a href="/tags/JS-设计模式/" style="font-size: 20px;">JS-设计模式</a> <a href="/tags/React/" style="font-size: 15px;">React</a> <a href="/tags/TS/" style="font-size: 10px;">TS</a> <a href="/tags/node/" style="font-size: 10px;">node</a>
+      <a href="/tags/CSS/" style="font-size: 10px;">CSS</a> <a href="/tags/JS/" style="font-size: 16.67px;">JS</a> <a href="/tags/JS-设计模式/" style="font-size: 20px;">JS-设计模式</a> <a href="/tags/React/" style="font-size: 13.33px;">React</a> <a href="/tags/TS/" style="font-size: 10px;">TS</a> <a href="/tags/node/" style="font-size: 10px;">node</a>
     </div>
   </div>
 
