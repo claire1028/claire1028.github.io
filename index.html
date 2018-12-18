@@ -113,7 +113,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2018/10/25/jest-enzyme/" data-id="cjpthygww00049ojg1xzi4ati" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2018/10/25/jest-enzyme/" data-id="cjptl7i83000y3cjgaad8qekk" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/React/">React</a></li></ul>
@@ -165,7 +165,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2018/09/25/react-ref/" data-id="cjpthygyo000s9ojgj80y5q1c" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2018/09/25/react-ref/" data-id="cjptl7i7z000w3cjgfv7w10vp" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/React/">React</a></li></ul>
@@ -226,7 +226,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2018/09/21/node-进程/" data-id="cjpthygyk000q9ojg0djpujry" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2018/09/21/node-进程/" data-id="cjptl7i9100193cjgttjgx5bm" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/node/">node</a></li></ul>
@@ -289,7 +289,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2018/09/20/ts-学习笔记/" data-id="cjpthygzx00119ojg8y6wa3eh" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2018/09/20/ts-学习笔记/" data-id="cjptl7i7t000t3cjgq71flv94" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TS/">TS</a></li></ul>
@@ -342,7 +342,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2018/09/18/css-animation/" data-id="cjpthygx000059ojgnudwutqd" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2018/09/18/css-animation/" data-id="cjptl7i4z00003cjgd1snt80r" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CSS/">CSS</a></li></ul>
@@ -404,7 +404,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2018/06/12/mobx/" data-id="cjpthygzt00109ojgy9bdpy21" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2018/06/12/mobx/" data-id="cjptl7i7j000o3cjgpn0louvg" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JS/">JS</a></li></ul>
@@ -477,10 +477,55 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2018/06/11/babel-ES6-IE8/" data-id="cjpthygvy00009ojg87qrgvqx" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2018/06/11/babel-ES6-IE8/" data-id="cjptl7i6n000c3cjgj4mz08bd" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JS/">JS</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-js-flyweight-mode" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/12/23/js-flyweight-mode/" class="article-date">
+  <time datetime="2017-12-23T01:30:00.000Z" itemprop="datePublished">2017-12-23</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/12/23/js-flyweight-mode/">JavaScript享元模式</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="享元模式："><a href="#享元模式：" class="headerlink" title="享元模式："></a>享元模式：</h3><p>剥离出对象的外部状态和内部状态，将内部状态放在类中，外部状态可以通过同一个对象共享，即用相对较少的共享对象取代大量对象，常用在创建很多类似的对象而导致内存过高的场景中。</p>
+<p>最常见的场景就是上传文件，上传的文件有文件名，文件大小，上传文件的方式，分为普通上传和极速上传。如下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">class UploadFile &#123;</span><br><span class="line">  constructor(type, id, name, size) &#123;</span><br><span class="line">    this.type = type;</span><br><span class="line">    this.id = id;</span><br><span class="line">    this.name = name;</span><br><span class="line">    this.size = size;</span><br><span class="line">  &#125;</span><br><span class="line">  delete() &#123;</span><br><span class="line">    console.log(&apos;delete file&apos;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var startUpload = function(type, files) &#123;</span><br><span class="line">  for(var i = 0; i &lt; files.length; i++ ) &#123;</span><br><span class="line">    new UploadFile(type, i, file[i].name, file[i].size);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如上实现代码，如果用户同时上传了几千个文件，那么同时也创建了几千个对象，就会导致内存占用过高。</p>
+<p>使用享元模式来改进代码，将对象的内部状态剥离出来，即不变的状态，即文件的上传方式，而对象的外部状态如文件名，文件大小是外部状态，实现如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">class UploadFile &#123;</span><br><span class="line">  constructor(type) &#123;</span><br><span class="line">    this.type = type;</span><br><span class="line">  &#125;</span><br><span class="line">   delete() &#123;</span><br><span class="line">    console.log(&apos;delete file&apos;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var uploadFactory = (function() &#123;</span><br><span class="line">  var cache = &#123;&#125;;</span><br><span class="line">  return function(type) &#123;</span><br><span class="line">    if(cache[type]) &#123;</span><br><span class="line">      return cache[type];</span><br><span class="line">    &#125; </span><br><span class="line">    return cache[type] = new UploadFile(type);    </span><br><span class="line">  &#125;</span><br><span class="line">&#125;)();</span><br><span class="line"></span><br><span class="line">var uploadManager = function(type, id, name, size) &#123;</span><br><span class="line">  var obj = uploadFactory(type);</span><br><span class="line">  obj[&apos;id&apos;] = id;</span><br><span class="line">  obj[&apos;name&apos;] = name;</span><br><span class="line">  obj[&apos;size&apos;] = size;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">var startUpload = function(type, files) &#123;</span><br><span class="line">  for(var i = 0; i &lt; files.length; i++ ) &#123;</span><br><span class="line">    uploadManager(type, i, file[i].name, file[i].size);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如此这样一来，创建的实例对象就只有2个，而文件的其他外部属性则通过id区别保存在同一个实例对象上。通过享元模式则得到了实例对象的大幅度释放。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://claire1028.github.io/2017/12/23/js-flyweight-mode/" data-id="cjptl7i5v00033cjgbkgpachp" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JS-设计模式/">JS-设计模式</a></li></ul>
 
     </footer>
   </div>
@@ -522,50 +567,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2017/12/22/js-template-mode/" data-id="cjpthygy4000j9ojg2aa2vzds" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JS-设计模式/">JS-设计模式</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-js-compose-mode" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/12/22/js-compose-mode/" class="article-date">
-  <time datetime="2017-12-22T01:19:00.000Z" itemprop="datePublished">2017-12-22</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/12/22/js-compose-mode/">JavaScript组合模式</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="组合模式："><a href="#组合模式：" class="headerlink" title="组合模式："></a>组合模式：</h3><p>组合模式是用小的子对象来构建更大的对象，而这些小的子对象本身也许是由更小的对象构成的。父对象和子对象拥有共同的对象接口，而他们可以组合在一起组成一个更强大的数据结构。一般由子对象进行处理，如果传递到还是非子对象，则继续往下传递直到子对象为止。</p>
-<p>类似于命令模式将事件包装成有统一接口的模式，而组合模式就是父对象和子对象就是有相同的对外接口，这里的父对象和子对象并不是父子关系，只是包含组合关系。</p>
-<p>比如一个页面上有个button，点击后先开始了loading动画，然后弹框显示提示，最后跳转到别的网站，这3组动作，让我们用组合模式实现如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">var loading = &#123;</span><br><span class="line">  add() &#123;</span><br><span class="line">    throw new Error(&apos;child can not be added&apos;);</span><br><span class="line">  &#125;</span><br><span class="line">  run() &#123;</span><br><span class="line">    console.log(&apos;show loading&apos;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">var dialog = &#123;</span><br><span class="line">  add() &#123;</span><br><span class="line">    throw new Error(&apos;child can not be added&apos;);</span><br><span class="line">  &#125;</span><br><span class="line">  run() &#123;</span><br><span class="line">    console.log(&apos;show dialog&apos;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">var link = &#123;</span><br><span class="line">  add() &#123;</span><br><span class="line">    throw new Error(&apos;child can not be added&apos;);</span><br><span class="line">  &#125;</span><br><span class="line">  run() &#123;</span><br><span class="line">    console.log(&apos;redirect link&apos;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">var macroCommand = &#123;</span><br><span class="line">  cmdLists: [],</span><br><span class="line">  add(cmd) &#123;</span><br><span class="line">    this.cmdLists.push(cmd);</span><br><span class="line">  &#125;,</span><br><span class="line">  run() &#123;</span><br><span class="line">    for(var i = 0; i &lt; this.cmdLists.length; i++) &#123;</span><br><span class="line">      this.cmdLists[i].run();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">macroCommand.add(loading);</span><br><span class="line">macroCommand.add(dialog);</span><br><span class="line">macroCommand.add(link);</span><br><span class="line"></span><br><span class="line">document.getElementById(&apos;btn&apos;).onclick = macroCommand.run;</span><br></pre></td></tr></table></figure></p>
-<p>当点击按钮以后会依次显示<code>show loading</code>, <code>show dialog</code>,<code>redirect link</code>，上述代码中，loading, dialog, link对象即是子对象，macroCommand即是父对象，他们都拥有相同的方法run，add，对于外界来说调用他们的方式是一样的。</p>
-<p>可以看出组合模式的好处有对于未来有新增的子对象时，遍历的操作还是一样的，同时避免了打破主方法的封闭-开放原则。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2017/12/22/js-compose-mode/" data-id="cjpthygx600089ojgfmxq2bnw" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2017/12/22/js-template-mode/" data-id="cjptl7i7p000r3cjg8p9pkndk" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JS-设计模式/">JS-设计模式</a></li></ul>
@@ -609,7 +611,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2017/12/22/js-command-mode/" data-id="cjpthygws00039ojg3668ilsy" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2017/12/22/js-command-mode/" data-id="cjptl7i6900083cjgsibecuf3" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JS-设计模式/">JS-设计模式</a></li></ul>
