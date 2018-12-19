@@ -5,13 +5,13 @@
   
   <title>Babel介绍 | Ting&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="babel默认将es6语法转为es5，如果想要在低版本浏览器上支持es6新增的api，如Array.prototype.from等方法，则需要添加polyfill。babel的一些主要概念介绍 babel-preset-env ： 将es2015 ，es2016，es2017的语法转为es5。  babel-core： 包含transform方法，任何需要引用babel处理文件的，则需调用该方法。">
+  <meta name="description" content="babel默认将es6语法转为es5，如果想要在低版本浏览器上支持es6新增的api，如Array.prototype.from等方法，则需要添加polyfill。 babel的一些主要概念介绍 babel-preset-env ： 将es2015 ，es2016，es2017的语法转为es5。  babel-core： 包含transform方法，任何需要引用babel处理文件的，则需调用该方法">
 <meta name="keywords" content="JS">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Babel介绍">
 <meta property="og:url" content="https://claire1028.github.io/2018/06/11/babel-ES6-IE8/index.html">
 <meta property="og:site_name" content="Ting&#39;s blog">
-<meta property="og:description" content="babel默认将es6语法转为es5，如果想要在低版本浏览器上支持es6新增的api，如Array.prototype.from等方法，则需要添加polyfill。babel的一些主要概念介绍 babel-preset-env ： 将es2015 ，es2016，es2017的语法转为es5。  babel-core： 包含transform方法，任何需要引用babel处理文件的，则需调用该方法。">
+<meta property="og:description" content="babel默认将es6语法转为es5，如果想要在低版本浏览器上支持es6新增的api，如Array.prototype.from等方法，则需要添加polyfill。 babel的一些主要概念介绍 babel-preset-env ： 将es2015 ，es2016，es2017的语法转为es5。  babel-core： 包含transform方法，任何需要引用babel处理文件的，则需调用该方法">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="https://claire1028.github.io/images/1.png">
 <meta property="og:image" content="https://claire1028.github.io/images/2.png">
@@ -37,16 +37,16 @@
 <meta property="og:image" content="https://claire1028.github.io/images/26.png">
 <meta property="og:image" content="https://claire1028.github.io/images/27.png">
 <meta property="og:image" content="https://claire1028.github.io/images/28.png">
-<meta property="og:updated_time" content="2018-06-12T10:26:56.018Z">
+<meta property="og:updated_time" content="2018-12-19T06:32:18.020Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Babel介绍">
-<meta name="twitter:description" content="babel默认将es6语法转为es5，如果想要在低版本浏览器上支持es6新增的api，如Array.prototype.from等方法，则需要添加polyfill。babel的一些主要概念介绍 babel-preset-env ： 将es2015 ，es2016，es2017的语法转为es5。  babel-core： 包含transform方法，任何需要引用babel处理文件的，则需调用该方法。">
+<meta name="twitter:description" content="babel默认将es6语法转为es5，如果想要在低版本浏览器上支持es6新增的api，如Array.prototype.from等方法，则需要添加polyfill。 babel的一些主要概念介绍 babel-preset-env ： 将es2015 ，es2016，es2017的语法转为es5。  babel-core： 包含transform方法，任何需要引用babel处理文件的，则需调用该方法">
 <meta name="twitter:image" content="https://claire1028.github.io/images/1.png">
   
     <link rel="alternate" href="/atom.xml" title="Ting&#39;s blog" type="application/atom+xml">
   
   
-    <link rel="icon" href="./favicon.png">
+    <link rel="icon" href="/favicon.png">
   
   
     <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
@@ -109,7 +109,8 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="babel默认将es6语法转为es5，如果想要在低版本浏览器上支持es6新增的api，如Array-prototype-from等方法，则需要添加polyfill。"><a href="#babel默认将es6语法转为es5，如果想要在低版本浏览器上支持es6新增的api，如Array-prototype-from等方法，则需要添加polyfill。" class="headerlink" title="babel默认将es6语法转为es5，如果想要在低版本浏览器上支持es6新增的api，如Array.prototype.from等方法，则需要添加polyfill。"></a>babel默认将es6语法转为es5，如果想要在低版本浏览器上支持es6新增的api，如Array.prototype.from等方法，则需要添加polyfill。</h3><h5 id="babel的一些主要概念介绍"><a href="#babel的一些主要概念介绍" class="headerlink" title="babel的一些主要概念介绍"></a>babel的一些主要概念介绍</h5><ul>
+        <p>babel默认将es6语法转为es5，如果想要在低版本浏览器上支持es6新增的api，如Array.prototype.from等方法，则需要添加polyfill。</p>
+<h5 id="babel的一些主要概念介绍"><a href="#babel的一些主要概念介绍" class="headerlink" title="babel的一些主要概念介绍"></a>babel的一些主要概念介绍</h5><ul>
 <li><p><strong>babel-preset-env</strong> ： 将es2015 ，es2016，es2017的语法转为es5。</p>
 </li>
 <li><p><strong>babel-core</strong>： 包含transform方法，任何需要引用babel处理文件的，则需调用该方法。</p>
@@ -148,7 +149,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2018/06/11/babel-ES6-IE8/" data-id="cjptl7i6n000c3cjgj4mz08bd" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2018/06/11/babel-ES6-IE8/" data-id="cjpuydewb0001fcjg8iubnbbp" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JS/">JS</a></li></ul>
@@ -169,9 +170,9 @@
     </a>
   
   
-    <a href="/2017/12/23/js-flyweight-mode/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/2017/12/24/js-decorator-mode/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">JavaScript享元模式</div>
+      <div class="article-nav-title">JavaScript装饰者模式</div>
     </a>
   
 </nav>

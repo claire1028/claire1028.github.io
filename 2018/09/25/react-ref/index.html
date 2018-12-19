@@ -5,23 +5,23 @@
   
   <title>React中的几种Ref比较 | Ting&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="React中的refs  1. ref用string 来表示React中已将它废弃, 静态类型检测不支持  2.React.createRef()ref 是一个 特殊的属性 在react里。 当React.createRef()应用在html dom元素上的时候，dom元素赋值给 React.createRef().current属性上。&amp;lt;Com ref={} /&amp;gt;，当React.cr">
+  <meta name="description" content="React中的refs  1. ref用string 来表示  React中已将它废弃, 静态类型检测不支持  2.React.createRef()ref 是一个 特殊的属性 在react里。 当React.createRef()应用在html dom元素上的时候，dom元素赋值给 React.createRef().current属性上。&amp;lt;Com ref={} /&amp;gt;，当React.">
 <meta name="keywords" content="React">
 <meta property="og:type" content="article">
 <meta property="og:title" content="React中的几种Ref比较">
 <meta property="og:url" content="https://claire1028.github.io/2018/09/25/react-ref/index.html">
 <meta property="og:site_name" content="Ting&#39;s blog">
-<meta property="og:description" content="React中的refs  1. ref用string 来表示React中已将它废弃, 静态类型检测不支持  2.React.createRef()ref 是一个 特殊的属性 在react里。 当React.createRef()应用在html dom元素上的时候，dom元素赋值给 React.createRef().current属性上。&amp;lt;Com ref={} /&amp;gt;，当React.cr">
+<meta property="og:description" content="React中的refs  1. ref用string 来表示  React中已将它废弃, 静态类型检测不支持  2.React.createRef()ref 是一个 特殊的属性 在react里。 当React.createRef()应用在html dom元素上的时候，dom元素赋值给 React.createRef().current属性上。&amp;lt;Com ref={} /&amp;gt;，当React.">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-12-04T08:41:43.166Z">
+<meta property="og:updated_time" content="2018-12-19T06:32:18.035Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="React中的几种Ref比较">
-<meta name="twitter:description" content="React中的refs  1. ref用string 来表示React中已将它废弃, 静态类型检测不支持  2.React.createRef()ref 是一个 特殊的属性 在react里。 当React.createRef()应用在html dom元素上的时候，dom元素赋值给 React.createRef().current属性上。&amp;lt;Com ref={} /&amp;gt;，当React.cr">
+<meta name="twitter:description" content="React中的refs  1. ref用string 来表示  React中已将它废弃, 静态类型检测不支持  2.React.createRef()ref 是一个 特殊的属性 在react里。 当React.createRef()应用在html dom元素上的时候，dom元素赋值给 React.createRef().current属性上。&amp;lt;Com ref={} /&amp;gt;，当React.">
   
     <link rel="alternate" href="/atom.xml" title="Ting&#39;s blog" type="application/atom+xml">
   
   
-    <link rel="icon" href="./favicon.png">
+    <link rel="icon" href="/favicon.png">
   
   
     <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
@@ -86,8 +86,10 @@
       
         <p>React中的refs</p>
 <ul>
-<li><p><strong>1. ref用string 来表示</strong><br>React中已将它废弃, 静态类型检测不支持</p>
-</li>
+<li><strong>1. ref用string 来表示</strong></li>
+</ul>
+<p>React中已将它废弃, 静态类型检测不支持</p>
+<ul>
 <li><p><strong>2.React.createRef()</strong><br>ref 是一个 <strong>特殊的属性</strong> 在react里。</p>
 <p>当<code>React.createRef()</code>应用在html dom元素上的时候，dom元素赋值给 <code>React.createRef().current</code>属性上。<br><code>&lt;Com ref={} /&gt;</code>，当<code>React.createRef()</code>应用在Component上时，<code>React.createRef().current</code>上的值是Component的实例，所以不能将<code>React.createRef()</code>生成的值赋给Function Component，即无状态组件，因为他们没有实例。</p>
 </li>
@@ -102,7 +104,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2018/09/25/react-ref/" data-id="cjptl7i7z000w3cjgfv7w10vp" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2018/09/25/react-ref/" data-id="cjpuydezn0014fcjgms6dvfmo" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/React/">React</a></li></ul>

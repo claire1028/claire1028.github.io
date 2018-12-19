@@ -5,25 +5,25 @@
   
   <title>mobx概览 | Ting&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Action：事件触发，更改Store 里的数据。State: 数据的存储。Reaction：相当于UI的改变。 和redux最主要不同的地方就是action触发，直接修改数据，UI界面更新。背后的原理是proxy，在set 和get 相应的属性上进行截，所以observable对象或者数组中通过用. 或者[]访问的属性都可被检测到变化。而不需像redux中需手动书写纯函数返回新的state。手动">
+  <meta name="description" content="mobx是和redux一样用于对react进行状态管理，和redux相比，编写起来更加方便，简单。 Action：事件触发，更改Store 里的数据。State: 数据的存储。Reaction：相当于UI的改变。 和redux最主要不同的地方就是action触发，直接修改数据，UI界面更新。背后的原理是proxy，在set 和get 相应的属性上进行截，所以observable对象或者数组中通过用">
 <meta name="keywords" content="JS">
 <meta property="og:type" content="article">
 <meta property="og:title" content="mobx概览">
 <meta property="og:url" content="https://claire1028.github.io/2018/06/12/mobx/index.html">
 <meta property="og:site_name" content="Ting&#39;s blog">
-<meta property="og:description" content="Action：事件触发，更改Store 里的数据。State: 数据的存储。Reaction：相当于UI的改变。 和redux最主要不同的地方就是action触发，直接修改数据，UI界面更新。背后的原理是proxy，在set 和get 相应的属性上进行截，所以observable对象或者数组中通过用. 或者[]访问的属性都可被检测到变化。而不需像redux中需手动书写纯函数返回新的state。手动">
+<meta property="og:description" content="mobx是和redux一样用于对react进行状态管理，和redux相比，编写起来更加方便，简单。 Action：事件触发，更改Store 里的数据。State: 数据的存储。Reaction：相当于UI的改变。 和redux最主要不同的地方就是action触发，直接修改数据，UI界面更新。背后的原理是proxy，在set 和get 相应的属性上进行截，所以observable对象或者数组中通过用">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="https://claire1028.github.io/images/mobx.png">
-<meta property="og:updated_time" content="2018-12-04T07:07:44.095Z">
+<meta property="og:updated_time" content="2018-12-19T06:32:18.039Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="mobx概览">
-<meta name="twitter:description" content="Action：事件触发，更改Store 里的数据。State: 数据的存储。Reaction：相当于UI的改变。 和redux最主要不同的地方就是action触发，直接修改数据，UI界面更新。背后的原理是proxy，在set 和get 相应的属性上进行截，所以observable对象或者数组中通过用. 或者[]访问的属性都可被检测到变化。而不需像redux中需手动书写纯函数返回新的state。手动">
+<meta name="twitter:description" content="mobx是和redux一样用于对react进行状态管理，和redux相比，编写起来更加方便，简单。 Action：事件触发，更改Store 里的数据。State: 数据的存储。Reaction：相当于UI的改变。 和redux最主要不同的地方就是action触发，直接修改数据，UI界面更新。背后的原理是proxy，在set 和get 相应的属性上进行截，所以observable对象或者数组中通过用">
 <meta name="twitter:image" content="https://claire1028.github.io/images/mobx.png">
   
     <link rel="alternate" href="/atom.xml" title="Ting&#39;s blog" type="application/atom+xml">
   
   
-    <link rel="icon" href="./favicon.png">
+    <link rel="icon" href="/favicon.png">
   
   
     <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
@@ -86,7 +86,8 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><img src="/images/mobx.png" alt=""><br><strong>Action</strong>：事件触发，更改Store 里的数据。<br><strong>State</strong>: 数据的存储。<br><strong>Reaction</strong>：相当于UI的改变。</p>
+        <p>mobx是和redux一样用于对react进行状态管理，和redux相比，编写起来更加方便，简单。</p>
+<p><img src="/images/mobx.png" alt=""><br><strong>Action</strong>：事件触发，更改Store 里的数据。<br><strong>State</strong>: 数据的存储。<br><strong>Reaction</strong>：相当于UI的改变。</p>
 <p>和redux最主要不同的地方就是action触发，直接修改数据，UI界面更新。背后的原理是proxy，在set 和get 相应的属性上进行截，所以observable对象或者数组中通过用. 或者[]访问的属性都可被检测到变化。<br>而不需像redux中需手动书写纯函数返回新的state。手动书写纯函数感觉太麻烦了~</p>
 <p>在mobx中，所有的方法都可以采用decorator实现， 采用decorator则需要配置babel <code>&quot;@babel/plugin-proposal-decorators&quot;</code>，个人更倾向于decorator，简单，快速，明了。</p>
 <h3 id="mobx主要的方法："><a href="#mobx主要的方法：" class="headerlink" title="mobx主要的方法："></a>mobx主要的方法：</h3><ul>
@@ -114,7 +115,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2018/06/12/mobx/" data-id="cjptl7i7j000o3cjgpn0louvg" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2018/06/12/mobx/" data-id="cjpuydezd000zfcjgf7428rql" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JS/">JS</a></li></ul>

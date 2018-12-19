@@ -16,7 +16,7 @@
     <link rel="alternate" href="/atom.xml" title="Ting&#39;s blog" type="application/atom+xml">
   
   
-    <link rel="icon" href="./favicon.png">
+    <link rel="icon" href="/favicon.png">
   
   
     <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
@@ -59,6 +59,96 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-js-flyweight-mode" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/12/23/js-flyweight-mode/" class="article-date">
+  <time datetime="2017-12-23T01:30:00.000Z" itemprop="datePublished">2017-12-23</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/12/23/js-flyweight-mode/">JavaScript享元模式</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="享元模式："><a href="#享元模式：" class="headerlink" title="享元模式："></a>享元模式：</h3><p>剥离出对象的外部状态和内部状态，将内部状态放在类中，外部状态可以通过同一个对象共享，即用相对较少的共享对象取代大量对象，常用在创建很多类似的对象而导致内存过高的场景中。</p>
+<p>最常见的场景就是上传文件，上传的文件有文件名，文件大小，上传文件的方式，分为普通上传和极速上传。如下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">class UploadFile &#123;</span><br><span class="line">  constructor(type, id, name, size) &#123;</span><br><span class="line">    this.type = type;</span><br><span class="line">    this.id = id;</span><br><span class="line">    this.name = name;</span><br><span class="line">    this.size = size;</span><br><span class="line">  &#125;</span><br><span class="line">  delete() &#123;</span><br><span class="line">    console.log(&apos;delete file&apos;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var startUpload = function(type, files) &#123;</span><br><span class="line">  for(var i = 0; i &lt; files.length; i++ ) &#123;</span><br><span class="line">    new UploadFile(type, i, file[i].name, file[i].size);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如上实现代码，如果用户同时上传了几千个文件，那么同时也创建了几千个对象，就会导致内存占用过高。</p>
+<p>使用享元模式来改进代码，将对象的内部状态剥离出来，即不变的状态，即文件的上传方式，而对象的外部状态如文件名，文件大小是外部状态，实现如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">class UploadFile &#123;</span><br><span class="line">  constructor(type) &#123;</span><br><span class="line">    this.type = type;</span><br><span class="line">  &#125;</span><br><span class="line">   delete() &#123;</span><br><span class="line">    console.log(&apos;delete file&apos;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var uploadFactory = (function() &#123;</span><br><span class="line">  var cache = &#123;&#125;;</span><br><span class="line">  return function(type) &#123;</span><br><span class="line">    if(cache[type]) &#123;</span><br><span class="line">      return cache[type];</span><br><span class="line">    &#125; </span><br><span class="line">    return cache[type] = new UploadFile(type);    </span><br><span class="line">  &#125;</span><br><span class="line">&#125;)();</span><br><span class="line"></span><br><span class="line">var uploadManager = function(type, id, name, size) &#123;</span><br><span class="line">  var obj = uploadFactory(type);</span><br><span class="line">  obj[&apos;id&apos;] = id;</span><br><span class="line">  obj[&apos;name&apos;] = name;</span><br><span class="line">  obj[&apos;size&apos;] = size;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">var startUpload = function(type, files) &#123;</span><br><span class="line">  for(var i = 0; i &lt; files.length; i++ ) &#123;</span><br><span class="line">    uploadManager(type, i, file[i].name, file[i].size);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如此这样一来，创建的实例对象就只有2个，而文件的其他外部属性则通过id区别保存在同一个实例对象上。通过享元模式则得到了实例对象的大幅度释放。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://claire1028.github.io/2017/12/23/js-flyweight-mode/" data-id="cjpuydey0000ffcjg3f141l62" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JS-设计模式/">JS-设计模式</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-js-template-mode" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/12/22/js-template-mode/" class="article-date">
+  <time datetime="2017-12-22T01:20:00.000Z" itemprop="datePublished">2017-12-22</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/12/22/js-template-mode/">JavaScript模板模式</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="模板模式："><a href="#模板模式：" class="headerlink" title="模板模式："></a>模板模式：</h3><p>模板模式是由2部分组成，第一部分是抽象父类，第二部分是子类实现，父类是对子类接口方法的定义和实现，而子类需实现父类定义的方法接口，也可以覆盖父类的方法实现。</p>
+<p>js中并没有抽象类，那么抽象类是不可以被实例化的，可以这样检查：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">class Abstract &#123;</span><br><span class="line">  constructor() &#123;</span><br><span class="line">    if (new.target === Abstract) &#123;</span><br><span class="line">      throw new TypeError(&apos;不能实例化抽象父类&apos;);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>同时如果子类没有实现该方法，但是我们可以再父类原型方法中抛错，如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Parent.prototype.mustBeExtend = function() &#123;</span><br><span class="line">  throw new Error(&apos;子类必须实现该方法&apos;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>模板顾名思义，是一个模板，即将子类中的共有的方法抽离出来生成一个父类，并让子类继承该模板父类。</p>
+<p>如鸭子会叫，会吃，鸡也会叫，会吃，但是鸭子会游泳，鸡会飞，则会叫，会吃则可以抽离出来，而他们之间的不同则可以由子类自己实现，如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">class Animal &#123;</span><br><span class="line">  constructor() &#123;</span><br><span class="line">    if (new.target === Animal) &#123;</span><br><span class="line">      throw new TypeError(&apos;不能实例化抽象父类Animal&apos;);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  eat() &#123;</span><br><span class="line">    console.log(&apos;eat&apos;);</span><br><span class="line">  &#125;</span><br><span class="line">  shout() &#123;</span><br><span class="line">    console.log(&apos;shout&apos;);</span><br><span class="line">  &#125;</span><br><span class="line">  specific()&#123;</span><br><span class="line">    throw new Error(&apos;子类必须实现该方法&apos;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class Duck extends Animal&#123;</span><br><span class="line">   specific()&#123;</span><br><span class="line">    console.log(&apos;游泳&apos;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class Chicken extends Animal&#123;</span><br><span class="line">   specific()&#123;</span><br><span class="line">    console.log(&apos;会飞&apos;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在js中，其实很多时候我们选择的是高阶函数来代替模板模式。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://claire1028.github.io/2017/12/22/js-template-mode/" data-id="cjpuydez2000ufcjgaspcgldt" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JS-设计模式/">JS-设计模式</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-js-compose-mode" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/12/22/js-compose-mode/" class="article-date">
@@ -90,7 +180,51 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2017/12/22/js-compose-mode/" data-id="cjptl7i5z00043cjg5t6ocx7z" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2017/12/22/js-compose-mode/" data-id="cjpuydexi0009fcjgoxg3cjwx" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JS-设计模式/">JS-设计模式</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-js-command-mode" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/12/22/js-command-mode/" class="article-date">
+  <time datetime="2017-12-22T01:19:00.000Z" itemprop="datePublished">2017-12-22</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/12/22/js-command-mode/">JavaScript命令模式</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="命令模式："><a href="#命令模式：" class="headerlink" title="命令模式："></a>命令模式：</h3><p>命令是指执行特定事情的一个指令，在js中，其实高阶函数就是对命令模式的应用，将函数作为参数在整个生命周期中传递，那么函数参数就是个命令指令。</p>
+<p>最常见的使用场景是请求者和接收者之间并不知道对方是谁，通过命令(一般是函数)来将彼此之间连接起来。</p>
+<p>如果写UI的和js逻辑的是2个人，对于写UI的并不关注比如button的click事件是如何执行的，而只是预留一个onclick事件。<br>对于写js逻辑的也并不关注UI是如何实现的，只需要实现事件函数执行某种功能，比如点击button弹窗出现，或执行动画等。</p>
+<p>例如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">var dialog = &#123;</span><br><span class="line">  show() &#123;</span><br><span class="line">    console.log(&apos;show dialog&apos;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">var animation = &#123;</span><br><span class="line">  start() &#123;</span><br><span class="line">    console.log(&apos;show animation&apos;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">var setCommand = function(btn, cmd) &#123;</span><br><span class="line">  btn.onclick = function()&#123;</span><br><span class="line">    cmd.run();</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">class showDialogCommand &#123;</span><br><span class="line">  constructor(receiver)&#123;</span><br><span class="line">    this.receiver = receiver;</span><br><span class="line">  &#125;</span><br><span class="line">  run() &#123;</span><br><span class="line">    this.receiver.show();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class startAnimationCommand &#123;</span><br><span class="line">  constructor(receiver)&#123;</span><br><span class="line">    this.receiver = receiver;</span><br><span class="line">  &#125;</span><br><span class="line">  run()&#123;</span><br><span class="line">    this.receiver.start();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">setCommand(btn1, new showDialogCommand(dialog));</span><br><span class="line">setCommand(btn2, new startAnimationCommand(animation));</span><br></pre></td></tr></table></figure></p>
+<p>从以上代码可以看出，通过setCommand函数和相关command的类，将点击button显示dialog，开始运行动画等事件和UI分离开来，即写ui的通过setCommand来调用相关的click事件。</p>
+<p>当然也可以不采用面向对象的方式来实现，如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">var dialog = &#123;</span><br><span class="line">  show() &#123;</span><br><span class="line">    console.log(&apos;show dialog&apos;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">var animation = &#123;</span><br><span class="line">  start() &#123;</span><br><span class="line">    console.log(&apos;show animation&apos;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">var btnClick = function(btn, fn) &#123;</span><br><span class="line">  btn.onclick = fn;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">btnClick(btn1, dialog.show);</span><br><span class="line">btnClick(btn2, animation.start);</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://claire1028.github.io/2017/12/22/js-command-mode/" data-id="cjpuydexa0008fcjgo9lml754" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JS-设计模式/">JS-设计模式</a></li></ul>
@@ -135,7 +269,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2017/12/22/js-observe-mode/" data-id="cjptl7i6300053cjgg87v0qhe" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2017/12/22/js-observe-mode/" data-id="cjpuydey8000hfcjgn1xyhi3r" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JS-设计模式/">JS-设计模式</a></li></ul>
@@ -178,53 +312,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2017/12/22/js-proxy-mode/" data-id="cjptl7i6e00093cjgqy7if8g3" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JS-设计模式/">JS-设计模式</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-js-state-mod" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/12/21/js-state-mod/" class="article-date">
-  <time datetime="2017-12-21T10:10:00.000Z" itemprop="datePublished">2017-12-21</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/12/21/js-state-mod/">JavaScript状态模式</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="状态模式："><a href="#状态模式：" class="headerlink" title="状态模式："></a>状态模式：</h3><p>将对应的状态信息和状态变化保存在各自的类中，在主控制的类中，只需对所有的状态进行初始化即可，这样可一眼在构造函数中看出有多少种状态变化，避免了在主类中编写过多的if, else 条件语句来控制状态的变化，同时符合了代码的开放-封闭原则。</p>
-<h4 id="那么什么是状态？"><a href="#那么什么是状态？" class="headerlink" title="那么什么是状态？"></a>那么什么是状态？</h4><p>状态在日常生活中很常见，比如看电视时遥控器的按钮对应着暂停和播放，第一次按下按钮暂停，再按下即播放。暂停和播放就是相应的状态。</p>
-<p>最近买了电动牙刷，有这3种状态，开始按下即启动了默认模式 ，再次按下会变成敏感模式， 第三次按下即是关闭状态。如下图所示：</p>
-<p><img src="/images/state1.png" alt=""></p>
-<p>采用状态模式实现代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"> class OffState &#123;</span><br><span class="line">    constructor(toothbrush)&#123;</span><br><span class="line">        this.toothbrush = toothbrush;</span><br><span class="line">    &#125;</span><br><span class="line">    clickButton() &#123;</span><br><span class="line">        console.log(&apos;电动牙刷启动&apos;);</span><br><span class="line">        this.toothbrush.set(this.toothbrush.onState);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">class OnState &#123;</span><br><span class="line">    constructor(toothbrush)&#123;</span><br><span class="line">        this.toothbrush = toothbrush;</span><br><span class="line">    &#125;</span><br><span class="line">    clickButton() &#123;</span><br><span class="line">        console.log(&apos;刷牙模式切换为敏感模式&apos;);</span><br><span class="line">        this.toothbrush.set(this.toothbrush.sensitiveState);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class SensitiveState &#123;</span><br><span class="line">    constructor(toothbrush)&#123;</span><br><span class="line">        this.toothbrush = toothbrush;</span><br><span class="line">    &#125;</span><br><span class="line">    clickButton() &#123;</span><br><span class="line">        console.log(&apos;电动牙刷关闭&apos;);</span><br><span class="line">        this.toothbrush.set(this.toothbrush.offState);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class ElecToothbrush &#123;</span><br><span class="line">    constructor()&#123;</span><br><span class="line">        this.onState = new OnState(this);</span><br><span class="line">        this.offState = new OffState(this);</span><br><span class="line">        this.sensitiveState = new SensitiveState(this);</span><br><span class="line">        this.curState = this.offState;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    set(newState)&#123;</span><br><span class="line">        this.curState = newState;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var tb = new ElecToothbrush();</span><br></pre></td></tr></table></figure></p>
-<p>将tb实例上当前状态的clickButton事件绑定到button上，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;button onclick=&quot;tb.curState.clickButton()&quot;&gt;开关&lt;/button&gt;</span><br></pre></td></tr></table></figure></p>
-<p>打开控制台可以看见每按一次button，就会显示相应的状态变化。</p>
-<p>如果不采用状态模式实现，那么在主类toothbrush中会有个click方法在切换对应的状态实现，就像下面这样会有很多if，else语句分支，如果未来再添加新的状态模式，则又需要添加相应的分支，之后该函数会变得越来越大，同时维护麻烦。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">if(this.state===&apos;off&apos;)&#123;</span><br><span class="line">     console.log(&apos;牙刷启动默认模式&apos;);</span><br><span class="line">     this.state=&apos;on&apos;;</span><br><span class="line">&#125;else if(this.state===&apos;on&apos;)&#123;</span><br><span class="line">    console.log(&apos;sensitive mode&apos;);</span><br><span class="line">    this.state=&apos;senstive&apos;;</span><br><span class="line">&#125; else if(this.state === &apos;senstive&apos;)&#123;</span><br><span class="line"> 	console.log(&apos;off&apos;);</span><br><span class="line">    this.state = &apos;off&apos;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2017/12/21/js-state-mod/" data-id="cjptl7i77000j3cjghwry01e1" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2017/12/22/js-proxy-mode/" data-id="cjpuydeye000kfcjguqcu0rh2" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JS-设计模式/">JS-设计模式</a></li></ul>
@@ -270,7 +358,53 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2017/12/21/js-strategy-mode/" data-id="cjptl7i7e000m3cjg0b5r5bz2" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2017/12/21/js-strategy-mode/" data-id="cjpuydeyx000rfcjgb6y5kx4x" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JS-设计模式/">JS-设计模式</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-js-state-mod" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/12/21/js-state-mod/" class="article-date">
+  <time datetime="2017-12-21T10:10:00.000Z" itemprop="datePublished">2017-12-21</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/12/21/js-state-mod/">JavaScript状态模式</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="状态模式："><a href="#状态模式：" class="headerlink" title="状态模式："></a>状态模式：</h3><p>将对应的状态信息和状态变化保存在各自的类中，在主控制的类中，只需对所有的状态进行初始化即可，这样可一眼在构造函数中看出有多少种状态变化，避免了在主类中编写过多的if, else 条件语句来控制状态的变化，同时符合了代码的开放-封闭原则。</p>
+<h4 id="那么什么是状态？"><a href="#那么什么是状态？" class="headerlink" title="那么什么是状态？"></a>那么什么是状态？</h4><p>状态在日常生活中很常见，比如看电视时遥控器的按钮对应着暂停和播放，第一次按下按钮暂停，再按下即播放。暂停和播放就是相应的状态。</p>
+<p>最近买了电动牙刷，有这3种状态，开始按下即启动了默认模式 ，再次按下会变成敏感模式， 第三次按下即是关闭状态。如下图所示：</p>
+<p><img src="/images/state1.png" alt=""></p>
+<p>采用状态模式实现代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"> class OffState &#123;</span><br><span class="line">    constructor(toothbrush)&#123;</span><br><span class="line">        this.toothbrush = toothbrush;</span><br><span class="line">    &#125;</span><br><span class="line">    clickButton() &#123;</span><br><span class="line">        console.log(&apos;电动牙刷启动&apos;);</span><br><span class="line">        this.toothbrush.set(this.toothbrush.onState);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">class OnState &#123;</span><br><span class="line">    constructor(toothbrush)&#123;</span><br><span class="line">        this.toothbrush = toothbrush;</span><br><span class="line">    &#125;</span><br><span class="line">    clickButton() &#123;</span><br><span class="line">        console.log(&apos;刷牙模式切换为敏感模式&apos;);</span><br><span class="line">        this.toothbrush.set(this.toothbrush.sensitiveState);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class SensitiveState &#123;</span><br><span class="line">    constructor(toothbrush)&#123;</span><br><span class="line">        this.toothbrush = toothbrush;</span><br><span class="line">    &#125;</span><br><span class="line">    clickButton() &#123;</span><br><span class="line">        console.log(&apos;电动牙刷关闭&apos;);</span><br><span class="line">        this.toothbrush.set(this.toothbrush.offState);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class ElecToothbrush &#123;</span><br><span class="line">    constructor()&#123;</span><br><span class="line">        this.onState = new OnState(this);</span><br><span class="line">        this.offState = new OffState(this);</span><br><span class="line">        this.sensitiveState = new SensitiveState(this);</span><br><span class="line">        this.curState = this.offState;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    set(newState)&#123;</span><br><span class="line">        this.curState = newState;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var tb = new ElecToothbrush();</span><br></pre></td></tr></table></figure></p>
+<p>将tb实例上当前状态的clickButton事件绑定到button上，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;button onclick=&quot;tb.curState.clickButton()&quot;&gt;开关&lt;/button&gt;</span><br></pre></td></tr></table></figure></p>
+<p>打开控制台可以看见每按一次button，就会显示相应的状态变化。</p>
+<p>如果不采用状态模式实现，那么在主类toothbrush中会有个click方法在切换对应的状态实现，就像下面这样会有很多if，else语句分支，如果未来再添加新的状态模式，则又需要添加相应的分支，之后该函数会变得越来越大，同时维护麻烦。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">if(this.state===&apos;off&apos;)&#123;</span><br><span class="line">     console.log(&apos;牙刷启动默认模式&apos;);</span><br><span class="line">     this.state=&apos;on&apos;;</span><br><span class="line">&#125;else if(this.state===&apos;on&apos;)&#123;</span><br><span class="line">    console.log(&apos;sensitive mode&apos;);</span><br><span class="line">    this.state=&apos;senstive&apos;;</span><br><span class="line">&#125; else if(this.state === &apos;senstive&apos;)&#123;</span><br><span class="line"> 	console.log(&apos;off&apos;);</span><br><span class="line">    this.state = &apos;off&apos;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://claire1028.github.io/2017/12/21/js-state-mod/" data-id="cjpuydeyt000pfcjg5d4jb3an" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JS-设计模式/">JS-设计模式</a></li></ul>
@@ -314,7 +448,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2017/12/21/js-adapter-mode/" data-id="cjptl7i5h00013cjg7jxkvhge" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2017/12/21/js-adapter-mode/" data-id="cjpuydewx0004fcjg03egmjtm" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JS-设计模式/">JS-设计模式</a></li></ul>
@@ -359,7 +493,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2017/12/21/js-single-mode/" data-id="cjptl7i6s000e3cjg68h7lxww" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2017/12/21/js-single-mode/" data-id="cjpuydeyn000mfcjgaywkcin0" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JS-设计模式/">JS-设计模式</a></li></ul>
@@ -371,54 +505,10 @@
 
 
   
-    <article id="post-js-this" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/12/14/js-this/" class="article-date">
-  <time datetime="2017-12-14T10:10:00.000Z" itemprop="datePublished">2017-12-14</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/12/14/js-this/">JavaScript 中的 This 指向</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>由于js是<strong>动态类型</strong>语言，所以this的指向<strong>并不是定义声明</strong>时就确定的，而是在程序<strong>运行时</strong>动态确定的 </p>
-<h3 id="作为对象的方法调用："><a href="#作为对象的方法调用：" class="headerlink" title="作为对象的方法调用："></a>作为对象的方法调用：</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">var test = &#123;</span><br><span class="line">    aFunc:function() &#123;</span><br><span class="line">        console.log(this.b);</span><br><span class="line">    &#125;,</span><br><span class="line">    b:&apos;in test func&apos;</span><br><span class="line">&#125;;</span><br><span class="line">var b = &apos;out test func&apos;;</span><br><span class="line">test.aFunc();</span><br><span class="line"></span><br><span class="line">输出“in test func” ，this指向的是test 对象</span><br></pre></td></tr></table></figure>
-<h3 id="作为普通函数调用"><a href="#作为普通函数调用" class="headerlink" title="作为普通函数调用:"></a>作为普通函数调用:</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">function test ()&#123;</span><br><span class="line">    console.log(this.b);</span><br><span class="line">&#125;</span><br><span class="line">var b = &apos;test&apos;;</span><br><span class="line">test();</span><br><span class="line"></span><br><span class="line">输出“test” 。this 指向的是window对象</span><br></pre></td></tr></table></figure>
-<h3 id="构造器调用"><a href="#构造器调用" class="headerlink" title="构造器调用:"></a>构造器调用:</h3><p>如 函数作为一个构造器使用，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">function Test(name)&#123;</span><br><span class="line">    this.name = name;</span><br><span class="line">&#125;</span><br><span class="line">var newT = new Test(&apos;tt&apos;);</span><br><span class="line">console.log(newT.name);</span><br><span class="line"></span><br><span class="line">输出 &apos;tt&apos;。 this 指向的是新创建的对象，如果构造函数的返回是一个对象，那么this返回该对象，否则返回新创建的对象</span><br></pre></td></tr></table></figure></p>
-<h3 id="call-或-apply，bind-调用"><a href="#call-或-apply，bind-调用" class="headerlink" title="call 或 apply，bind 调用"></a>call 或 apply，bind 调用</h3><p>call， apply ，bind都可以改变运行时this的指向。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">var test1 = &#123;</span><br><span class="line">    aFunc:function()&#123;</span><br><span class="line">        console.log(this.name);</span><br><span class="line">    &#125;,</span><br><span class="line">    name:&apos;test1&apos;</span><br><span class="line">&#125;</span><br><span class="line">var test2 =&#123;</span><br><span class="line">    name: &quot;test2&quot;</span><br><span class="line">&#125;;</span><br><span class="line">test1.aFunc.apply(test2); //或者test1.aFunc.bind(test2)();</span><br><span class="line"></span><br><span class="line">输出&apos;test2&apos; 。this指向的是 test2 对象。</span><br></pre></td></tr></table></figure></p>
-<p>call和apply没什么区别，只是传入的参数不一样，call传入的第一个参数是this的指向，从第二个参数开始一个个传入function中，<br>而apply第二个参数是function接受的参数的数组，如果传入的第一个参数为 null，this 会指向默认的宿主对象，浏览器中为window。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2017/12/14/js-this/" data-id="cjptl7i6z000h3cjg3yr5rxvq" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JS/">JS</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
 
 
   <nav id="page-nav">
-    <a class="extend prev" rel="prev" href="/">&laquo; prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+    <a class="extend prev" rel="prev" href="/">&laquo; prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/">next &raquo;</a>
   </nav>
 </section>
         

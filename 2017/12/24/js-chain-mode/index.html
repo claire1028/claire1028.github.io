@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>JavaScript职责链模式 | Ting&#39;s blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="职责链模式：将多个接收者串成一条链子的形式，让请求的对象在该条链子上被传送，直到某个对象可以处理。 场景是在对象发送出时，有多个接收者可以处理该发送者的请求，一般在业务中会经常遇到一个场景，点击某个button以后，比如投资，第一个条件是否实名过，如果未实名，则提示需实名，第二个条件是如果已经实名，当余额不足时，弹出dialog让去充值，第三个条件是当余额充足时，是否已经测评过，如果未测评，则弹出">
+<meta name="keywords" content="JS-设计模式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JavaScript职责链模式">
+<meta property="og:url" content="https://claire1028.github.io/2017/12/24/js-chain-mode/index.html">
+<meta property="og:site_name" content="Ting&#39;s blog">
+<meta property="og:description" content="职责链模式：将多个接收者串成一条链子的形式，让请求的对象在该条链子上被传送，直到某个对象可以处理。 场景是在对象发送出时，有多个接收者可以处理该发送者的请求，一般在业务中会经常遇到一个场景，点击某个button以后，比如投资，第一个条件是否实名过，如果未实名，则提示需实名，第二个条件是如果已经实名，当余额不足时，弹出dialog让去充值，第三个条件是当余额充足时，是否已经测评过，如果未测评，则弹出">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2018-12-19T06:32:18.026Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="JavaScript职责链模式">
+<meta name="twitter:description" content="职责链模式：将多个接收者串成一条链子的形式，让请求的对象在该条链子上被传送，直到某个对象可以处理。 场景是在对象发送出时，有多个接收者可以处理该发送者的请求，一般在业务中会经常遇到一个场景，点击某个button以后，比如投资，第一个条件是否实名过，如果未实名，则提示需实名，第二个条件是如果已经实名，当余额不足时，弹出dialog让去充值，第三个条件是当余额充足时，是否已经测评过，如果未测评，则弹出">
+  
+    <link rel="alternate" href="/atom.xml" title="Ting&#39;s blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Ting&#39;s blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://claire1028.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-js-chain-mode" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/12/24/js-chain-mode/" class="article-date">
+  <time datetime="2017-12-24T00:10:00.000Z" itemprop="datePublished">2017-12-24</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      JavaScript职责链模式
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="职责链模式："><a href="#职责链模式：" class="headerlink" title="职责链模式："></a>职责链模式：</h3><p>将多个接收者串成一条链子的形式，让请求的对象在该条链子上被传送，直到某个对象可以处理。</p>
+<p>场景是在对象发送出时，有多个接收者可以处理该发送者的请求，一般在业务中会经常遇到一个场景，点击某个button以后，比如投资，第一个条件是否实名过，如果未实名，则提示需实名，第二个条件是如果已经实名，当余额不足时，弹出dialog让去充值，第三个条件是当余额充足时，是否已经测评过，如果未测评，则弹出dialog需测评。当这3个条件都满足时，最后去请求投资。</p>
+<p>如果我们一般的编写代码则是，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">var autonym = function(user) &#123;</span><br><span class="line">  if(!user.hasAuth) &#123;</span><br><span class="line">    console.log(&apos;need auth&apos;);</span><br><span class="line">    return;</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    recharge(user);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">var recharge = function(user) &#123;</span><br><span class="line">  if(!user.amountNoMeet) &#123;</span><br><span class="line">    console.log(&apos;need recharge&apos;);</span><br><span class="line">    return;</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    survey(user);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">var survey = function(user) &#123;</span><br><span class="line">  if(!user.hasSurvey) &#123;</span><br><span class="line">    console.log(&apos;need survey&apos;);</span><br><span class="line">    return;</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    gotoInvest();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var gotoInvest = function() &#123;</span><br><span class="line">  console.log(&apos;invest success!&apos;);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>通常对于一系列的判断条件我们会如上这样写，这样写弊端是当这三个条件中增加一个判断条件，比如是否余额充足后再判断投资额度是否还有，那么我们就需要去修改recharge函数，并新增一个函数，这样就相当于把原来的链子砍断，然后再新增一个节点并和前后连接起来，维护起来很麻烦。</p>
+<p>那我们采取职责链模式写法改进如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line">var autonym = function(user) &#123;</span><br><span class="line">  if(!user.hasAuth) &#123;</span><br><span class="line">    console.log(&apos;need auth&apos;);</span><br><span class="line">    return;</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    return &apos;next&apos;;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">var recharge = function(user) &#123;</span><br><span class="line">  if(!user.amountNoMeet) &#123;</span><br><span class="line">    console.log(&apos;need recharge&apos;);</span><br><span class="line">    return;</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    return &apos;next&apos;;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">var survey = function(user) &#123;</span><br><span class="line">  if(!user.hasSurvey) &#123;</span><br><span class="line">    console.log(&apos;need survey&apos;);</span><br><span class="line">    return;</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    return &apos;next&apos;;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">var gotoInvest = function() &#123;</span><br><span class="line">  console.log(&apos;invest success!&apos;);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">class Chain &#123;</span><br><span class="line">  constructor(fn) &#123;</span><br><span class="line">    this.fn = fn;</span><br><span class="line">    this.next = null;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  setNextProcessor(next) &#123;</span><br><span class="line">    this.next = next;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  handleRequest() &#123;</span><br><span class="line">    var rt = this.fn.apply(this, arguments);</span><br><span class="line">    if(rt === &apos;next&apos;) &#123;</span><br><span class="line">      return this.next &amp;&amp; this.next.handleRequest.apply(this.next, arguments);</span><br><span class="line">    &#125;</span><br><span class="line">    return rt;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var autonymChain = new Chain(autonym);</span><br><span class="line">var rechargeChain = new Chain(recharge);</span><br><span class="line">var surveyChain = new Chain(survey);</span><br><span class="line">var gotoInvestChain = new Chain(gotoInvest);</span><br><span class="line"></span><br><span class="line">autonymChain.setNextProcessor(rechargeChain);</span><br><span class="line">rechargeChain.setNextProcessor(surveyChain);</span><br><span class="line">surveyChain.setNextProcessor(gotoInvestChain);</span><br><span class="line"></span><br><span class="line">autonymChain.handleRequest(&#123;hasAuth: true, amountNoMeet: true, hasSurvey: false&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>上面代码输出need survey，如果再新增一个条件余额充足后再判断投资额度是否还有，则：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">var amountLimit = function(user) &#123;</span><br><span class="line">  if(user.amountLimit) &#123;</span><br><span class="line">    console.log(&apos;amount limit&apos;);</span><br><span class="line">    return;</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    return &apos;next&apos;;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">var amountLimitChain = new Chain(amountLimit);</span><br><span class="line"></span><br><span class="line">rechargeChain.setNextProcessor(amountLimitChain);</span><br><span class="line">amountLimitChain.setNextProcessor(surveyChain);</span><br></pre></td></tr></table></figure></p>
+<p>这样就无需修改recharge函数，只需新增一个节点，并修改下顺序即可，并且可以一目了然的看清这些节点之间的顺序和数量。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://claire1028.github.io/2017/12/24/js-chain-mode/" data-id="cjpuydex20005fcjgwkf5ane3" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JS-设计模式/">JS-设计模式</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2017/12/24/js-mediator-mode/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          JavaScript中介模式
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2017/12/23/js-flyweight-mode/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">JavaScript享元模式</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/CSS/">CSS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JS/">JS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JS-设计模式/">JS-设计模式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/React/">React</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TS/">TS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/node/">node</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/CSS/" style="font-size: 10px;">CSS</a> <a href="/tags/JS/" style="font-size: 16.67px;">JS</a> <a href="/tags/JS-设计模式/" style="font-size: 20px;">JS-设计模式</a> <a href="/tags/React/" style="font-size: 13.33px;">React</a> <a href="/tags/TS/" style="font-size: 10px;">TS</a> <a href="/tags/node/" style="font-size: 10px;">node</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2018/10/25/jest-enzyme/">jest + enzmye + ts测试react踩坑记</a>
+          </li>
+        
+          <li>
+            <a href="/2018/09/25/react-ref/">React中的几种Ref比较</a>
+          </li>
+        
+          <li>
+            <a href="/2018/09/21/node-进程/">Node中子进程的创建和cluster原理</a>
+          </li>
+        
+          <li>
+            <a href="/2018/09/20/ts-学习笔记/">TS学习笔记</a>
+          </li>
+        
+          <li>
+            <a href="/2018/09/18/css-animation/">浅析Css中动画优化原理</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 Ting&#39;s<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

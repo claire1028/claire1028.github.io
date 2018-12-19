@@ -16,7 +16,7 @@
 <meta property="og:image" content="https://claire1028.github.io/images/jest1.png">
 <meta property="og:image" content="https://claire1028.github.io/images/jest2.png">
 <meta property="og:image" content="https://claire1028.github.io/images/jest3.png">
-<meta property="og:updated_time" content="2018-12-17T05:06:59.276Z">
+<meta property="og:updated_time" content="2018-12-19T06:32:18.020Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="jest + enzmye + ts测试react踩坑记">
 <meta name="twitter:description" content="如大家所知，react官方提供了react-dom/test-utils和rreact-test-renderer来对react进行单元测试，而enzyme就是对他们的封装，更加便于开发者的使用。 那么在enzyme中shallow vs render vs mount 这3者有什么区别呢？  shallow只会渲染一层元素，对于子组件是不渲染的。 如果需要测试组件生命周期，使用mount。 如果">
@@ -25,7 +25,7 @@
     <link rel="alternate" href="/atom.xml" title="Ting&#39;s blog" type="application/atom+xml">
   
   
-    <link rel="icon" href="./favicon.png">
+    <link rel="icon" href="/favicon.png">
   
   
     <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
@@ -97,9 +97,13 @@
 </ul>
 <h4 id="坑一："><a href="#坑一：" class="headerlink" title="坑一："></a>坑一：</h4><p>如果在component中用箭头函数定义function，也采取<code>jest.spyOn(Comp.prototype, &#39;overlayOnClick&#39;)</code>;<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">overlayOnClick = () =&gt; &#123;</span><br><span class="line">    // ...</span><br><span class="line">  &#125;;</span><br></pre></td></tr></table></figure></p>
 <p>报错在原型上找不到该方法<br><img src="/images/jest1.png" alt=""></p>
+<p>原因是经过ts转换后，箭头函数被转换成了实例上的方法，而非原型上的方法。</p>
 <p>解决办法有：</p>
 <ol>
-<li>将<code>overlayOnClick function</code>改成在<code>construtor</code>中<code>bind</code>形式，不要使用箭头函数<br>2.采用下面方法<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">const instance = wrapper.instance() as any;  // 不加这行会报错error TS2345 overlayOnClick 在wrapper.instance上找不到相应的类型</span><br><span class="line">const spy = jest.spyOn(instance, &apos;overlayOnClick&apos;);</span><br><span class="line">instance.forceUpdate(); //由于在spy之前已经mount，所以需forceUpdate</span><br><span class="line">wrapper.find(&apos;.overlay&apos;).simulate(&apos;click&apos;, &#123;target: instance.overlay&#125;);</span><br><span class="line">expect(spy).toHaveBeenCalledTimes(1);</span><br></pre></td></tr></table></figure>
+<li><p>将<code>overlayOnClick function</code>改成在<code>construtor</code>中<code>bind</code>形式，不要使用箭头函数。</p>
+</li>
+<li><p>采用下面方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">const instance = wrapper.instance() as any;  // 不加这行会报错error TS2345 overlayOnClick 在wrapper.instance上找不到相应的类型</span><br><span class="line">const spy = jest.spyOn(instance, &apos;overlayOnClick&apos;);</span><br><span class="line">instance.forceUpdate(); //由于在spy之前已经mount，所以需forceUpdate</span><br><span class="line">wrapper.find(&apos;.overlay&apos;).simulate(&apos;click&apos;, &#123;target: instance.overlay&#125;);</span><br><span class="line">expect(spy).toHaveBeenCalledTimes(1);</span><br></pre></td></tr></table></figure>
 </li>
 </ol>
 <h4 id="坑二："><a href="#坑二：" class="headerlink" title="坑二："></a>坑二：</h4><p>需要测试这样一个case， 在<code>document.body</code>上面监听按键事件，一开始以为不过就是simulate中click事件换成相应的key事件，然而结果并非如此，测试失败，simulate并没有触发。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">  // component</span><br><span class="line">componentDidMount() &#123;</span><br><span class="line">  document.body.addEventListener(&apos;keyup&apos;, this.onEsc, false);</span><br><span class="line">&#125;</span><br><span class="line">componentWillUnmount() &#123;</span><br><span class="line">  document.body.removeEventListener(&apos;keyup&apos;, this.onEsc, false);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
@@ -120,7 +124,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2018/10/25/jest-enzyme/" data-id="cjptl7i83000y3cjgaad8qekk" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2018/10/25/jest-enzyme/" data-id="cjpuydevs0000fcjg3db4ks7z" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/React/">React</a></li></ul>
