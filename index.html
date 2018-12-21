@@ -59,6 +59,72 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-js-encode" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/12/21/js-encode/" class="article-date">
+  <time datetime="2018-12-21T02:10:00.000Z" itemprop="datePublished">2018-12-21</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/12/21/js-encode/">JS中常用的编码格式</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><strong>Unicode</strong>：规定将全球的语言纳入一个字符集，即每种语言中的每个字符都有一个唯一的编码，以便可以跨平台，跨系统，跨语言而不冲突，且不用安装特定的字符集来解释某个国家的语言。</p>
+<p>而<code>UTF-8</code>和<code>UTF-16</code>和<code>UTF-32</code>则是对<code>Unicode</code>字符集的具体实现的方法。</p>
+<p><strong>UTF-8</strong>: 在1-4个字节中变长表示，比如数字或字母采用1个字节表示，在node中，一般默认采用该方法。</p>
+<p><strong>UTF-16</strong>: 采用2字节或4字节变长表示。</p>
+<p><strong>UTF-32</strong>: 全部用4字节表示，不兼容<code>ASCII</code>编码，容易浪费空间。</p>
+<p><strong>UCS-2</strong> ： JS里的编码表示，采用固定2个字节，后来被<code>UTF-16</code>取代了，也就是说<code>UTF-16</code>将<code>UCS-2</code>包含在其中。所以现在JS也就是采用<code>UTF-16</code>表示。</p>
+<p>由于<code>UTF-16</code>一般是2个字节表示的，所以对于单字母，比如<code>&#39;a&#39; 0x61</code>只需占一个字节，那么是采取<code>[0x00,0x61]</code>还是<code>[0x61,0x00]</code>的表示表示呢，则设计到2种表示法，LE和BE，而对于<code>UTF-8</code>则没有这种顾虑.</p>
+<ul>
+<li><strong>UTF-16LE</strong>：<code>LE</code>是指<code>little endian</code>， 表示高地址放高位字节，a字符用LE表示则为<code>[0x61,0x00]</code></li>
+<li><strong>UTF-16BE</strong>：<code>BE</code>是指<code>Big endian</code>， 表示低地址存放高位字节，符合我们平常的阅读习惯，用BE表示则为<code>[0x00, 0x61]</code></li>
+</ul>
+<p>那么在文件传输中如何表示该文件是什么编码格式呢？</p>
+<p>使用<code>BOM(byte-order mark)</code>即字节顺序标记，表示该文件是LE还是BE，常被用来当做标示文件是以<code>UTF-8、UTF-16</code>或<code>UTF-32</code>编码的标记，在文件的开头会有如下编码标识：</p>
+<ul>
+<li><code>UTF-16</code>大端表示：<code>[0xFE, 0xFF]</code>，小端则是：<code>[0xFF, 0xFE]</code></li>
+<li><code>UTF-32</code>大端表示：<code>[0x00 0x00 0xFE 0xFF]</code>，小端则是: <code>[0xFF 0xFE 0x00 0x00]</code></li>
+<li>而在<code>UTF-8</code>里的表示则是：<code>[0xEF 0xBB 0xBF]</code>， 一般是用来标示该文件是<code>UTF-8</code>编码，而不用来说明字节顺序。</li>
+</ul>
+<p>汉字的长度在js中的长度是1，如 <code>&#39;好&#39;.length = 1;</code> 这里的1表示一个编码单元，而 <strong>不是占用的字节长度</strong> 。<br>如果想要计算字符串(含有汉字和字符)占的字节长度，可以用如下代码表示：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">function getCharBytes(str) &#123;</span><br><span class="line">  return str.replace(/[^\u0000-\u00ff]/g,&quot;aa&quot;).length; // 当字符unicode编码不在0000-00ff之间时，用两个字符替换，即占字节数2</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure></p>
+<p>但是有一些生僻字是用4个字节表示的，即超过了0xFFFF，比如：’𠮷’，<code>&#39;𠮷&#39;.length = 2;</code> 由于一个编码单元不能表示，所以需2个编码单元来表示，但是长度是2是错误的，在es5中是只能自己手动处理，但是在es6中我们可以使用<code>Array.from(&#39;𠮷&#39;).length</code> 来正确处理，输出1。</p>
+<p>匹配所有字符是否都是汉字，如下所示：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">function checkIsChinaChar(char) &#123;</span><br><span class="line">  return /^[\u4e00-\u9fa5]+$/g.test(char);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>一些常用其他编码术语：</p>
+<p><strong>ASCII</strong>: 一个字节，128位字母和数字表示。</p>
+<p><strong>Base64</strong>：是一种基于64个可打印字符来表示二进制数据的表示方法</p>
+<p><strong>Latin1</strong>: 单字节编码，向下兼容ASCII。</p>
+<p><strong>GBK</strong>：汉字内码扩展的规范，兼容ASCII，不支持韩国字，如果程序只是面向汉字，可以采用该编码。</p>
+<p><strong>Binary</strong>：二进制</p>
+<p><strong>HEX</strong>: 十六进制</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://claire1028.github.io/2018/12/21/js-encode/" data-id="cjpxohb450017jkjguzq5whao" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JS/">JS</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-jest-enzyme" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2018/10/25/jest-enzyme/" class="article-date">
@@ -117,7 +183,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2018/10/25/jest-enzyme/" data-id="cjpuydevs0000fcjg3db4ks7z" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2018/10/25/jest-enzyme/" data-id="cjpxohb120001jkjgwencvmmz" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/React/">React</a></li></ul>
@@ -171,7 +237,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2018/09/25/react-ref/" data-id="cjpuydezn0014fcjgms6dvfmo" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2018/09/25/react-ref/" data-id="cjpxohb400014jkjg1229d0mn" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/React/">React</a></li></ul>
@@ -232,7 +298,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2018/09/21/node-进程/" data-id="cjpuydezi0011fcjg8cj4btzs" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2018/09/21/node-进程/" data-id="cjpxohb3q0010jkjgkm9427qe" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/node/">node</a></li></ul>
@@ -295,7 +361,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2018/09/20/ts-学习笔记/" data-id="cjpuydezu0016fcjg8qw5yqox" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2018/09/20/ts-学习笔记/" data-id="cjpxohb5d001fjkjg1y6563ki" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TS/">TS</a></li></ul>
@@ -348,7 +414,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2018/09/18/css-animation/" data-id="cjpuydewq0003fcjg2o4bzf6w" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2018/09/18/css-animation/" data-id="cjpxohb3h000vjkjg738msiat" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CSS/">CSS</a></li></ul>
@@ -411,7 +477,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2018/06/12/mobx/" data-id="cjpuydezd000zfcjgf7428rql" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2018/06/12/mobx/" data-id="cjpxohb3v0012jkjgufq57n0a" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JS/">JS</a></li></ul>
@@ -485,7 +551,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2018/06/11/babel-ES6-IE8/" data-id="cjpuydewb0001fcjg8iubnbbp" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2018/06/11/babel-ES6-IE8/" data-id="cjpxohb0m0000jkjg4zfj2tpu" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JS/">JS</a></li></ul>
@@ -530,7 +596,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2017/12/24/js-decorator-mode/" data-id="cjpuydexp000bfcjgrbueicvn" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2017/12/24/js-decorator-mode/" data-id="cjpxohb1n0005jkjg1tqy5sqk" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JS-设计模式/">JS-设计模式</a></li></ul>
@@ -577,52 +643,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2017/12/24/js-mediator-mode/" data-id="cjpuydexu000dfcjgmxd91p35" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JS-设计模式/">JS-设计模式</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-js-chain-mode" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/12/24/js-chain-mode/" class="article-date">
-  <time datetime="2017-12-24T00:10:00.000Z" itemprop="datePublished">2017-12-24</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/12/24/js-chain-mode/">JavaScript职责链模式</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="职责链模式："><a href="#职责链模式：" class="headerlink" title="职责链模式："></a>职责链模式：</h3><p>将多个接收者串成一条链子的形式，让请求的对象在该条链子上被传送，直到某个对象可以处理。</p>
-<p>场景是在对象发送出时，有多个接收者可以处理该发送者的请求，一般在业务中会经常遇到一个场景，点击某个button以后，比如投资，第一个条件是否实名过，如果未实名，则提示需实名，第二个条件是如果已经实名，当余额不足时，弹出dialog让去充值，第三个条件是当余额充足时，是否已经测评过，如果未测评，则弹出dialog需测评。当这3个条件都满足时，最后去请求投资。</p>
-<p>如果我们一般的编写代码则是，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">var autonym = function(user) &#123;</span><br><span class="line">  if(!user.hasAuth) &#123;</span><br><span class="line">    console.log(&apos;need auth&apos;);</span><br><span class="line">    return;</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    recharge(user);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">var recharge = function(user) &#123;</span><br><span class="line">  if(!user.amountNoMeet) &#123;</span><br><span class="line">    console.log(&apos;need recharge&apos;);</span><br><span class="line">    return;</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    survey(user);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">var survey = function(user) &#123;</span><br><span class="line">  if(!user.hasSurvey) &#123;</span><br><span class="line">    console.log(&apos;need survey&apos;);</span><br><span class="line">    return;</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    gotoInvest();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var gotoInvest = function() &#123;</span><br><span class="line">  console.log(&apos;invest success!&apos;);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
-<p>通常对于一系列的判断条件我们会如上这样写，这样写弊端是当这三个条件中增加一个判断条件，比如是否余额充足后再判断投资额度是否还有，那么我们就需要去修改recharge函数，并新增一个函数，这样就相当于把原来的链子砍断，然后再新增一个节点并和前后连接起来，维护起来很麻烦。</p>
-<p>那我们采取职责链模式写法改进如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line">var autonym = function(user) &#123;</span><br><span class="line">  if(!user.hasAuth) &#123;</span><br><span class="line">    console.log(&apos;need auth&apos;);</span><br><span class="line">    return;</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    return &apos;next&apos;;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">var recharge = function(user) &#123;</span><br><span class="line">  if(!user.amountNoMeet) &#123;</span><br><span class="line">    console.log(&apos;need recharge&apos;);</span><br><span class="line">    return;</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    return &apos;next&apos;;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">var survey = function(user) &#123;</span><br><span class="line">  if(!user.hasSurvey) &#123;</span><br><span class="line">    console.log(&apos;need survey&apos;);</span><br><span class="line">    return;</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    return &apos;next&apos;;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">var gotoInvest = function() &#123;</span><br><span class="line">  console.log(&apos;invest success!&apos;);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">class Chain &#123;</span><br><span class="line">  constructor(fn) &#123;</span><br><span class="line">    this.fn = fn;</span><br><span class="line">    this.next = null;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  setNextProcessor(next) &#123;</span><br><span class="line">    this.next = next;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  handleRequest() &#123;</span><br><span class="line">    var rt = this.fn.apply(this, arguments);</span><br><span class="line">    if(rt === &apos;next&apos;) &#123;</span><br><span class="line">      return this.next &amp;&amp; this.next.handleRequest.apply(this.next, arguments);</span><br><span class="line">    &#125;</span><br><span class="line">    return rt;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var autonymChain = new Chain(autonym);</span><br><span class="line">var rechargeChain = new Chain(recharge);</span><br><span class="line">var surveyChain = new Chain(survey);</span><br><span class="line">var gotoInvestChain = new Chain(gotoInvest);</span><br><span class="line"></span><br><span class="line">autonymChain.setNextProcessor(rechargeChain);</span><br><span class="line">rechargeChain.setNextProcessor(surveyChain);</span><br><span class="line">surveyChain.setNextProcessor(gotoInvestChain);</span><br><span class="line"></span><br><span class="line">autonymChain.handleRequest(&#123;hasAuth: true, amountNoMeet: true, hasSurvey: false&#125;);</span><br></pre></td></tr></table></figure></p>
-<p>上面代码输出need survey，如果再新增一个条件余额充足后再判断投资额度是否还有，则：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">var amountLimit = function(user) &#123;</span><br><span class="line">  if(user.amountLimit) &#123;</span><br><span class="line">    console.log(&apos;amount limit&apos;);</span><br><span class="line">    return;</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    return &apos;next&apos;;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">var amountLimitChain = new Chain(amountLimit);</span><br><span class="line"></span><br><span class="line">rechargeChain.setNextProcessor(amountLimitChain);</span><br><span class="line">amountLimitChain.setNextProcessor(surveyChain);</span><br></pre></td></tr></table></figure></p>
-<p>这样就无需修改recharge函数，只需新增一个节点，并修改下顺序即可，并且可以一目了然的看清这些节点之间的顺序和数量。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2017/12/24/js-chain-mode/" data-id="cjpuydex20005fcjgwkf5ane3" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2017/12/24/js-mediator-mode/" data-id="cjpxohb23000bjkjgtsd29mxc" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JS-设计模式/">JS-设计模式</a></li></ul>
@@ -669,7 +690,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li></ul>
     </div>
   </div>
 
@@ -680,6 +701,10 @@
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2018/12/21/js-encode/">JS中常用的编码格式</a>
+          </li>
         
           <li>
             <a href="/2018/10/25/jest-enzyme/">jest + enzmye + ts测试react踩坑记</a>
@@ -695,10 +720,6 @@
         
           <li>
             <a href="/2018/09/20/ts-学习笔记/">TS学习笔记</a>
-          </li>
-        
-          <li>
-            <a href="/2018/09/18/css-animation/">浅析Css中动画优化原理</a>
           </li>
         
       </ul>

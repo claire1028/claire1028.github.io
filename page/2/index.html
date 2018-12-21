@@ -59,6 +59,51 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-js-chain-mode" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/12/24/js-chain-mode/" class="article-date">
+  <time datetime="2017-12-24T00:10:00.000Z" itemprop="datePublished">2017-12-24</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/12/24/js-chain-mode/">JavaScript职责链模式</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="职责链模式："><a href="#职责链模式：" class="headerlink" title="职责链模式："></a>职责链模式：</h3><p>将多个接收者串成一条链子的形式，让请求的对象在该条链子上被传送，直到某个对象可以处理。</p>
+<p>场景是在对象发送出时，有多个接收者可以处理该发送者的请求，一般在业务中会经常遇到一个场景，点击某个button以后，比如投资，第一个条件是否实名过，如果未实名，则提示需实名，第二个条件是如果已经实名，当余额不足时，弹出dialog让去充值，第三个条件是当余额充足时，是否已经测评过，如果未测评，则弹出dialog需测评。当这3个条件都满足时，最后去请求投资。</p>
+<p>如果我们一般的编写代码则是，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">var autonym = function(user) &#123;</span><br><span class="line">  if(!user.hasAuth) &#123;</span><br><span class="line">    console.log(&apos;need auth&apos;);</span><br><span class="line">    return;</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    recharge(user);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">var recharge = function(user) &#123;</span><br><span class="line">  if(!user.amountNoMeet) &#123;</span><br><span class="line">    console.log(&apos;need recharge&apos;);</span><br><span class="line">    return;</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    survey(user);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">var survey = function(user) &#123;</span><br><span class="line">  if(!user.hasSurvey) &#123;</span><br><span class="line">    console.log(&apos;need survey&apos;);</span><br><span class="line">    return;</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    gotoInvest();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var gotoInvest = function() &#123;</span><br><span class="line">  console.log(&apos;invest success!&apos;);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>通常对于一系列的判断条件我们会如上这样写，这样写弊端是当这三个条件中增加一个判断条件，比如是否余额充足后再判断投资额度是否还有，那么我们就需要去修改recharge函数，并新增一个函数，这样就相当于把原来的链子砍断，然后再新增一个节点并和前后连接起来，维护起来很麻烦。</p>
+<p>那我们采取职责链模式写法改进如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line">var autonym = function(user) &#123;</span><br><span class="line">  if(!user.hasAuth) &#123;</span><br><span class="line">    console.log(&apos;need auth&apos;);</span><br><span class="line">    return;</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    return &apos;next&apos;;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">var recharge = function(user) &#123;</span><br><span class="line">  if(!user.amountNoMeet) &#123;</span><br><span class="line">    console.log(&apos;need recharge&apos;);</span><br><span class="line">    return;</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    return &apos;next&apos;;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">var survey = function(user) &#123;</span><br><span class="line">  if(!user.hasSurvey) &#123;</span><br><span class="line">    console.log(&apos;need survey&apos;);</span><br><span class="line">    return;</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    return &apos;next&apos;;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">var gotoInvest = function() &#123;</span><br><span class="line">  console.log(&apos;invest success!&apos;);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">class Chain &#123;</span><br><span class="line">  constructor(fn) &#123;</span><br><span class="line">    this.fn = fn;</span><br><span class="line">    this.next = null;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  setNextProcessor(next) &#123;</span><br><span class="line">    this.next = next;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  handleRequest() &#123;</span><br><span class="line">    var rt = this.fn.apply(this, arguments);</span><br><span class="line">    if(rt === &apos;next&apos;) &#123;</span><br><span class="line">      return this.next &amp;&amp; this.next.handleRequest.apply(this.next, arguments);</span><br><span class="line">    &#125;</span><br><span class="line">    return rt;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var autonymChain = new Chain(autonym);</span><br><span class="line">var rechargeChain = new Chain(recharge);</span><br><span class="line">var surveyChain = new Chain(survey);</span><br><span class="line">var gotoInvestChain = new Chain(gotoInvest);</span><br><span class="line"></span><br><span class="line">autonymChain.setNextProcessor(rechargeChain);</span><br><span class="line">rechargeChain.setNextProcessor(surveyChain);</span><br><span class="line">surveyChain.setNextProcessor(gotoInvestChain);</span><br><span class="line"></span><br><span class="line">autonymChain.handleRequest(&#123;hasAuth: true, amountNoMeet: true, hasSurvey: false&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>上面代码输出need survey，如果再新增一个条件余额充足后再判断投资额度是否还有，则：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">var amountLimit = function(user) &#123;</span><br><span class="line">  if(user.amountLimit) &#123;</span><br><span class="line">    console.log(&apos;amount limit&apos;);</span><br><span class="line">    return;</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    return &apos;next&apos;;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">var amountLimitChain = new Chain(amountLimit);</span><br><span class="line"></span><br><span class="line">rechargeChain.setNextProcessor(amountLimitChain);</span><br><span class="line">amountLimitChain.setNextProcessor(surveyChain);</span><br></pre></td></tr></table></figure></p>
+<p>这样就无需修改recharge函数，只需新增一个节点，并修改下顺序即可，并且可以一目了然的看清这些节点之间的顺序和数量。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://claire1028.github.io/2017/12/24/js-chain-mode/" data-id="cjpxohb27000djkjgt3amyo0b" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JS-设计模式/">JS-设计模式</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-js-flyweight-mode" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/12/23/js-flyweight-mode/" class="article-date">
@@ -92,7 +137,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2017/12/23/js-flyweight-mode/" data-id="cjpuydey0000ffcjg3f141l62" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2017/12/23/js-flyweight-mode/" data-id="cjpxohb1y0009jkjg912juacm" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JS-设计模式/">JS-设计模式</a></li></ul>
@@ -137,50 +182,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2017/12/22/js-template-mode/" data-id="cjpuydez2000ufcjgaspcgldt" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JS-设计模式/">JS-设计模式</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-js-compose-mode" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/12/22/js-compose-mode/" class="article-date">
-  <time datetime="2017-12-22T01:19:00.000Z" itemprop="datePublished">2017-12-22</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/12/22/js-compose-mode/">JavaScript组合模式</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="组合模式："><a href="#组合模式：" class="headerlink" title="组合模式："></a>组合模式：</h3><p>组合模式是用小的子对象来构建更大的对象，而这些小的子对象本身也许是由更小的对象构成的。父对象和子对象拥有共同的对象接口，而他们可以组合在一起组成一个更强大的数据结构。一般由子对象进行处理，如果传递到还是非子对象，则继续往下传递直到子对象为止。</p>
-<p>类似于命令模式将事件包装成有统一接口的模式，而组合模式就是父对象和子对象就是有相同的对外接口，这里的父对象和子对象并不是父子关系，只是包含组合关系。</p>
-<p>比如一个页面上有个button，点击后先开始了loading动画，然后弹框显示提示，最后跳转到别的网站，这3组动作，让我们用组合模式实现如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">var loading = &#123;</span><br><span class="line">  add() &#123;</span><br><span class="line">    throw new Error(&apos;child can not be added&apos;);</span><br><span class="line">  &#125;</span><br><span class="line">  run() &#123;</span><br><span class="line">    console.log(&apos;show loading&apos;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">var dialog = &#123;</span><br><span class="line">  add() &#123;</span><br><span class="line">    throw new Error(&apos;child can not be added&apos;);</span><br><span class="line">  &#125;</span><br><span class="line">  run() &#123;</span><br><span class="line">    console.log(&apos;show dialog&apos;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">var link = &#123;</span><br><span class="line">  add() &#123;</span><br><span class="line">    throw new Error(&apos;child can not be added&apos;);</span><br><span class="line">  &#125;</span><br><span class="line">  run() &#123;</span><br><span class="line">    console.log(&apos;redirect link&apos;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">var macroCommand = &#123;</span><br><span class="line">  cmdLists: [],</span><br><span class="line">  add(cmd) &#123;</span><br><span class="line">    this.cmdLists.push(cmd);</span><br><span class="line">  &#125;,</span><br><span class="line">  run() &#123;</span><br><span class="line">    for(var i = 0; i &lt; this.cmdLists.length; i++) &#123;</span><br><span class="line">      this.cmdLists[i].run();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">macroCommand.add(loading);</span><br><span class="line">macroCommand.add(dialog);</span><br><span class="line">macroCommand.add(link);</span><br><span class="line"></span><br><span class="line">document.getElementById(&apos;btn&apos;).onclick = macroCommand.run;</span><br></pre></td></tr></table></figure></p>
-<p>当点击按钮以后会依次显示<code>show loading</code>, <code>show dialog</code>,<code>redirect link</code>，上述代码中，loading, dialog, link对象即是子对象，macroCommand即是父对象，他们都拥有相同的方法run，add，对于外界来说调用他们的方式是一样的。</p>
-<p>可以看出组合模式的好处有对于未来有新增的子对象时，遍历的操作还是一样的，同时避免了打破主方法的封闭-开放原则。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2017/12/22/js-compose-mode/" data-id="cjpuydexi0009fcjgoxg3cjwx" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2017/12/22/js-template-mode/" data-id="cjpxohb3c000sjkjgfmigz3o1" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JS-设计模式/">JS-设计模式</a></li></ul>
@@ -224,7 +226,50 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2017/12/22/js-command-mode/" data-id="cjpuydexa0008fcjgo9lml754" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2017/12/22/js-command-mode/" data-id="cjpxohb1t0008jkjglahveyyg" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JS-设计模式/">JS-设计模式</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-js-compose-mode" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/12/22/js-compose-mode/" class="article-date">
+  <time datetime="2017-12-22T01:19:00.000Z" itemprop="datePublished">2017-12-22</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/12/22/js-compose-mode/">JavaScript组合模式</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="组合模式："><a href="#组合模式：" class="headerlink" title="组合模式："></a>组合模式：</h3><p>组合模式是用小的子对象来构建更大的对象，而这些小的子对象本身也许是由更小的对象构成的。父对象和子对象拥有共同的对象接口，而他们可以组合在一起组成一个更强大的数据结构。一般由子对象进行处理，如果传递到还是非子对象，则继续往下传递直到子对象为止。</p>
+<p>类似于命令模式将事件包装成有统一接口的模式，而组合模式就是父对象和子对象就是有相同的对外接口，这里的父对象和子对象并不是父子关系，只是包含组合关系。</p>
+<p>比如一个页面上有个button，点击后先开始了loading动画，然后弹框显示提示，最后跳转到别的网站，这3组动作，让我们用组合模式实现如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">var loading = &#123;</span><br><span class="line">  add() &#123;</span><br><span class="line">    throw new Error(&apos;child can not be added&apos;);</span><br><span class="line">  &#125;</span><br><span class="line">  run() &#123;</span><br><span class="line">    console.log(&apos;show loading&apos;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">var dialog = &#123;</span><br><span class="line">  add() &#123;</span><br><span class="line">    throw new Error(&apos;child can not be added&apos;);</span><br><span class="line">  &#125;</span><br><span class="line">  run() &#123;</span><br><span class="line">    console.log(&apos;show dialog&apos;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">var link = &#123;</span><br><span class="line">  add() &#123;</span><br><span class="line">    throw new Error(&apos;child can not be added&apos;);</span><br><span class="line">  &#125;</span><br><span class="line">  run() &#123;</span><br><span class="line">    console.log(&apos;redirect link&apos;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">var macroCommand = &#123;</span><br><span class="line">  cmdLists: [],</span><br><span class="line">  add(cmd) &#123;</span><br><span class="line">    this.cmdLists.push(cmd);</span><br><span class="line">  &#125;,</span><br><span class="line">  run() &#123;</span><br><span class="line">    for(var i = 0; i &lt; this.cmdLists.length; i++) &#123;</span><br><span class="line">      this.cmdLists[i].run();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">macroCommand.add(loading);</span><br><span class="line">macroCommand.add(dialog);</span><br><span class="line">macroCommand.add(link);</span><br><span class="line"></span><br><span class="line">document.getElementById(&apos;btn&apos;).onclick = macroCommand.run;</span><br></pre></td></tr></table></figure></p>
+<p>当点击按钮以后会依次显示<code>show loading</code>, <code>show dialog</code>,<code>redirect link</code>，上述代码中，loading, dialog, link对象即是子对象，macroCommand即是父对象，他们都拥有相同的方法run，add，对于外界来说调用他们的方式是一样的。</p>
+<p>可以看出组合模式的好处有对于未来有新增的子对象时，遍历的操作还是一样的，同时避免了打破主方法的封闭-开放原则。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://claire1028.github.io/2017/12/22/js-compose-mode/" data-id="cjpxohb1j0004jkjghueei8wj" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JS-设计模式/">JS-设计模式</a></li></ul>
@@ -269,7 +314,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2017/12/22/js-observe-mode/" data-id="cjpuydey8000hfcjgn1xyhi3r" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2017/12/22/js-observe-mode/" data-id="cjpxohb38000qjkjgj8tx5ax4" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JS-设计模式/">JS-设计模式</a></li></ul>
@@ -312,53 +357,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2017/12/22/js-proxy-mode/" data-id="cjpuydeye000kfcjguqcu0rh2" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JS-设计模式/">JS-设计模式</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-js-strategy-mode" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/12/21/js-strategy-mode/" class="article-date">
-  <time datetime="2017-12-21T10:10:00.000Z" itemprop="datePublished">2017-12-21</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/12/21/js-strategy-mode/">JavaScript策略模式</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="策略模式："><a href="#策略模式：" class="headerlink" title="策略模式："></a>策略模式：</h3><p>将一些相同的逻辑状态抽离并封装起来，这些逻辑之间的关系是平等的，可替换的。</p>
-<h3 id="什么是策略？"><a href="#什么是策略？" class="headerlink" title="什么是策略？"></a>什么是策略？</h3><p>比如：去某个地方旅游，你可以乘火车，可以乘飞机，也可以乘游轮，那么这些交通工具的选择之间就是某种策略，可以看出这些策略之间是可以相互替换的。</p>
-<h3 id="和状态模式的区别？"><a href="#和状态模式的区别？" class="headerlink" title="和状态模式的区别？"></a>和状态模式的区别？</h3><p>状态模式中每个状态之间其实不是平等的，可替换的，而是相互之间有着联系。</p>
-<p>举例：<br>比如商家为了促销，设置了抽奖，比如抽了一等奖兑换一个iPhone，二等奖兑换吸尘器，三等奖兑换小型烤箱，四等奖兑换电吹风，五等奖兑换毛巾一条。</p>
-<p>如果我们一般正常写这段程序的话，会有很多if，else语句，就像下面这样：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">if(prize === &apos;first&apos;) &#123;</span><br><span class="line">    console.log(&apos;iphone&apos;);</span><br><span class="line">&#125;else if(prize === &apos;second&apos;) &#123;</span><br><span class="line">    console.log(&apos;cleaner&apos;);</span><br><span class="line">&#125;else if(prize === &apos;third&apos;) &#123;</span><br><span class="line">    console.log(&apos;oven&apos;);</span><br><span class="line">&#125;else if(prize === &apos;fourth&apos;) &#123;</span><br><span class="line">    console.log(&apos;hair drier&apos;);</span><br><span class="line">&#125;else if(prize ===&apos;fifth&apos;) &#123;</span><br><span class="line">    console.log(&apos;towel&apos;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>如果采用策略模式，代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">class FirstPrize &#123;</span><br><span class="line">    getPrize()&#123;</span><br><span class="line">     	console.log(&apos;iphone&apos;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">class SecondPrize &#123;</span><br><span class="line">    getPrize()&#123;</span><br><span class="line">     	console.log(&apos;cleaner&apos;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">class ThirdPrize &#123;</span><br><span class="line">    getPrize()&#123;</span><br><span class="line">     	console.log(&apos;oven&apos;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">class FourthPrize &#123;</span><br><span class="line">    getPrize()&#123;</span><br><span class="line">     	console.log(&apos;hair drier&apos;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">class FifthPrize &#123;</span><br><span class="line">    getPrize()&#123;</span><br><span class="line">     	console.log(&apos;towel&apos;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class Prize &#123;</span><br><span class="line">    constructor()&#123;</span><br><span class="line">        this.level = null;</span><br><span class="line">    &#125;</span><br><span class="line">    setLevel(level)&#123;</span><br><span class="line">        this.level = level;</span><br><span class="line">    &#125;</span><br><span class="line">    getPrize()&#123;</span><br><span class="line">        this.level.getPrize();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var p = new Prize();</span><br><span class="line">p.setLevel(new FirstPrize());</span><br><span class="line">p.getPrize(); // 输出`iphone`</span><br><span class="line">p.setLevel(new SecondPrize());</span><br><span class="line">p.getPrize(); //输出`cleaner`</span><br></pre></td></tr></table></figure></p>
-<p>可以看出，当奖品项增多的时候，只需添加对应的奖品项的类，而无需在主类Prize中添加过多的if，else语句。对各自的逻辑进行了封装，同时符合代码的封闭开放原则。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2017/12/21/js-strategy-mode/" data-id="cjpuydeyx000rfcjgb6y5kx4x" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2017/12/22/js-proxy-mode/" data-id="cjpxohb32000njkjgke8g0e8d" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JS-设计模式/">JS-设计模式</a></li></ul>
@@ -404,7 +403,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2017/12/21/js-state-mod/" data-id="cjpuydeyt000pfcjg5d4jb3an" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2017/12/21/js-state-mod/" data-id="cjpxohb2q000ijkjg1ef7wi2f" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JS-设计模式/">JS-设计模式</a></li></ul>
@@ -448,7 +447,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2017/12/21/js-adapter-mode/" data-id="cjpuydewx0004fcjg03egmjtm" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2017/12/21/js-adapter-mode/" data-id="cjpxohb1f0003jkjgr350oeum" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JS-设计模式/">JS-设计模式</a></li></ul>
@@ -460,10 +459,10 @@
 
 
   
-    <article id="post-js-single-mode" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-js-strategy-mode" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2017/12/21/js-single-mode/" class="article-date">
-  <time datetime="2017-12-21T07:10:00.000Z" itemprop="datePublished">2017-12-21</time>
+    <a href="/2017/12/21/js-strategy-mode/" class="article-date">
+  <time datetime="2017-12-21T10:10:00.000Z" itemprop="datePublished">2017-12-21</time>
 </a>
     
   </div>
@@ -474,7 +473,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/12/21/js-single-mode/">JavaScript单例模式</a>
+      <a class="article-title" href="/2017/12/21/js-strategy-mode/">JavaScript策略模式</a>
     </h1>
   
 
@@ -482,18 +481,19 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>单例模式的定义是：保证一个类仅有一个实例，并提供一个全局访问的访问点。</p>
-<h3 id="方法一"><a href="#方法一" class="headerlink" title="方法一"></a>方法一</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">  var  Account = function(name)&#123;</span><br><span class="line"></span><br><span class="line">    this.name = name;</span><br><span class="line"></span><br><span class="line">    this.instance = null;</span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  Account.create = function(name)&#123;</span><br><span class="line"></span><br><span class="line">    if(!this.instance)&#123;</span><br><span class="line"></span><br><span class="line">      this.instance = new Account(name);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return this.instance;</span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">var a = Account.create(&apos;a&apos;);</span><br><span class="line"></span><br><span class="line">var b = Account.create(&apos;b&apos;);</span><br><span class="line"></span><br><span class="line">console.log(a === b);  //true</span><br></pre></td></tr></table></figure>
-<p>不过这个方法有个缺点就是我们通常都是用new 来实例化对象，而这边需用create方法来创建。</p>
-<h3 id="方法二"><a href="#方法二" class="headerlink" title="方法二"></a>方法二</h3><p>那我们将代码改进，将实例对象使用new来创建：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">var  Account = ( function(name)&#123;</span><br><span class="line"></span><br><span class="line">  var instance = null;    </span><br><span class="line"></span><br><span class="line">  var getSingleInstance = function(name)&#123;</span><br><span class="line"></span><br><span class="line">     if(instance)</span><br><span class="line"></span><br><span class="line">      return instance;</span><br><span class="line"></span><br><span class="line">      return instance = new Acc(name);</span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  var  Acc = function(name)&#123;</span><br><span class="line"></span><br><span class="line">    this.name = name;</span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"> return getSingleInstance;</span><br><span class="line"></span><br><span class="line">&#125;)();</span><br><span class="line"></span><br><span class="line">var a = new Account(&apos;a&apos;);</span><br><span class="line"></span><br><span class="line">var b = new Account(&apos;b&apos;);</span><br><span class="line"></span><br><span class="line">console.log(a===b); //true</span><br></pre></td></tr></table></figure></p>
-<p>上述代码采用的是闭包的形式来创建单例的，阅读起来相对比较麻烦，并且该函数不能公用。所以可以将创建单例的函数抽出来作为一个公共的function。</p>
-<h3 id="方法三"><a href="#方法三" class="headerlink" title="方法三"></a>方法三</h3><p>代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">  var  Account = function(name)&#123;</span><br><span class="line"></span><br><span class="line">     this.name = name;</span><br><span class="line"></span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">var  createSingleInstance =function (fn)&#123;</span><br><span class="line"></span><br><span class="line">   var instance ;    </span><br><span class="line"></span><br><span class="line">  return function()&#123;</span><br><span class="line"></span><br><span class="line">     if(instance)</span><br><span class="line"></span><br><span class="line">      return instance;</span><br><span class="line"></span><br><span class="line">    return  instance = new fn(arguments); //将函数委托给createSingleInstance构造</span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">var getSingle = createSingleInstance(Account);</span><br><span class="line"></span><br><span class="line">var a = getSingle(&apos;a&apos;);</span><br><span class="line"></span><br><span class="line">var b = getSingle(&apos;b&apos;);</span><br><span class="line"></span><br><span class="line">console.log( b === a);</span><br></pre></td></tr></table></figure></p>
-<p>总之：单例模式就是类构造出来的实例只有一个。</p>
+        <h3 id="策略模式："><a href="#策略模式：" class="headerlink" title="策略模式："></a>策略模式：</h3><p>将一些相同的逻辑状态抽离并封装起来，这些逻辑之间的关系是平等的，可替换的。</p>
+<h3 id="什么是策略？"><a href="#什么是策略？" class="headerlink" title="什么是策略？"></a>什么是策略？</h3><p>比如：去某个地方旅游，你可以乘火车，可以乘飞机，也可以乘游轮，那么这些交通工具的选择之间就是某种策略，可以看出这些策略之间是可以相互替换的。</p>
+<h3 id="和状态模式的区别？"><a href="#和状态模式的区别？" class="headerlink" title="和状态模式的区别？"></a>和状态模式的区别？</h3><p>状态模式中每个状态之间其实不是平等的，可替换的，而是相互之间有着联系。</p>
+<p>举例：<br>比如商家为了促销，设置了抽奖，比如抽了一等奖兑换一个iPhone，二等奖兑换吸尘器，三等奖兑换小型烤箱，四等奖兑换电吹风，五等奖兑换毛巾一条。</p>
+<p>如果我们一般正常写这段程序的话，会有很多if，else语句，就像下面这样：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">if(prize === &apos;first&apos;) &#123;</span><br><span class="line">    console.log(&apos;iphone&apos;);</span><br><span class="line">&#125;else if(prize === &apos;second&apos;) &#123;</span><br><span class="line">    console.log(&apos;cleaner&apos;);</span><br><span class="line">&#125;else if(prize === &apos;third&apos;) &#123;</span><br><span class="line">    console.log(&apos;oven&apos;);</span><br><span class="line">&#125;else if(prize === &apos;fourth&apos;) &#123;</span><br><span class="line">    console.log(&apos;hair drier&apos;);</span><br><span class="line">&#125;else if(prize ===&apos;fifth&apos;) &#123;</span><br><span class="line">    console.log(&apos;towel&apos;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果采用策略模式，代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">class FirstPrize &#123;</span><br><span class="line">    getPrize()&#123;</span><br><span class="line">     	console.log(&apos;iphone&apos;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">class SecondPrize &#123;</span><br><span class="line">    getPrize()&#123;</span><br><span class="line">     	console.log(&apos;cleaner&apos;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">class ThirdPrize &#123;</span><br><span class="line">    getPrize()&#123;</span><br><span class="line">     	console.log(&apos;oven&apos;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">class FourthPrize &#123;</span><br><span class="line">    getPrize()&#123;</span><br><span class="line">     	console.log(&apos;hair drier&apos;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">class FifthPrize &#123;</span><br><span class="line">    getPrize()&#123;</span><br><span class="line">     	console.log(&apos;towel&apos;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class Prize &#123;</span><br><span class="line">    constructor()&#123;</span><br><span class="line">        this.level = null;</span><br><span class="line">    &#125;</span><br><span class="line">    setLevel(level)&#123;</span><br><span class="line">        this.level = level;</span><br><span class="line">    &#125;</span><br><span class="line">    getPrize()&#123;</span><br><span class="line">        this.level.getPrize();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var p = new Prize();</span><br><span class="line">p.setLevel(new FirstPrize());</span><br><span class="line">p.getPrize(); // 输出`iphone`</span><br><span class="line">p.setLevel(new SecondPrize());</span><br><span class="line">p.getPrize(); //输出`cleaner`</span><br></pre></td></tr></table></figure></p>
+<p>可以看出，当奖品项增多的时候，只需添加对应的奖品项的类，而无需在主类Prize中添加过多的if，else语句。对各自的逻辑进行了封装，同时符合代码的封闭开放原则。</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2017/12/21/js-single-mode/" data-id="cjpuydeyn000mfcjgaywkcin0" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2017/12/21/js-strategy-mode/" data-id="cjpxohb2x000ljkjg40wapj0k" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JS-设计模式/">JS-设计模式</a></li></ul>
@@ -540,7 +540,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li></ul>
     </div>
   </div>
 
@@ -551,6 +551,10 @@
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2018/12/21/js-encode/">JS中常用的编码格式</a>
+          </li>
         
           <li>
             <a href="/2018/10/25/jest-enzyme/">jest + enzmye + ts测试react踩坑记</a>
@@ -566,10 +570,6 @@
         
           <li>
             <a href="/2018/09/20/ts-学习笔记/">TS学习笔记</a>
-          </li>
-        
-          <li>
-            <a href="/2018/09/18/css-animation/">浅析Css中动画优化原理</a>
           </li>
         
       </ul>
