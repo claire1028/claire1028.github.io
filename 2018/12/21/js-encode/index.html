@@ -5,18 +5,21 @@
   
   <title>JS中常用的编码格式 | Ting&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Unicode：规定将全球的语言纳入一个字符集，即每种语言中的每个字符都有一个唯一的编码，以便可以跨平台，跨系统，跨语言而不冲突，且不用安装特定的字符集来解释某个国家的语言。 而UTF-8和UTF-16和UTF-32则是对Unicode字符集的具体实现的方法。 UTF-8: 在1-4个字节中变长表示，比如数字或字母采用1个字节表示，在node中，一般默认采用该方法。 UTF-16: 采用2字节或4">
+  <meta name="description" content="Unicode：规定将全球的语言纳入一个字符集，即每种语言中的每个字符都有一个唯一的编码，以便可以跨平台，跨系统，跨语言而不冲突，且不用安装特定的字符集来解释某个国家的语言。 而UTF-8和UTF-16和UTF-32则是对Unicode字符集的具体实现的方法。 UTF-8: 在1-4个字节中变长表示，比如数字或字母采用1个字节表示，在node中，一般默认采用该方法。  UTF-16: 采用2字节或">
 <meta name="keywords" content="JS">
 <meta property="og:type" content="article">
 <meta property="og:title" content="JS中常用的编码格式">
 <meta property="og:url" content="https://claire1028.github.io/2018/12/21/js-encode/index.html">
 <meta property="og:site_name" content="Ting&#39;s blog">
-<meta property="og:description" content="Unicode：规定将全球的语言纳入一个字符集，即每种语言中的每个字符都有一个唯一的编码，以便可以跨平台，跨系统，跨语言而不冲突，且不用安装特定的字符集来解释某个国家的语言。 而UTF-8和UTF-16和UTF-32则是对Unicode字符集的具体实现的方法。 UTF-8: 在1-4个字节中变长表示，比如数字或字母采用1个字节表示，在node中，一般默认采用该方法。 UTF-16: 采用2字节或4">
+<meta property="og:description" content="Unicode：规定将全球的语言纳入一个字符集，即每种语言中的每个字符都有一个唯一的编码，以便可以跨平台，跨系统，跨语言而不冲突，且不用安装特定的字符集来解释某个国家的语言。 而UTF-8和UTF-16和UTF-32则是对Unicode字符集的具体实现的方法。 UTF-8: 在1-4个字节中变长表示，比如数字或字母采用1个字节表示，在node中，一般默认采用该方法。  UTF-16: 采用2字节或">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-12-21T06:50:00.727Z">
+<meta property="og:image" content="https://claire1028.github.io/images/encode1.png">
+<meta property="og:image" content="https://claire1028.github.io/images/encode2.png">
+<meta property="og:updated_time" content="2018-12-21T06:56:12.267Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="JS中常用的编码格式">
-<meta name="twitter:description" content="Unicode：规定将全球的语言纳入一个字符集，即每种语言中的每个字符都有一个唯一的编码，以便可以跨平台，跨系统，跨语言而不冲突，且不用安装特定的字符集来解释某个国家的语言。 而UTF-8和UTF-16和UTF-32则是对Unicode字符集的具体实现的方法。 UTF-8: 在1-4个字节中变长表示，比如数字或字母采用1个字节表示，在node中，一般默认采用该方法。 UTF-16: 采用2字节或4">
+<meta name="twitter:description" content="Unicode：规定将全球的语言纳入一个字符集，即每种语言中的每个字符都有一个唯一的编码，以便可以跨平台，跨系统，跨语言而不冲突，且不用安装特定的字符集来解释某个国家的语言。 而UTF-8和UTF-16和UTF-32则是对Unicode字符集的具体实现的方法。 UTF-8: 在1-4个字节中变长表示，比如数字或字母采用1个字节表示，在node中，一般默认采用该方法。  UTF-16: 采用2字节或">
+<meta name="twitter:image" content="https://claire1028.github.io/images/encode1.png">
   
     <link rel="alternate" href="/atom.xml" title="Ting&#39;s blog" type="application/atom+xml">
   
@@ -87,7 +90,9 @@
         <p><strong>Unicode</strong>：规定将全球的语言纳入一个字符集，即每种语言中的每个字符都有一个唯一的编码，以便可以跨平台，跨系统，跨语言而不冲突，且不用安装特定的字符集来解释某个国家的语言。</p>
 <p>而<code>UTF-8</code>和<code>UTF-16</code>和<code>UTF-32</code>则是对<code>Unicode</code>字符集的具体实现的方法。</p>
 <p><strong>UTF-8</strong>: 在1-4个字节中变长表示，比如数字或字母采用1个字节表示，在node中，一般默认采用该方法。</p>
+<p><img src="/images/encode1.png" alt=""></p>
 <p><strong>UTF-16</strong>: 采用2字节或4字节变长表示。</p>
+<p><img src="/images/encode2.png" alt=""></p>
 <p><strong>UTF-32</strong>: 全部用4字节表示，不兼容<code>ASCII</code>编码，容易浪费空间。</p>
 <p><strong>UCS-2</strong> ： JS里的编码表示，采用固定2个字节，后来被<code>UTF-16</code>取代了，也就是说<code>UTF-16</code>将<code>UCS-2</code>包含在其中。所以现在JS也就是采用<code>UTF-16</code>表示。</p>
 <p>由于<code>UTF-16</code>一般是2个字节表示的，所以对于单字母，比如<code>&#39;a&#39; 0x61</code>只需占一个字节，那么是采取<code>[0x00,0x61]</code>还是<code>[0x61,0x00]</code>的表示表示呢，则设计到2种表示法，LE和BE，而对于<code>UTF-8</code>则没有这种顾虑.</p>
