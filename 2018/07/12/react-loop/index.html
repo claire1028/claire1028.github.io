@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>React中实现循环滑动效果难点 | Ting&#39;s blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="最近有这样一个需求，在h5页面上，向左/向右滑动循环显示数据项，效果如下：  比如有3个页面，从第一个页面向左滑动到第二个页面，或者从第二个页面向左滑动到第三个页面，很简单，只需要将left从0%切换到-100%，或从-100%更换到-200%，然后在对left增加transition属性，如：transition: left 0.5s，就可以简单实现从第一张滑动到第二张，第二张到第三张，那么从第">
+<meta name="keywords" content="React">
+<meta property="og:type" content="article">
+<meta property="og:title" content="React中实现循环滑动效果难点">
+<meta property="og:url" content="https://claire1028.github.io/2018/07/12/react-loop/index.html">
+<meta property="og:site_name" content="Ting&#39;s blog">
+<meta property="og:description" content="最近有这样一个需求，在h5页面上，向左/向右滑动循环显示数据项，效果如下：  比如有3个页面，从第一个页面向左滑动到第二个页面，或者从第二个页面向左滑动到第三个页面，很简单，只需要将left从0%切换到-100%，或从-100%更换到-200%，然后在对left增加transition属性，如：transition: left 0.5s，就可以简单实现从第一张滑动到第二张，第二张到第三张，那么从第">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://claire1028.github.io/images/loop2.gif">
+<meta property="og:image" content="https://claire1028.github.io/images/loop1.gif">
+<meta property="og:updated_time" content="2018-12-24T08:18:56.912Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="React中实现循环滑动效果难点">
+<meta name="twitter:description" content="最近有这样一个需求，在h5页面上，向左/向右滑动循环显示数据项，效果如下：  比如有3个页面，从第一个页面向左滑动到第二个页面，或者从第二个页面向左滑动到第三个页面，很简单，只需要将left从0%切换到-100%，或从-100%更换到-200%，然后在对left增加transition属性，如：transition: left 0.5s，就可以简单实现从第一张滑动到第二张，第二张到第三张，那么从第">
+<meta name="twitter:image" content="https://claire1028.github.io/images/loop2.gif">
+  
+    <link rel="alternate" href="/atom.xml" title="Ting&#39;s blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Ting&#39;s blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://claire1028.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-react-loop" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/07/12/react-loop/" class="article-date">
+  <time datetime="2018-07-12T04:10:00.000Z" itemprop="datePublished">2018-07-12</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      React中实现循环滑动效果难点
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>最近有这样一个需求，在h5页面上，向左/向右滑动循环显示数据项，效果如下：</p>
+<p><img src="/images/loop2.gif" alt=""></p>
+<p>比如有3个页面，从第一个页面向左滑动到第二个页面，或者从第二个页面向左滑动到第三个页面，很简单，只需要将left从0%切换到-100%，或从-100%更换到-200%，然后在对left增加transition属性，如：<code>transition: left 0.5s</code>，就可以简单实现从第一张滑动到第二张，第二张到第三张，那么从第三个页面如何继续向左滑动到第一个页面，如果仅仅将left从-200%直接更换到0%，那么视觉上的效果就是从最后一页像右滑动到了第一页，滑动效果就变了，如下：</p>
+<p><img src="/images/loop1.gif" alt=""></p>
+<p>那么如何让从最后一张也保持不变的滑动效果滑动到第一张呢？</p>
+<p>从最后一张直接改变属性到第一个页面是不太可能实现该效果了，要实现向左滑动，那么动画的left属性还是得变的越来越小，如<code>-100%--&gt; -200%</code>，为了实现这个效果，我们可增加一个过渡页面，该过渡页面可与第一个页面一样，就是第一个页面的clone页面，作为第4个页面，即第当从第三个页面滑动到第一个页面的时候，实际上滑动到的是该过渡页面（第4个页面），再当从第4个页面继续向左滑动的时候，那么应该滑动到第2个页面，这时可先设置<code>setState({left：0})</code>（render页面的时候并没有变化，由于当前的第4个页面就是第一个页面的clone)，在该<code>setState</code> 的<code>callback</code>中再设置<code>left: -100%</code>，这时left的属性就是从0–&gt;-100%，即实现了向左滑动的效果的条件。<br>代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">this.outerStyle = &#123;</span><br><span class="line">    left: 0</span><br><span class="line">  &#125;;</span><br><span class="line">  this.setState(</span><br><span class="line">    &#123;</span><br><span class="line">      curPage: 1,</span><br><span class="line">      outerStyle: this.outerStyle</span><br><span class="line">    &#125;,</span><br><span class="line">    () =&gt; &#123;</span><br><span class="line">      this.outerStyle = &#123;</span><br><span class="line">        left: `-$&#123;this.indicator * 100&#125;%`,</span><br><span class="line">        transition: `left 0.5s`</span><br><span class="line">      &#125;;</span><br><span class="line">       this.setState(&#123;outerStyle: this.outerStyle&#125;);</span><br><span class="line">    &#125;</span><br><span class="line">  );</span><br></pre></td></tr></table></figure></p>
+<p>但是另一个问题又来了，为何<code>setState  left：0</code>好像没起作用， 浏览器直接从当前状态直接过度到了<code>setState callback</code>中的状态？</p>
+<p>原来是由于在一个渲染帧中，<strong>浏览器会忽略中间的状态，直接渲染最后一个状态</strong>，所以其中的<code>left:0</code>效果会没有了，如A-&gt;B-&gt;C, B和C在一个渲染帧中，那么我们将直接看见从A-&gt;C的变化状态，而忽略B的状态，从根本上的解决该问题就是让这2个状态在2个渲染帧中，解决方法有如下：</p>
+<p>1.将C的状态放在setTimeout中，最好timeout时间超过16.7ms（1/60），如果timeout设为0，在某些浏览器可能不工作<br> <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">setTimeout(() =&gt; &#123;</span><br><span class="line">   this.setState(&#123;outerStyle: this.outerStyle&#125;);</span><br><span class="line"> &#125;, 20);</span><br></pre></td></tr></table></figure></p>
+<p>2.采用requestAnimationFrame<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">requestAnimationFrame(() =&gt; &#123;</span><br><span class="line">   this.setState(&#123;outerStyle: this.outerStyle&#125;);</span><br><span class="line"> &#125;);</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://claire1028.github.io/2018/07/12/react-loop/" data-id="cjq21or6d000070jgc1mki2kf" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/React/">React</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2018/09/18/css-animation/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          浅析Css中动画优化原理
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/06/12/mobx/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">mobx概览</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/CSS/">CSS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JS/">JS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JS-设计模式/">JS-设计模式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/React/">React</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TS/">TS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/node/">node</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/CSS/" style="font-size: 10px;">CSS</a> <a href="/tags/JS/" style="font-size: 16.67px;">JS</a> <a href="/tags/JS-设计模式/" style="font-size: 20px;">JS-设计模式</a> <a href="/tags/React/" style="font-size: 13.33px;">React</a> <a href="/tags/TS/" style="font-size: 10px;">TS</a> <a href="/tags/node/" style="font-size: 10px;">node</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2018/12/21/js-encode/">JS中常用的编码格式</a>
+          </li>
+        
+          <li>
+            <a href="/2018/10/25/jest-enzyme/">jest + enzmye + ts测试react踩坑记</a>
+          </li>
+        
+          <li>
+            <a href="/2018/09/25/react-ref/">React中的几种Ref比较</a>
+          </li>
+        
+          <li>
+            <a href="/2018/09/21/node-进程/">Node中子进程的创建和cluster原理</a>
+          </li>
+        
+          <li>
+            <a href="/2018/09/20/ts-学习笔记/">TS学习笔记</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 Ting&#39;s<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
