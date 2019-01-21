@@ -59,6 +59,91 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-wp-devtool" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/01/21/wp-devtool/" class="article-date">
+  <time datetime="2019-01-21T04:10:00.000Z" itemprop="datePublished">2019-01-21</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/01/21/wp-devtool/">webpack中的配置devtool简单分析</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>对于devtool中的配置有十几种方式，搞不清楚到底该用哪种，于是对于每个配置都试着打包一遍，看看打包后的代码有何不同。<br>记录如下：</p>
+<p>入口文件如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">// print.js</span><br><span class="line">import * as react from &apos;react&apos;;</span><br><span class="line"></span><br><span class="line">class Test extends react.Component &#123;</span><br><span class="line">  render() &#123;</span><br><span class="line">    return (</span><br><span class="line">      &lt;div&gt; This is test! &lt;/div&gt;</span><br><span class="line">    )</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>webpack.config.js 配置文件如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">const path = require(&apos;path&apos;);</span><br><span class="line">const CleanWebpackPlugin = require(&apos;clean-webpack-plugin&apos;);</span><br><span class="line">const HtmlWebpackPlugin = require(&apos;html-webpack-plugin&apos;);</span><br><span class="line"></span><br><span class="line">module.exports = &#123;</span><br><span class="line">  entry: &apos;./src/print.js&apos;,</span><br><span class="line">  devtool: &apos;false&apos;,</span><br><span class="line">  plugins: [</span><br><span class="line">    new CleanWebpackPlugin([&apos;dist&apos;]),</span><br><span class="line">    new HtmlWebpackPlugin(&#123;</span><br><span class="line">      title: &apos;TEST&apos;</span><br><span class="line">    &#125;),</span><br><span class="line">  ],</span><br><span class="line">  output: &#123;</span><br><span class="line">    chunkFilename: &apos;[name].js&apos;,</span><br><span class="line">    filename: &apos;[name].js&apos;,</span><br><span class="line">    path: path.resolve(__dirname, &apos;dist&apos;),</span><br><span class="line">  &#125;,</span><br><span class="line">  module: &#123;</span><br><span class="line">    rules: [</span><br><span class="line">      &#123;</span><br><span class="line">        test: /\.jsx?$/,</span><br><span class="line">        exclude: /(node_modules)/,</span><br><span class="line">        use:&#123;</span><br><span class="line">            loader: &apos;babel-loader&apos;</span><br><span class="line">        &#125;,</span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>devtool的配置方式，大致分为如下4大类：</p>
+<hr>
+<p><strong>1：没有映射</strong></p>
+<ul>
+<li>devtool: false：一般用于production环境，没有sourcemap映射。</li>
+</ul>
+<hr>
+<p><strong>2：eval方式的映射</strong></p>
+<ul>
+<li><p>eval：module代码被包括在eval中执行，且在末尾添加<code># sourceURL=...</code>，没有行映射，且代码是经过loader编译过的。</p>
+</li>
+<li><p>eval-source-map：尾部添加了<code>sourceMappingURL=...</code>。</p>
+</li>
+<li><p>cheap-eval-source-map：只有行对应，没有列对应，忽略loader的sourcemap，仅展示loader编译后的代码。</p>
+</li>
+<li><p>cheap-module-eval-source-map(<strong>推荐开发使用</strong>,初次build慢，但rebuild快): 没有列映射的 SourceMaps 文件，loader 的 sourcemap被简化为只包含对应行的。</p>
+</li>
+</ul>
+<hr>
+<p><strong>3：生成单独文件的映射</strong></p>
+<ul>
+<li><p>source-map：会单独生成相应的main.js.map文件。如：<br><img src="/images/devtool.png" alt=""></p>
+</li>
+<li><p>cheap-source-map：没有列的映射，忽略loader的sourcemap。</p>
+</li>
+<li><p>cheap-module-source-map：没有列映射的.map文件，且loader的sourcemap只包含对应行的。</p>
+</li>
+</ul>
+<hr>
+<p><strong>4：映射信息直接追加在对应文件末尾</strong></p>
+<ul>
+<li><p>inline-source-map： 将sourcemap信息追加到对应的文件末尾，会使得bundle文件变大。</p>
+</li>
+<li><p>inline-cheap-source-map：类似于cheap-source-map，但是map信息是添加在bundle中。</p>
+</li>
+<li><p>inline-cheap-module-source-map：类似于cheap-module-source-map，但是map信息是添加在bundle中。</p>
+</li>
+<li><p>hidden-source-map：和source-map 相比，文件末尾少了<code>//# sourceMappingURL=main.js.map</code>，作用于：不希望浏览器公开源代码映射。</p>
+</li>
+<li><p>nosources-source-map： 创建的main.js.map中没有sourceContent字段。</p>
+</li>
+</ul>
+<hr>
+<p>总的来说，如果配置中有<code>cheap</code>，则表示没有列映射同时没有loader的sourcemap(一般不能用于开发环境)，如果配置中有<code>module</code>，则表示有loader的sourcemap，所以开发环境中可以用<code>cheap-module</code>这种组合。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://claire1028.github.io/2019/01/21/wp-devtool/" data-id="cjr66x74g001g5ojghni8npos" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Webpack/">Webpack</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-loader" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2019/01/15/loader/" class="article-date">
@@ -100,7 +185,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2019/01/15/loader/" data-id="cjqxmei9w0011fwjgzy6elkeq" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2019/01/15/loader/" data-id="cjr66x73u00165ojgjbglhrut" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Webpack/">Webpack</a></li></ul>
@@ -168,7 +253,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2018/12/21/js-encode/" data-id="cjqxmei8d000cfwjglaaevbgi" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2018/12/21/js-encode/" data-id="cjr66x71w000b5ojgrjbh1688" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JS/">JS</a></li></ul>
@@ -238,7 +323,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2018/10/25/jest-enzyme/" data-id="cjqxmei6t0000fwjgkm14zmg8" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2018/10/25/jest-enzyme/" data-id="cjr66x70q00015ojgt31iehm5" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/React/">React</a></li></ul>
@@ -311,7 +396,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2018/09/25/react-ref/" data-id="cjqxmeiak001dfwjgeozfkut3" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2018/09/25/react-ref/" data-id="cjr66x74200195ojgzc71xbmb" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/React/">React</a></li></ul>
@@ -372,7 +457,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2018/09/21/node-进程/" data-id="cjqxmeia90018fwjgpnx24fnw" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2018/09/21/node-进程/" data-id="cjr66x73p00145ojgirh9yz0x" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/node/">node</a></li></ul>
@@ -435,7 +520,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2018/09/20/ts-学习笔记/" data-id="cjqxmeia50016fwjgtn6t4hn9" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2018/09/20/ts-学习笔记/" data-id="cjr66x74b001d5ojg4hjdgqza" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TS/">TS</a></li></ul>
@@ -488,7 +573,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2018/09/18/css-animation/" data-id="cjqxmei8h000efwjg3gr874cc" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2018/09/18/css-animation/" data-id="cjr66x71500035ojgirskk4u8" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CSS/">CSS</a></li></ul>
@@ -536,7 +621,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2018/07/12/react-loop/" data-id="cjqxmeia00013fwjgs1fjtlbv" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2018/07/12/react-loop/" data-id="cjr66x746001b5ojgh7ov4lms" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/React/">React</a></li></ul>
@@ -599,81 +684,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2018/06/12/mobx/" data-id="cjqxmeiad001afwjgcd410ve5" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JS/">JS</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-babel-ES6-IE8" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/06/11/babel-ES6-IE8/" class="article-date">
-  <time datetime="2018-06-11T07:10:00.000Z" itemprop="datePublished">2018-06-11</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/06/11/babel-ES6-IE8/">Babel介绍</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>babel默认将es6语法转为es5，如果想要在低版本浏览器上支持es6新增的api，如Array.prototype.from等方法，则需要添加polyfill。</p>
-<h5 id="babel的一些主要概念介绍"><a href="#babel的一些主要概念介绍" class="headerlink" title="babel的一些主要概念介绍"></a>babel的一些主要概念介绍</h5><ul>
-<li><p><strong>babel-preset-env</strong> ： 将es2015 ，es2016，es2017的语法转为es5。</p>
-</li>
-<li><p><strong>babel-core</strong>： 包含transform方法，任何需要引用babel处理文件的，则需调用该方法。</p>
-</li>
-<li><p><strong>babel-regiser</strong>：node中，替换require的引用，在文件中require(‘babel-register’)， 然后require 相应的es6 文件，直接运行node file.js, 如果需要polyfill还是需要引入的 。babel-register相当于对本文件中的require的文件进行转换编译，除了自己，使用方法如下：<br><img src="/images/1.png" alt=""><br><img src="/images/2.png" alt=""><br><img src="/images/3.png" alt=""></p>
-</li>
-<li><p><strong>babel-cli</strong>： 提供命令行执行转换es6文件并输出。</p>
-</li>
-<li><p><strong>babel-node</strong>： 相当于提供了个node 命令，但是会在执行node命令之前对es6进行编译，不建议在production中使用，由于编译中的缓存数据存储在内存中，造成性能问题。</p>
-</li>
-<li><p><strong>babel-polyfill</strong>: 模拟了一个全面的es5环境，添加polyfill有3种方法：</p>
-<ol>
-<li><p>全局添加polyfill，在webpack的entry中，例如：entry：[‘babel-plyfill’, ‘.index.js’]；缺点是全局污染。</p>
-</li>
-<li><p>babel-runtime，将所需的polyfill 额外打包成一个help.js 文件，然后再所需之处对这个文件进行引用，手动引用的工作可以用babel-plugin-transform-runtime插件，在.babelrc文件中配置，会自动替换手动的工作。缺点是不能应用实例方法。理由：如”foobar”.includes(“foo”) （在转换时难找到相对应的目标方法替换），可以转换静态方法。</p>
-</li>
-<li><p>babel-preset-env, 有个配置选项useBuiltIn，如果true则自动添加所需的babel-polyfill，而在入口文件处需引入require（’babel-polyfill’），这也是官方推荐的。配置如下：<br> <img src="/images/4.png" alt=""></p>
-</li>
-</ol>
-</li>
-</ul>
-<h4 id="重点说下polyfill，有了polyfill我们可以在任何低版本的浏览器上写es6的新方法，由于公司支持到ie8，所以试下在IE8上去写es6，然后想法很美好，现实很骨感！"><a href="#重点说下polyfill，有了polyfill我们可以在任何低版本的浏览器上写es6的新方法，由于公司支持到ie8，所以试下在IE8上去写es6，然后想法很美好，现实很骨感！" class="headerlink" title="重点说下polyfill，有了polyfill我们可以在任何低版本的浏览器上写es6的新方法，由于公司支持到ie8，所以试下在IE8上去写es6，然后想法很美好，现实很骨感！"></a>重点说下polyfill，有了polyfill我们可以在任何低版本的浏览器上写es6的新方法，由于公司支持到ie8，所以试下在IE8上去写es6，然后想法很美好，现实很骨感！</h4><p>步骤如下：</p>
-<h5 id="新建个main-js-，里面包含最简单的es6语法，箭头和map函数。"><a href="#新建个main-js-，里面包含最简单的es6语法，箭头和map函数。" class="headerlink" title="新建个main.js ，里面包含最简单的es6语法，箭头和map函数。"></a>新建个main.js ，里面包含最简单的es6语法，箭头和map函数。</h5><p><img src="/images/5.png" alt=""><br>webpack.config.js配置：<br><img src="/images/6.png" alt=""><br>.babelrc配置：<br><img src="/images/7.png" alt=""><br>以为这样就外事大吉了，少年你还是太年轻了，打开IE8，报错如下，缺少标识符：<br><img src="/images/8.png" alt=""><br>点击进去查看：<br><img src="/images/9.png" alt=""><br>查找资料，得出结论是IE8中用的是es3的语法，所以需要将es5的语法转为es3的，利用babel提供的2个插件：transform-es3-member-expression-literals 和transform-es3-property-literals ，这2个插件做的事情其实是将关键字如default、return等，写法改变一下，给关键字加上引号，重新生成结果如下：<br><img src="/images/10.png" alt=""></p>
-<p>然后打包，刷新浏览器，发现报堆栈溢出，报错如下，<br><img src="/images/17.png" alt=""><br><img src="/images/18.png" alt=""><br>去Github上查看，发现原来babel-polyfill 中包含的core-js是不可以经过babel转换的。<br><img src="/images/19.png" alt=""></p>
-<p>于是在babel-loader转换处，exclude 对core-js的转换：<br><img src="/images/20.png" alt=""></p>
-<p>刷新页面，又报错了：<br><img src="/images/21.png" alt=""></p>
-<p>原因是由于Object.defineProperty只能用在DOM对象上，如果传入普通的js对象，则报错。自己如果手动hack，为抛错的那行加上try，catch则一切正常了。阿里的<a href="http://www.aliued.com/?p=3240" target="_blank" rel="noopener">这篇文章</a> 提供了很好的分析思路。<br>附上github上未被解决的理由…<br><img src="/images/22.png" alt=""><br><img src="/images/29.png" alt=""></p>
-<hr>
-<h5 id="babel-polyfill这条路走不通，按照上面core-js作者说的，还是有方法可以实现的，查找资料说是可以通过es5-shim（即es3对es5某些方法的实现）实现试试："><a href="#babel-polyfill这条路走不通，按照上面core-js作者说的，还是有方法可以实现的，查找资料说是可以通过es5-shim（即es3对es5某些方法的实现）实现试试：" class="headerlink" title="babel-polyfill这条路走不通，按照上面core-js作者说的，还是有方法可以实现的，查找资料说是可以通过es5-shim（即es3对es5某些方法的实现）实现试试："></a>babel-polyfill这条路走不通，按照上面core-js作者说的，还是有方法可以实现的，查找资料说是可以通过es5-shim（即es3对es5某些方法的实现）实现试试：</h5><p><img src="/images/30.png" alt=""><br>打包，刷新浏览器，运行正确了，alert了三次(此处放鞭炮)。</p>
-<p>如果需要增加对import 和export的依赖，如代码：<br><img src="/images/23.png" alt=""></p>
-<p>刷新运行，报错了，<br><img src="/images/24.png" alt=""><br><img src="/images/25.png" alt=""></p>
-<p>根据babel官网的介绍，需要在presets里增加loose： true 选项。<br><img src="/images/26.png" alt=""><br>最终.babelrc的配置如下：<br><img src="/images/27.png" alt=""></p>
-<p>以上代码在如下环境中运行：<br><img src="/images/28.png" alt=""></p>
-<p>在ie8环境中基本实现了es6的写法，如果需支持其他的写法，则另需要增加插件polyfill的引用，如：promise，Object.assign等方法。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2018/06/11/babel-ES6-IE8/" data-id="cjqxmei7q0003fwjg4ybo70d0" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2018/06/12/mobx/" data-id="cjr66x73l00125ojgi9jlusj1" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JS/">JS</a></li></ul>
@@ -711,7 +722,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/CSS/" style="font-size: 10px;">CSS</a> <a href="/tags/JS/" style="font-size: 16.67px;">JS</a> <a href="/tags/JS-设计模式/" style="font-size: 20px;">JS-设计模式</a> <a href="/tags/React/" style="font-size: 13.33px;">React</a> <a href="/tags/TS/" style="font-size: 10px;">TS</a> <a href="/tags/Webpack/" style="font-size: 10px;">Webpack</a> <a href="/tags/node/" style="font-size: 10px;">node</a>
+      <a href="/tags/CSS/" style="font-size: 10px;">CSS</a> <a href="/tags/JS/" style="font-size: 17.5px;">JS</a> <a href="/tags/JS-设计模式/" style="font-size: 20px;">JS-设计模式</a> <a href="/tags/React/" style="font-size: 15px;">React</a> <a href="/tags/TS/" style="font-size: 10px;">TS</a> <a href="/tags/Webpack/" style="font-size: 12.5px;">Webpack</a> <a href="/tags/node/" style="font-size: 10px;">node</a>
     </div>
   </div>
 
@@ -733,6 +744,10 @@
       <ul>
         
           <li>
+            <a href="/2019/01/21/wp-devtool/">webpack中的配置devtool简单分析</a>
+          </li>
+        
+          <li>
             <a href="/2019/01/15/loader/">如何简单创建一个webpack loader</a>
           </li>
         
@@ -746,10 +761,6 @@
         
           <li>
             <a href="/2018/09/25/react-ref/">React中的Ref创建</a>
-          </li>
-        
-          <li>
-            <a href="/2018/09/21/node-进程/">Node中子进程的创建和cluster原理</a>
           </li>
         
       </ul>
