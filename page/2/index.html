@@ -59,6 +59,54 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-react-loop" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/07/12/react-loop/" class="article-date">
+  <time datetime="2018-07-12T04:10:00.000Z" itemprop="datePublished">2018-07-12</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/07/12/react-loop/">React中实现循环滑动效果难点</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>最近有这样一个需求，在h5页面上，向左/向右滑动循环显示数据项，效果如下：</p>
+<p><img src="/images/loop2.gif" alt=""></p>
+<p>比如有3个页面，从第一个页面向左滑动到第二个页面，或者从第二个页面向左滑动到第三个页面，很简单，只需要将left从0%切换到-100%，或从-100%更换到-200%，然后在对left增加transition属性，如：<code>transition: left 0.5s</code>，就可以简单实现从第一张滑动到第二张，第二张到第三张，那么从第三个页面如何继续向左滑动到第一个页面，如果仅仅将left从-200%直接更换到0%，那么视觉上的效果就是从最后一页像右滑动到了第一页，滑动效果就变了，如下：</p>
+<p><img src="/images/loop1.gif" alt=""></p>
+<p>那么如何让从最后一张也保持不变的滑动效果滑动到第一张呢？</p>
+<p>从最后一张直接改变属性到第一个页面是不太可能实现该效果了，要实现向左滑动，那么动画的left属性还是得变的越来越小，如<code>-100%--&gt; -200%</code>，为了实现这个效果，我们可增加一个过渡页面，该过渡页面可与第一个页面一样，就是第一个页面的clone页面，作为第4个页面，即第当从第三个页面滑动到第一个页面的时候，实际上滑动到的是该过渡页面（第4个页面），再当从第4个页面继续向左滑动的时候，那么应该滑动到第2个页面，这时可先设置<code>setState({left：0})</code>（render页面的时候并没有变化，由于当前的第4个页面就是第一个页面的clone)，在该<code>setState</code> 的<code>callback</code>中再设置<code>left: -100%</code>，这时left的属性就是从0–&gt;-100%，即实现了向左滑动的效果的条件。<br>代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">this.outerStyle = &#123;</span><br><span class="line">    left: 0</span><br><span class="line">  &#125;;</span><br><span class="line">  this.setState(</span><br><span class="line">    &#123;</span><br><span class="line">      curPage: 1,</span><br><span class="line">      outerStyle: this.outerStyle</span><br><span class="line">    &#125;,</span><br><span class="line">    () =&gt; &#123;</span><br><span class="line">      this.outerStyle = &#123;</span><br><span class="line">        left: `-$&#123;this.indicator * 100&#125;%`,</span><br><span class="line">        transition: `left 0.5s`</span><br><span class="line">      &#125;;</span><br><span class="line">       this.setState(&#123;outerStyle: this.outerStyle&#125;);</span><br><span class="line">    &#125;</span><br><span class="line">  );</span><br></pre></td></tr></table></figure></p>
+<p>但是另一个问题又来了，为何<code>setState  left：0</code>好像没起作用， 浏览器直接从当前状态直接过度到了<code>setState callback</code>中的状态？</p>
+<p>原来是由于在一个渲染帧中，<strong>浏览器会忽略中间的状态，直接渲染最后一个状态</strong>，所以其中的<code>left:0</code>效果会没有了，如A-&gt;B-&gt;C, B和C在一个渲染帧中，那么我们将直接看见从A-&gt;C的变化状态，而忽略B的状态，从根本上的解决该问题就是让这2个状态在2个渲染帧中，解决方法有如下：</p>
+<p>1.将C的状态放在setTimeout中，最好timeout时间超过16.7ms（1/60），如果timeout设为0，在某些浏览器可能不工作<br> <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">setTimeout(() =&gt; &#123;</span><br><span class="line">   this.setState(&#123;outerStyle: this.outerStyle&#125;);</span><br><span class="line"> &#125;, 20);</span><br></pre></td></tr></table></figure></p>
+<p>2.采用requestAnimationFrame<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">requestAnimationFrame(() =&gt; &#123;</span><br><span class="line">   this.setState(&#123;outerStyle: this.outerStyle&#125;);</span><br><span class="line"> &#125;);</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://claire1028.github.io/2018/07/12/react-loop/" data-id="cjzrtfj7k00188ojg1d92jjeh" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/React/">React</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-mobx" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2018/06/12/mobx/" class="article-date">
@@ -110,7 +158,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2018/06/12/mobx/" data-id="cjscssb4i00118wjg94cumfvs" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2018/06/12/mobx/" data-id="cjzrtfj7h00138ojgipgi2wge" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JS/">JS</a></li></ul>
@@ -184,7 +232,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2018/06/11/babel-ES6-IE8/" data-id="cjscssb1v00008wjgisbp5g9p" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2018/06/11/babel-ES6-IE8/" data-id="cjzrtfj6700008ojgsyswhv7q" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JS/">JS</a></li></ul>
@@ -229,7 +277,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2017/12/24/js-decorator-mode/" data-id="cjscssb36000c8wjg4a61nmr6" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2017/12/24/js-decorator-mode/" data-id="cjzrtfj6t000b8ojgbufpj80o" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JS-设计模式/">JS-设计模式</a></li></ul>
@@ -276,7 +324,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2017/12/24/js-mediator-mode/" data-id="cjscssb3p000j8wjgnk2ubqo3" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2017/12/24/js-mediator-mode/" data-id="cjzrtfj70000i8ojgibqup2np" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JS-设计模式/">JS-设计模式</a></li></ul>
@@ -321,7 +369,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2017/12/24/js-chain-mode/" data-id="cjscssb2900018wjg5qasw0cf" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2017/12/24/js-chain-mode/" data-id="cjzrtfj6i00038ojgth1b9toi" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JS-设计模式/">JS-设计模式</a></li></ul>
@@ -366,7 +414,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2017/12/23/js-flyweight-mode/" data-id="cjscssb3a000e8wjg93lpa58n" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2017/12/23/js-flyweight-mode/" data-id="cjzrtfj6u000d8ojg00dmp9pw" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JS-设计模式/">JS-设计模式</a></li></ul>
@@ -411,7 +459,50 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2017/12/22/js-template-mode/" data-id="cjscssb42000q8wjg5mun51yw" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2017/12/22/js-template-mode/" data-id="cjzrtfj7b000v8ojg2zbqce9s" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JS-设计模式/">JS-设计模式</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-js-compose-mode" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/12/22/js-compose-mode/" class="article-date">
+  <time datetime="2017-12-22T01:19:00.000Z" itemprop="datePublished">2017-12-22</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/12/22/js-compose-mode/">JavaScript组合模式</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="组合模式："><a href="#组合模式：" class="headerlink" title="组合模式："></a>组合模式：</h3><p>组合模式是用小的子对象来构建更大的对象，而这些小的子对象本身也许是由更小的对象构成的。父对象和子对象拥有共同的对象接口，而他们可以组合在一起组成一个更强大的数据结构。一般由子对象进行处理，如果传递到还是非子对象，则继续往下传递直到子对象为止。</p>
+<p>类似于命令模式将事件包装成有统一接口的模式，而组合模式就是父对象和子对象就是有相同的对外接口，这里的父对象和子对象并不是父子关系，只是包含组合关系。</p>
+<p>比如一个页面上有个button，点击后先开始了loading动画，然后弹框显示提示，最后跳转到别的网站，这3组动作，让我们用组合模式实现如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">var loading = &#123;</span><br><span class="line">  add() &#123;</span><br><span class="line">    throw new Error(&apos;child can not be added&apos;);</span><br><span class="line">  &#125;</span><br><span class="line">  run() &#123;</span><br><span class="line">    console.log(&apos;show loading&apos;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">var dialog = &#123;</span><br><span class="line">  add() &#123;</span><br><span class="line">    throw new Error(&apos;child can not be added&apos;);</span><br><span class="line">  &#125;</span><br><span class="line">  run() &#123;</span><br><span class="line">    console.log(&apos;show dialog&apos;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">var link = &#123;</span><br><span class="line">  add() &#123;</span><br><span class="line">    throw new Error(&apos;child can not be added&apos;);</span><br><span class="line">  &#125;</span><br><span class="line">  run() &#123;</span><br><span class="line">    console.log(&apos;redirect link&apos;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">var macroCommand = &#123;</span><br><span class="line">  cmdLists: [],</span><br><span class="line">  add(cmd) &#123;</span><br><span class="line">    this.cmdLists.push(cmd);</span><br><span class="line">  &#125;,</span><br><span class="line">  run() &#123;</span><br><span class="line">    for(var i = 0; i &lt; this.cmdLists.length; i++) &#123;</span><br><span class="line">      this.cmdLists[i].run();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">macroCommand.add(loading);</span><br><span class="line">macroCommand.add(dialog);</span><br><span class="line">macroCommand.add(link);</span><br><span class="line"></span><br><span class="line">document.getElementById(&apos;btn&apos;).onclick = macroCommand.run;</span><br></pre></td></tr></table></figure></p>
+<p>当点击按钮以后会依次显示<code>show loading</code>, <code>show dialog</code>,<code>redirect link</code>，上述代码中，loading, dialog, link对象即是子对象，macroCommand即是父对象，他们都拥有相同的方法run，add，对于外界来说调用他们的方式是一样的。</p>
+<p>可以看出组合模式的好处有对于未来有新增的子对象时，遍历的操作还是一样的，同时避免了打破主方法的封闭-开放原则。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://claire1028.github.io/2017/12/22/js-compose-mode/" data-id="cjzrtfj6r00098ojgfo6lq6o4" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JS-设计模式/">JS-设计模式</a></li></ul>
@@ -455,95 +546,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2017/12/22/js-command-mode/" data-id="cjscssb2s00058wjgcj2vyqe6" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JS-设计模式/">JS-设计模式</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-js-compose-mode" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/12/22/js-compose-mode/" class="article-date">
-  <time datetime="2017-12-22T01:19:00.000Z" itemprop="datePublished">2017-12-22</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/12/22/js-compose-mode/">JavaScript组合模式</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="组合模式："><a href="#组合模式：" class="headerlink" title="组合模式："></a>组合模式：</h3><p>组合模式是用小的子对象来构建更大的对象，而这些小的子对象本身也许是由更小的对象构成的。父对象和子对象拥有共同的对象接口，而他们可以组合在一起组成一个更强大的数据结构。一般由子对象进行处理，如果传递到还是非子对象，则继续往下传递直到子对象为止。</p>
-<p>类似于命令模式将事件包装成有统一接口的模式，而组合模式就是父对象和子对象就是有相同的对外接口，这里的父对象和子对象并不是父子关系，只是包含组合关系。</p>
-<p>比如一个页面上有个button，点击后先开始了loading动画，然后弹框显示提示，最后跳转到别的网站，这3组动作，让我们用组合模式实现如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">var loading = &#123;</span><br><span class="line">  add() &#123;</span><br><span class="line">    throw new Error(&apos;child can not be added&apos;);</span><br><span class="line">  &#125;</span><br><span class="line">  run() &#123;</span><br><span class="line">    console.log(&apos;show loading&apos;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">var dialog = &#123;</span><br><span class="line">  add() &#123;</span><br><span class="line">    throw new Error(&apos;child can not be added&apos;);</span><br><span class="line">  &#125;</span><br><span class="line">  run() &#123;</span><br><span class="line">    console.log(&apos;show dialog&apos;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">var link = &#123;</span><br><span class="line">  add() &#123;</span><br><span class="line">    throw new Error(&apos;child can not be added&apos;);</span><br><span class="line">  &#125;</span><br><span class="line">  run() &#123;</span><br><span class="line">    console.log(&apos;redirect link&apos;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">var macroCommand = &#123;</span><br><span class="line">  cmdLists: [],</span><br><span class="line">  add(cmd) &#123;</span><br><span class="line">    this.cmdLists.push(cmd);</span><br><span class="line">  &#125;,</span><br><span class="line">  run() &#123;</span><br><span class="line">    for(var i = 0; i &lt; this.cmdLists.length; i++) &#123;</span><br><span class="line">      this.cmdLists[i].run();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">macroCommand.add(loading);</span><br><span class="line">macroCommand.add(dialog);</span><br><span class="line">macroCommand.add(link);</span><br><span class="line"></span><br><span class="line">document.getElementById(&apos;btn&apos;).onclick = macroCommand.run;</span><br></pre></td></tr></table></figure></p>
-<p>当点击按钮以后会依次显示<code>show loading</code>, <code>show dialog</code>,<code>redirect link</code>，上述代码中，loading, dialog, link对象即是子对象，macroCommand即是父对象，他们都拥有相同的方法run，add，对于外界来说调用他们的方式是一样的。</p>
-<p>可以看出组合模式的好处有对于未来有新增的子对象时，遍历的操作还是一样的，同时避免了打破主方法的封闭-开放原则。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2017/12/22/js-compose-mode/" data-id="cjscssb3200098wjgmr120ph5" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JS-设计模式/">JS-设计模式</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-js-observe-mode" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/12/22/js-observe-mode/" class="article-date">
-  <time datetime="2017-12-22T01:10:00.000Z" itemprop="datePublished">2017-12-22</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/12/22/js-observe-mode/">JavaScript观察者模式</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="观察者模式："><a href="#观察者模式：" class="headerlink" title="观察者模式："></a>观察者模式：</h3><p>是一对多的模式，当订阅到某个对象上，当该对象改变时，将会通知所有依赖它的对象。</p>
-<p>在js中，很多都是观察者模式，比如事件的click，先在某个元素上注册一个onclick事件，但并不知道该click事件什么时候会触发，待等到用户触发的时候再执行函数。类似的，在node中Events事件也是观察者模式，emit触发某个事件，然后再on事件中就会收到事件触发的信息。</p>
-<p>观察者模式可以替代异步的callback，在时间上可以非同步，弱化对象之间的联系。</p>
-<p>其实观察者模式的主要特点就是先找个对象将注册监听的函数放进去，一般为数组存放，之后当需要触发事件时，将数组中的函数拿出来循环遍历。</p>
-<p>举个简单的例子，例如：<br>当登录以后，刷新网页头部的某些信息，比如用户名，会员等级，积分等。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">var event = &#123;</span><br><span class="line">  listeners: [],</span><br><span class="line">  addListener = function(fn) &#123;</span><br><span class="line">    this.listeners.push(fn);</span><br><span class="line">  &#125;,</span><br><span class="line">  emit = function() &#123;</span><br><span class="line">    for(var i = 0; i &lt; this.listeners.length; i++) &#123;</span><br><span class="line">      this.listeners[i].apply(this, arguments);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">var nameRefresh = function() &#123;</span><br><span class="line">  console.log(&apos;name refresh&apos;);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">var vipRefresh = function() &#123;</span><br><span class="line">  console.log(&apos;vip refresh&apos;);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">var scoreRefresh = function() &#123;</span><br><span class="line">  console.log(&apos;score refresh&apos;);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">// 注册事件</span><br><span class="line">event.addListener(nameRefresh);</span><br><span class="line">event.addListener(vipRefresh);</span><br><span class="line">event.addListener(scoreRefresh);</span><br><span class="line"></span><br><span class="line">// 当登录后调用emit</span><br><span class="line"></span><br><span class="line">event.emit();</span><br></pre></td></tr></table></figure>
-<p>当然，观察者模式也是有缺点的，如果注册监听了某个事件，但是该事件一直都未触发过，那么该注册的函数将会一直存在内存中，虽然可以弱化对象之间的联系，但是如果过度使用的话，出现bug会很难debug。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2017/12/22/js-observe-mode/" data-id="cjscssb3g000h8wjg0myjwh5z" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2017/12/22/js-command-mode/" data-id="cjzrtfj6p00088ojgl4t4y7h3" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JS-设计模式/">JS-设计模式</a></li></ul>
@@ -581,7 +584,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/CSS/" style="font-size: 10px;">CSS</a> <a href="/tags/JS/" style="font-size: 16.67px;">JS</a> <a href="/tags/JS-设计模式/" style="font-size: 20px;">JS-设计模式</a> <a href="/tags/React/" style="font-size: 16.67px;">React</a> <a href="/tags/TS/" style="font-size: 10px;">TS</a> <a href="/tags/Webpack/" style="font-size: 13.33px;">Webpack</a> <a href="/tags/node/" style="font-size: 10px;">node</a>
+      <a href="/tags/CSS/" style="font-size: 10px;">CSS</a> <a href="/tags/JS/" style="font-size: 15px;">JS</a> <a href="/tags/JS-设计模式/" style="font-size: 20px;">JS-设计模式</a> <a href="/tags/React/" style="font-size: 17.5px;">React</a> <a href="/tags/TS/" style="font-size: 10px;">TS</a> <a href="/tags/Webpack/" style="font-size: 12.5px;">Webpack</a> <a href="/tags/node/" style="font-size: 10px;">node</a>
     </div>
   </div>
 
@@ -590,7 +593,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li></ul>
     </div>
   </div>
 
@@ -601,6 +604,10 @@
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2019/03/20/react-angular/">React Vs Angular</a>
+          </li>
         
           <li>
             <a href="/2019/02/20/redux/">Redux的applyMiddleware源码分析</a>
@@ -616,10 +623,6 @@
         
           <li>
             <a href="/2018/12/21/js-encode/">JS中常用的编码格式</a>
-          </li>
-        
-          <li>
-            <a href="/2018/10/25/jest-enzyme/">jest + enzmye + ts测试react踩坑记</a>
           </li>
         
       </ul>

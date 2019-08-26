@@ -59,6 +59,55 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-react-angular" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/03/20/react-angular/" class="article-date">
+  <time datetime="2019-03-20T04:10:00.000Z" itemprop="datePublished">2019-03-20</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/03/20/react-angular/">React Vs Angular</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="1-从框架来看"><a href="#1-从框架来看" class="headerlink" title="1.从框架来看"></a>1.从框架来看</h3><p>Angular是MVC框架， 提供 HTTP服务，router， forms 等开箱即用的服务，所以灵活性没有React好<br>React仅是一个view 在mvc 框架中，所以Model 和Controller层可以由用户自己决定用什么，灵活性比angular好，常用的三方库有：react-router路由跳转，redux数据状态管理，enzyme单元测试。</p>
+<h3 id="2-从体积大小来看"><a href="#2-从体积大小来看" class="headerlink" title="2.从体积大小来看"></a>2.从体积大小来看</h3><p>Angular包含的东西很多，所以体积要比React要大，自然加载速度要比React要慢。</p>
+<h3 id="3-从DOM来看"><a href="#3-从DOM来看" class="headerlink" title="3.从DOM来看"></a>3.从DOM来看</h3><p>React采用了Virtual DOM, 即模拟了真实的HTML dom 结构和属性，而Angular采用了正常的DOM，所以在效率上React比Angular更好。</p>
+<h3 id="4-从实现模板上来看"><a href="#4-从实现模板上来看" class="headerlink" title="4.从实现模板上来看"></a>4.从实现模板上来看</h3><p>React使用了JSX语法来实现展示的模板， 而jsx可以在JavaScript中写入并兼容js的语法，学习成本较低。<br>而Angular使用了HTML和自由的directives（如ng-if，ng-for）增加了学习的成本。</p>
+<h3 id="5-组件化"><a href="#5-组件化" class="headerlink" title="5.组件化"></a>5.组件化</h3><p>React和angular 都具有组件化</p>
+<h3 id="6-数据绑定方式"><a href="#6-数据绑定方式" class="headerlink" title="6.数据绑定方式"></a>6.数据绑定方式</h3><p>React是单向绑定，即：如果改变了state里的数据，则改变了UI上的数据，但是如果改变了UI上的数据，则不会改变State里的数据，这时需要用户自己去更改state里的数据。<br>Angular是双向绑定，即：如果改变UI上的数据，则直接改变了state里的数据，如果改变了State里的数据，则UI上的数据页会改变</p>
+<h3 id="7-类型检查"><a href="#7-类型检查" class="headerlink" title="7.类型检查"></a>7.类型检查</h3><p>React使用JavaScript，动态类型语言，而Angular采用Typescript，静态类型类型检测，需事先声明类型。当然在React中也可以使用Typescript。</p>
+<h3 id="8-移动端提供的解决方案"><a href="#8-移动端提供的解决方案" class="headerlink" title="8.移动端提供的解决方案"></a>8.移动端提供的解决方案</h3><p>Angular提供了Ionic，Ionic仅是一个钳在webview中的一个web应用。所以速度上还是比较慢。<br>React提供了React Native，React Native真正提供了一个原生的UI，所以速度上要比Ionic快很多</p>
+<h3 id="9-学习曲线"><a href="#9-学习曲线" class="headerlink" title="9.学习曲线"></a>9.学习曲线</h3><p>React基本的需要学习JSX，state， props，生命周期，组件，同时还需要React-router， redux，这些基本就差不多了<br>Angular基本的需要学习指令，模块，装饰器，组件，服务，依赖注入，管道和模板，同时需要学习Rxjs，typescript等。<br>学习曲线Angular明显比React要高对于新手来说。</p>
+<h3 id="10-React-fiber"><a href="#10-React-fiber" class="headerlink" title="10.React fiber"></a>10.React fiber</h3><p>在React V16以后，React增加了FIber的概念，速度较之前更快。使用上是不会有任何感觉的，fiber的主要的目的就是将任务划分等级，拆分的更细，同时任务可以暂停和恢复，当来了更高级的任务（如用户鼠标的点击），则暂停当前的任务，去完成更高级的任务。这样反应速度上会让用户感觉更快！</p>
+<p>参考：<a href="https://programmingwithmosh.com/react/react-vs-angular/" target="_blank" rel="noopener">https://programmingwithmosh.com/react/react-vs-angular/</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://claire1028.github.io/2019/03/20/react-angular/" data-id="cjzrtfj7n001d8ojgmxapgkeu" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/React/">React</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-redux" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2019/02/20/redux/" class="article-date">
@@ -90,7 +139,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2019/02/20/redux/" data-id="cjscssb4t00188wjg2yzdetxw" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2019/02/20/redux/" data-id="cjzrtfj85001l8ojgyb5ax55f" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/React/">React</a></li></ul>
@@ -175,7 +224,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2019/01/21/wp-devtool/" data-id="cjscssb4y001a8wjg7p4109a3" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2019/01/21/wp-devtool/" data-id="cjzrtfj8a001o8ojgm5yaubhy" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Webpack/">Webpack</a></li></ul>
@@ -228,7 +277,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2019/01/15/loader/" data-id="cjscssb4c000w8wjg02r4gr4j" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2019/01/15/loader/" data-id="cjzrtfj7f00118ojgshm98njr" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Webpack/">Webpack</a></li></ul>
@@ -296,7 +345,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2018/12/21/js-encode/" data-id="cjscssb2y00088wjg52jnl2aq" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2018/12/21/js-encode/" data-id="cjzrtfj6y000g8ojg0ua35tdl" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JS/">JS</a></li></ul>
@@ -366,7 +415,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2018/10/25/jest-enzyme/" data-id="cjscssb2j00038wjg2pci3owz" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2018/10/25/jest-enzyme/" data-id="cjzrtfj6k00048ojg2k1vwc3l" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/React/">React</a></li></ul>
@@ -439,7 +488,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2018/09/25/react-ref/" data-id="cjscssb53001c8wjguv11372p" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2018/09/25/react-ref/" data-id="cjzrtfj7l001a8ojgdrc0gugs" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/React/">React</a></li></ul>
@@ -500,7 +549,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2018/09/21/node-进程/" data-id="cjscssb4l00138wjgefp1swlh" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2018/09/21/node-进程/" data-id="cjzrtfj7i00168ojgy9nozudn" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/node/">node</a></li></ul>
@@ -563,7 +612,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2018/09/20/ts-学习笔记/" data-id="cjscssb56001e8wjgg016ybor" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2018/09/20/ts-学习笔记/" data-id="cjzrtfj88001m8ojgh1jw5q4c" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TS/">TS</a></li></ul>
@@ -616,58 +665,10 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2018/09/18/css-animation/" data-id="cjscssb5z001m8wjgyblzywby" class="article-share-link">Share</a>
+      <a data-url="https://claire1028.github.io/2018/09/18/css-animation/" data-id="cjzrtfj6e00018ojgrqo0ox0b" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CSS/">CSS</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-react-loop" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/07/12/react-loop/" class="article-date">
-  <time datetime="2018-07-12T04:10:00.000Z" itemprop="datePublished">2018-07-12</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/12/react-loop/">React中实现循环滑动效果难点</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>最近有这样一个需求，在h5页面上，向左/向右滑动循环显示数据项，效果如下：</p>
-<p><img src="/images/loop2.gif" alt=""></p>
-<p>比如有3个页面，从第一个页面向左滑动到第二个页面，或者从第二个页面向左滑动到第三个页面，很简单，只需要将left从0%切换到-100%，或从-100%更换到-200%，然后在对left增加transition属性，如：<code>transition: left 0.5s</code>，就可以简单实现从第一张滑动到第二张，第二张到第三张，那么从第三个页面如何继续向左滑动到第一个页面，如果仅仅将left从-200%直接更换到0%，那么视觉上的效果就是从最后一页像右滑动到了第一页，滑动效果就变了，如下：</p>
-<p><img src="/images/loop1.gif" alt=""></p>
-<p>那么如何让从最后一张也保持不变的滑动效果滑动到第一张呢？</p>
-<p>从最后一张直接改变属性到第一个页面是不太可能实现该效果了，要实现向左滑动，那么动画的left属性还是得变的越来越小，如<code>-100%--&gt; -200%</code>，为了实现这个效果，我们可增加一个过渡页面，该过渡页面可与第一个页面一样，就是第一个页面的clone页面，作为第4个页面，即第当从第三个页面滑动到第一个页面的时候，实际上滑动到的是该过渡页面（第4个页面），再当从第4个页面继续向左滑动的时候，那么应该滑动到第2个页面，这时可先设置<code>setState({left：0})</code>（render页面的时候并没有变化，由于当前的第4个页面就是第一个页面的clone)，在该<code>setState</code> 的<code>callback</code>中再设置<code>left: -100%</code>，这时left的属性就是从0–&gt;-100%，即实现了向左滑动的效果的条件。<br>代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">this.outerStyle = &#123;</span><br><span class="line">    left: 0</span><br><span class="line">  &#125;;</span><br><span class="line">  this.setState(</span><br><span class="line">    &#123;</span><br><span class="line">      curPage: 1,</span><br><span class="line">      outerStyle: this.outerStyle</span><br><span class="line">    &#125;,</span><br><span class="line">    () =&gt; &#123;</span><br><span class="line">      this.outerStyle = &#123;</span><br><span class="line">        left: `-$&#123;this.indicator * 100&#125;%`,</span><br><span class="line">        transition: `left 0.5s`</span><br><span class="line">      &#125;;</span><br><span class="line">       this.setState(&#123;outerStyle: this.outerStyle&#125;);</span><br><span class="line">    &#125;</span><br><span class="line">  );</span><br></pre></td></tr></table></figure></p>
-<p>但是另一个问题又来了，为何<code>setState  left：0</code>好像没起作用， 浏览器直接从当前状态直接过度到了<code>setState callback</code>中的状态？</p>
-<p>原来是由于在一个渲染帧中，<strong>浏览器会忽略中间的状态，直接渲染最后一个状态</strong>，所以其中的<code>left:0</code>效果会没有了，如A-&gt;B-&gt;C, B和C在一个渲染帧中，那么我们将直接看见从A-&gt;C的变化状态，而忽略B的状态，从根本上的解决该问题就是让这2个状态在2个渲染帧中，解决方法有如下：</p>
-<p>1.将C的状态放在setTimeout中，最好timeout时间超过16.7ms（1/60），如果timeout设为0，在某些浏览器可能不工作<br> <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">setTimeout(() =&gt; &#123;</span><br><span class="line">   this.setState(&#123;outerStyle: this.outerStyle&#125;);</span><br><span class="line"> &#125;, 20);</span><br></pre></td></tr></table></figure></p>
-<p>2.采用requestAnimationFrame<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">requestAnimationFrame(() =&gt; &#123;</span><br><span class="line">   this.setState(&#123;outerStyle: this.outerStyle&#125;);</span><br><span class="line"> &#125;);</span><br></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://claire1028.github.io/2018/07/12/react-loop/" data-id="cjscssb4p00158wjgd17v7w24" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/React/">React</a></li></ul>
 
     </footer>
   </div>
@@ -702,7 +703,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/CSS/" style="font-size: 10px;">CSS</a> <a href="/tags/JS/" style="font-size: 16.67px;">JS</a> <a href="/tags/JS-设计模式/" style="font-size: 20px;">JS-设计模式</a> <a href="/tags/React/" style="font-size: 16.67px;">React</a> <a href="/tags/TS/" style="font-size: 10px;">TS</a> <a href="/tags/Webpack/" style="font-size: 13.33px;">Webpack</a> <a href="/tags/node/" style="font-size: 10px;">node</a>
+      <a href="/tags/CSS/" style="font-size: 10px;">CSS</a> <a href="/tags/JS/" style="font-size: 15px;">JS</a> <a href="/tags/JS-设计模式/" style="font-size: 20px;">JS-设计模式</a> <a href="/tags/React/" style="font-size: 17.5px;">React</a> <a href="/tags/TS/" style="font-size: 10px;">TS</a> <a href="/tags/Webpack/" style="font-size: 12.5px;">Webpack</a> <a href="/tags/node/" style="font-size: 10px;">node</a>
     </div>
   </div>
 
@@ -711,7 +712,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li></ul>
     </div>
   </div>
 
@@ -722,6 +723,10 @@
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2019/03/20/react-angular/">React Vs Angular</a>
+          </li>
         
           <li>
             <a href="/2019/02/20/redux/">Redux的applyMiddleware源码分析</a>
@@ -737,10 +742,6 @@
         
           <li>
             <a href="/2018/12/21/js-encode/">JS中常用的编码格式</a>
-          </li>
-        
-          <li>
-            <a href="/2018/10/25/jest-enzyme/">jest + enzmye + ts测试react踩坑记</a>
           </li>
         
       </ul>
