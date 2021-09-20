@@ -1,0 +1,434 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="Subject继承至Observable, 是一种特殊类型的Observable，支持同时输出值到多个订阅者，自己维护一个订阅者序列，就像是观察者模式。">
+  <meta name="author" content="Ting&#39;s">
+  <meta name="keywords" content="">
+  
+  <title>Rxjs源码分析(四)--Subject类 - Ting&#39;s blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"claire1028.github.io","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Ting's blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                Home
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                Archive
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                Tags
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                About
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/dark.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="Rxjs源码分析(四)--Subject类">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2019-11-06 12:10" pubdate>
+        November 6, 2019 pm
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.5k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      21
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Rxjs源码分析(四)--Subject类</h1>
+            
+            <div class="markdown-body">
+              <p>Subject继承至Observable, 是一种特殊类型的Observable，支持同时输出值到多个订阅者，自己维护一个订阅者序列，就像是观察者模式。</p>
+<span id="more"></span>
+
+<p>下面我们看看源码：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-comment">// 构造函数直接调用的Observable构造函数，本身并没有什么初始化内容</span><br><span class="hljs-keyword">constructor</span>() &#123;<br>  <span class="hljs-keyword">super</span>();<br>&#125;<br><br><span class="hljs-comment">// this.observers是订阅者队列，Subject对象调用next方法时，则将值传播给每个订阅者对象。</span><br><span class="hljs-comment">// 同理error，complete方法也是一样</span><br>next(value?: T) &#123;<br>  <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.closed) &#123;<br>    <span class="hljs-keyword">throw</span> new ObjectUnsubscribedError();<br>  &#125;<br>  <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>.isStopped) &#123;<br>    <span class="hljs-keyword">const</span> &#123; observers &#125; = <span class="hljs-keyword">this</span>;<br>    <span class="hljs-keyword">const</span> len = observers.length;<br>    <span class="hljs-keyword">const</span> copy = observers.slice();<br>    <span class="hljs-keyword">for</span> (let i = <span class="hljs-number">0</span>; i &lt; len; i++) &#123;<br>      copy[i].next(value);<br>    &#125;<br>  &#125;<br>&#125;<br><br><span class="hljs-comment">// Subject继承自Observable，当Subject对象调用Subscribe方法时，则通过原型链找到Observable上的方法Subscribe，而Subscribe方法</span><br><span class="hljs-comment">// 内部则调用了this._subscribe方法(具体可以看Observable类源码分析),</span><br><span class="hljs-comment">// 通过下面的方法，则将订阅者push到this.observers数组中。</span><br>_subscribe(subscriber: Subscriber&lt;T&gt;): Subscription &#123;<br>  <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.closed) &#123;<br>    <span class="hljs-keyword">throw</span> new ObjectUnsubscribedError();<br>  &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.hasError) &#123;<br>    subscriber.error(<span class="hljs-keyword">this</span>.thrownError);<br>    <span class="hljs-keyword">return</span> Subscription.EMPTY;<br>  &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.isStopped) &#123;<br>    subscriber.complete();<br>    <span class="hljs-keyword">return</span> Subscription.EMPTY;<br>  &#125; <span class="hljs-keyword">else</span> &#123;<br>    <span class="hljs-keyword">this</span>.observers.push(subscriber);<br>    <span class="hljs-keyword">return</span> new SubjectSubscription(<span class="hljs-keyword">this</span>, subscriber);<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>由于Subject自带next, error, complete等方法，则Subject对象可以作为参数传进Observable.subscribe方法中，<br>如：observable$.subscribe(new Subject());</p>
+<p>Subject还有3中类型的传播值的方式，这三种都extends自Subject类</p>
+<p><strong>1.BehaviorSubject</strong><br>储存最新的值，并将最新的值发给订阅者，一旦订阅者subscribe，则将会收到最新存储的值，下面我们看看源码</p>
+<figure class="highlight axapta"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs axapta"><span class="hljs-comment">// 构造函数中赋值了个内部变量_value保存当前的值</span><br>constructor(<span class="hljs-keyword">private</span> _value: T) &#123;<br>  <span class="hljs-keyword">super</span>();<br>&#125;<br><br><br>_subscribe(subscriber: Subscriber&lt;T&gt;): Subscription &#123;<br>  <span class="hljs-keyword">const</span> subscription = <span class="hljs-keyword">super</span>._subscribe(subscriber); <span class="hljs-comment">// 将当前subscriber加入到observers队列中</span><br>  <span class="hljs-keyword">if</span> (subscription &amp;&amp; !(&lt;SubscriptionLike&gt;subscription).closed) &#123;<br>    subscriber.<span class="hljs-keyword">next</span>(<span class="hljs-keyword">this</span>._value); <span class="hljs-comment">// 调用subscriber的next方法，并传入当前值</span><br>  &#125;<br>  <span class="hljs-keyword">return</span> subscription;<br>&#125;<br><br><span class="hljs-keyword">next</span>(value: T): <span class="hljs-keyword">void</span> &#123;<br>  <span class="hljs-keyword">super</span>.<span class="hljs-keyword">next</span>(<span class="hljs-keyword">this</span>._value = value); 调用Subject的<span class="hljs-keyword">next</span>方法，将当前值多播<br>&#125;<br></code></pre></td></tr></table></figure>
+<p><strong>2.AsyncSubject</strong><br>当complete结束时，将Subject最后的值传给订阅者</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs kotlin">_subscribe(subscriber: Subscriber&lt;any&gt;): Subscription &#123;<br>  <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.hasError) &#123;<br>    subscriber.error(<span class="hljs-keyword">this</span>.thrownError);<br>    <span class="hljs-keyword">return</span> Subscription.EMPTY;<br>  &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.hasCompleted &amp;&amp; <span class="hljs-keyword">this</span>.hasNext) &#123;<br>    subscriber.next(<span class="hljs-keyword">this</span>.value); <span class="hljs-comment">//如果当前是已经结束的状态，则传值给订阅者</span><br>    subscriber.complete();<br>    <span class="hljs-keyword">return</span> Subscription.EMPTY;<br>  &#125;<br>  <span class="hljs-keyword">return</span> <span class="hljs-keyword">super</span>._subscribe(subscriber);<br>&#125;<br><br>next(value: T): void &#123;<br>  <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>.hasCompleted) &#123; <span class="hljs-comment">// 当前如果没有结束，则将最新的值重新赋值</span><br>    <span class="hljs-keyword">this</span>.value = value; <br>    <span class="hljs-keyword">this</span>.hasNext = <span class="hljs-literal">true</span>;<br>  &#125;<br>&#125;<br><br><span class="hljs-comment">// 调用该方法则执行结束，将hasCompleted变量至true，并将最新的值多播出去</span><br>complete(): void &#123;<br>  <span class="hljs-keyword">this</span>.hasCompleted = <span class="hljs-literal">true</span>; <br>  <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.hasNext) &#123; <br>    <span class="hljs-keyword">super</span>.next(<span class="hljs-keyword">this</span>.value); <br>  &#125;<br>  <span class="hljs-keyword">super</span>.complete();<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p><strong>3.ReplaySubject</strong><br>主要功能是当订阅者subscribe时候，可以获取最新的几个值，多长时间之前的值<br>接受3个参数，第一个参数是获取几个最新的值，第二个参数是时间，用于多久之前的值可以被存储，第三个参数表示调度模式</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-comment">// 初始化了bufferSize, windowTime，如果不传并赋默认值Number.POSITIVE_INFINITY，第三个参数表示调度模式</span><br><span class="hljs-keyword">constructor</span>(bufferSize: number = Number.POSITIVE_INFINITY,<br>            windowTime: number = Number.POSITIVE_INFINITY,<br>            <span class="hljs-keyword">private</span> scheduler?: SchedulerLike) &#123;<br>  <span class="hljs-keyword">super</span>();<br>  <span class="hljs-keyword">this</span>._bufferSize = bufferSize &lt; <span class="hljs-number">1</span> ? <span class="hljs-number">1</span> : bufferSize;<br>  <span class="hljs-keyword">this</span>._windowTime = windowTime &lt; <span class="hljs-number">1</span> ? <span class="hljs-number">1</span> : windowTime;<br><br>  <span class="hljs-keyword">if</span> (windowTime === Number.POSITIVE_INFINITY) &#123;<br>    <span class="hljs-keyword">this</span>._infiniteTimeWindow = <span class="hljs-literal">true</span>;<br>    <span class="hljs-keyword">this</span>.next = <span class="hljs-keyword">this</span>.nextInfiniteTimeWindow; <span class="hljs-comment">// 不同的时间分别对应不同的next方法</span><br>  &#125; <span class="hljs-keyword">else</span> &#123;<br>    <span class="hljs-keyword">this</span>.next = <span class="hljs-keyword">this</span>.nextTimeWindow;<br>  &#125;<br>&#125;<br><br><span class="hljs-comment">// 如果时间参数不传则next方法为下面这个，主要为将value传进_events数组中，如果超过bufferSize，则shift一个最前面的值</span><br><span class="hljs-keyword">private</span> nextInfiniteTimeWindow(value: T): void &#123;<br>  <span class="hljs-keyword">const</span> _events = <span class="hljs-keyword">this</span>._events;<br>  _events.push(value);<br>  <span class="hljs-keyword">if</span> (_events.length &gt; <span class="hljs-keyword">this</span>._bufferSize) &#123;<br>    _events.shift();<br>  &#125;<br>  <span class="hljs-keyword">super</span>.next(value); <span class="hljs-comment">// 调用Subject的next方法将值多播出去</span><br>&#125;<br><br><span class="hljs-comment">// 如果时间参数有值则next方法为下面这个，这里面和上面的稍微有点不同，由于有了时间限制的概念，所以在存储每个值的时候也需要存储每个// 值的时间，所以通过ReplayEvent类来新建对象(包含time和value2个属性)，_trimBufferThenGetEvents方法下面看下</span><br><span class="hljs-keyword">private</span> nextTimeWindow(value: T): void &#123;<br>  <span class="hljs-keyword">this</span>._events.push(new ReplayEvent(<span class="hljs-keyword">this</span>._getNow(), value));<br>  <span class="hljs-keyword">this</span>._trimBufferThenGetEvents();<br>  <span class="hljs-keyword">super</span>.next(value); <span class="hljs-comment">// 调用Subject的next方法将值多播出去</span><br>&#125;<br><br><span class="hljs-comment">// 该方法主要通过当前的时间和参数传进的时间做对比，还有bufferSize的大小，来决定this._events里的结果</span><br><span class="hljs-keyword">private</span> _trimBufferThenGetEvents(): ReplayEvent&lt;T&gt;[] &#123;<br>  <span class="hljs-keyword">const</span> now = <span class="hljs-keyword">this</span>._getNow();<br>  <span class="hljs-keyword">const</span> _bufferSize = <span class="hljs-keyword">this</span>._bufferSize;<br>  <span class="hljs-keyword">const</span> _windowTime = <span class="hljs-keyword">this</span>._windowTime;<br>  <span class="hljs-keyword">const</span> _events = &lt;ReplayEvent&lt;T&gt;[]&gt;<span class="hljs-keyword">this</span>._events;<br><br>  <span class="hljs-keyword">const</span> eventsCount = _events.length;<br>  let spliceCount = <span class="hljs-number">0</span>;<br><br>  <span class="hljs-keyword">while</span> (spliceCount &lt; eventsCount) &#123;<br>    <span class="hljs-keyword">if</span> ((now - _events[spliceCount].time) &lt; _windowTime) &#123;<br>      <span class="hljs-keyword">break</span>;<br>    &#125;<br>    spliceCount++; <span class="hljs-comment">// 找出几个不在规定时间内的events</span><br>  &#125;<br><br>  <span class="hljs-keyword">if</span> (eventsCount &gt; _bufferSize) &#123;<br>    spliceCount = Math.max(spliceCount, eventsCount - _bufferSize); <br>    <span class="hljs-comment">// 通过比较不在规定时间内的数量和传进的bufferSize大小，决定最终删除几个events</span><br>  &#125;<br><br>  <span class="hljs-keyword">if</span> (spliceCount &gt; <span class="hljs-number">0</span>) &#123;<br>    _events.splice(<span class="hljs-number">0</span>, spliceCount); <span class="hljs-comment">// 删除不需要的events</span><br>  &#125;<br><br>  <span class="hljs-keyword">return</span> _events;<br>&#125;<br><br><span class="hljs-comment">// 看看ReplaySubject的subscribe方法</span><br>_subscribe(subscriber: Subscriber&lt;T&gt;): Subscription &#123;<br>  <span class="hljs-keyword">const</span> _infiniteTimeWindow = <span class="hljs-keyword">this</span>._infiniteTimeWindow;<br>  <span class="hljs-keyword">const</span> _events = _infiniteTimeWindow ? <span class="hljs-keyword">this</span>._events : <span class="hljs-keyword">this</span>._trimBufferThenGetEvents();<br>  <span class="hljs-comment">// 获取当前的_events, 不明白为何这边这样写，this._events === this._trimBufferThenGetEvents()的</span><br><br>  <span class="hljs-keyword">const</span> scheduler = <span class="hljs-keyword">this</span>.scheduler;<br>  <span class="hljs-keyword">const</span> len = _events.length;<br>  let subscription: Subscription;<br><br>   <span class="hljs-comment">// error或者销毁的情况处理</span><br>  <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.closed) &#123;<br>    <span class="hljs-keyword">throw</span> new ObjectUnsubscribedError();<br>  &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.isStopped || <span class="hljs-keyword">this</span>.hasError) &#123;<br>    subscription = Subscription.EMPTY;<br>  &#125; <span class="hljs-keyword">else</span> &#123;<br>    <span class="hljs-comment">// 添加subscriber到observers数组中</span><br>    <span class="hljs-keyword">this</span>.observers.push(subscriber);<br>    subscription = new SubjectSubscription(<span class="hljs-keyword">this</span>, subscriber); <span class="hljs-comment">// 创建将来被销毁的资源</span><br>  &#125;<br><br>  <span class="hljs-keyword">if</span> (scheduler) &#123; <span class="hljs-comment">// scheduler是对方法的调度，用于何时执行</span><br>    subscriber.add(subscriber = new ObserveOnSubscriber&lt;T&gt;(subscriber, scheduler));<br>  &#125;<br><br>  <span class="hljs-comment">// 将当前的events里的值传给subscriber的next函数，获取最新的几个值</span><br>  <span class="hljs-keyword">if</span> (_infiniteTimeWindow) &#123;<br>    <span class="hljs-keyword">for</span> (let i = <span class="hljs-number">0</span>; i &lt; len &amp;&amp; !subscriber.closed; i++) &#123;<br>      subscriber.next(&lt;T&gt;_events[i]);<br>    &#125;<br>  &#125; <span class="hljs-keyword">else</span> &#123;<br>    <span class="hljs-keyword">for</span> (let i = <span class="hljs-number">0</span>; i &lt; len &amp;&amp; !subscriber.closed; i++) &#123;<br>      subscriber.next((&lt;ReplayEvent&lt;T&gt;&gt;_events[i]).value);<br>    &#125;<br>  &#125;<br><br>  <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.hasError) &#123;<br>    subscriber.error(<span class="hljs-keyword">this</span>.thrownError);<br>  &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.isStopped) &#123;<br>    subscriber.complete();<br>  &#125;<br><br>  <span class="hljs-keyword">return</span> subscription;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>Subject又提供了3种不同类型的subject，方便了在不同场合的应用，如Rxjs利用BehaviorSubject可以做成类似redux的状态管理，因为BehaviorSubject存储当前最新的值，并可以获取当前最新的值，且本身Rxjs就很适合异步应用，<a target="_blank" rel="noopener" href="https://github.com/claire1028/React-Rxjs">简单的实现可以看这儿</a></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Rxjs/">Rxjs</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/03/18/graphql-security/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">如何预防Graphql安全问题</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2019/11/05/rxjs-Subscription/">
+                        <span class="hidden-mobile">Rxjs源码分析(三)--Subscription类</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+    
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

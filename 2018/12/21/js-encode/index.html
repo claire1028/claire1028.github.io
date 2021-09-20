@@ -1,0 +1,453 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="Ting&#39;s">
+  <meta name="keywords" content="">
+  
+  <title>JS中常用的编码格式 - Ting&#39;s blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"claire1028.github.io","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Ting's blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                Home
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                Archive
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                Tags
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                About
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/dark.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="JS中常用的编码格式">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2018-12-21 10:10" pubdate>
+        December 21, 2018 am
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      850 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      10
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">JS中常用的编码格式</h1>
+            
+            <div class="markdown-body">
+              <p><strong>Unicode</strong>：规定将全球的语言纳入一个字符集，即每种语言中的每个字符都有一个唯一的编码，以便可以跨平台，跨系统，跨语言而不冲突，且不用安装特定的字符集来解释某个国家的语言。</p>
+<p>而<code>UTF-8</code>和<code>UTF-16</code>和<code>UTF-32</code>则是对<code>Unicode</code>字符集的具体实现的方法。</p>
+<p><strong>UTF-8</strong>: 在1-4个字节中变长表示，比如数字或字母采用1个字节表示，在node中，一般默认采用该方法。</p>
+<p><img src="/images/encode1.png" srcset="/img/loading.gif" lazyload></p>
+<p><strong>UTF-16</strong>: 采用2字节或4字节变长表示。</p>
+<p><img src="/images/encode2.png" srcset="/img/loading.gif" lazyload></p>
+<p><strong>UTF-32</strong>: 全部用4字节表示，不兼容<code>ASCII</code>编码，容易浪费空间。</p>
+<p><strong>UCS-2</strong> ： JS里的编码表示，采用固定2个字节，后来被<code>UTF-16</code>取代了，也就是说<code>UTF-16</code>将<code>UCS-2</code>包含在其中。所以现在JS也就是采用<code>UTF-16</code>表示。</p>
+<p>由于<code>UTF-16</code>一般是2个字节表示的，所以对于单字母，比如<code>&#39;a&#39; 0x61</code>只需占一个字节，那么是采取<code>[0x00,0x61]</code>还是<code>[0x61,0x00]</code>的表示表示呢，则设计到2种表示法，LE和BE，而对于<code>UTF-8</code>则没有这种顾虑.</p>
+<ul>
+<li><strong>UTF-16LE</strong>：<code>LE</code>是指<code>little endian</code>， 表示高地址放高位字节，a字符用LE表示则为<code>[0x61,0x00]</code></li>
+<li><strong>UTF-16BE</strong>：<code>BE</code>是指<code>Big endian</code>， 表示低地址存放高位字节，符合我们平常的阅读习惯，用BE表示则为<code>[0x00, 0x61]</code></li>
+</ul>
+<p>那么在文件传输中如何表示该文件是什么编码格式呢？</p>
+<p>使用<code>BOM(byte-order mark)</code>即字节顺序标记，表示该文件是LE还是BE，常被用来当做标示文件是以<code>UTF-8、UTF-16</code>或<code>UTF-32</code>编码的标记，在文件的开头会有如下编码标识：</p>
+<ul>
+<li><code>UTF-16</code>大端表示：<code>[0xFE, 0xFF]</code>，小端则是：<code>[0xFF, 0xFE]</code></li>
+<li><code>UTF-32</code>大端表示：<code>[0x00 0x00 0xFE 0xFF]</code>，小端则是: <code>[0xFF 0xFE 0x00 0x00]</code></li>
+<li>而在<code>UTF-8</code>里的表示则是：<code>[0xEF 0xBB 0xBF]</code>， 一般是用来标示该文件是<code>UTF-8</code>编码，而不用来说明字节顺序。</li>
+</ul>
+<p>汉字的长度在js中的长度是1，如 <code>&#39;好&#39;.length = 1;</code> 这里的1表示一个编码单元，而 <strong>不是占用的字节长度</strong> 。<br>如果想要计算字符串(含有汉字和字符)占的字节长度，可以用如下代码表示：</p>
+<figure class="highlight arcade"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs arcade"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getCharBytes</span>(<span class="hljs-params">str</span>) </span>&#123;<br>  <span class="hljs-keyword">return</span> str.replace(<span class="hljs-regexp">/[^\u0000-\u00ff]/g</span>,<span class="hljs-string">&quot;aa&quot;</span>).length; <span class="hljs-comment">// 当字符unicode编码不在0000-00ff之间时，用两个字符替换，即占字节数2</span><br> &#125;<br></code></pre></td></tr></table></figure>
+
+<p>但是有一些生僻字是用4个字节表示的，即超过了0xFFFF，比如：’𠮷’，<code>&#39;𠮷&#39;.length = 2;</code> 由于一个编码单元不能表示，所以需2个编码单元来表示，但是长度是2是错误的，在es5中是只能自己手动处理，但是在es6中我们可以使用<code>Array.from(&#39;𠮷&#39;).length</code> 来正确处理，输出1。</p>
+<p>匹配所有字符是否都是汉字，如下所示：</p>
+<figure class="highlight ada"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs ada"><span class="hljs-keyword">function</span> <span class="hljs-title">checkIsChinaChar</span>(char) &#123;<br>  <span class="hljs-keyword">return</span> <span class="hljs-type">/^[\u4e00-\u9fa5]+$/g.test(char)</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>一些常用其他编码术语：</p>
+<p><strong>ASCII</strong>: 一个字节，128位字母和数字表示。</p>
+<p><strong>Base64</strong>：是一种基于64个可打印字符来表示二进制数据的表示方法</p>
+<p><strong>Latin1</strong>: 单字节编码，向下兼容ASCII。</p>
+<p><strong>GBK</strong>：汉字内码扩展的规范，兼容ASCII，不支持韩国字，如果程序只是面向汉字，可以采用该编码。</p>
+<p><strong>Binary</strong>：二进制</p>
+<p><strong>HEX</strong>: 十六进制</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/JS/">JS</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2019/01/15/loader/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">如何简单创建一个webpack loader</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2018/10/25/jest-enzyme/">
+                        <span class="hidden-mobile">jest + enzmye + ts测试react踩坑记</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+    
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

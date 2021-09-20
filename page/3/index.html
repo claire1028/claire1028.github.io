@@ -1,0 +1,752 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="Ting&#39;s">
+  <meta name="keywords" content="">
+  
+  <title>Ting&#39;s blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"claire1028.github.io","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 100vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Ting's blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                Home
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                Archive
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                Tags
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                About
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/dark.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="A journey of a thousand miles begins with a single step.">
+              
+            </span>
+
+            
+          </div>
+
+          
+            <div class="scroll-down-bar">
+              <i class="iconfont icon-arrowdown"></i>
+            </div>
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      <div class="container nopadding-x-md">
+        <div class="py-5" id="board"
+          style=margin-top:0>
+          
+          <div class="container">
+            <div class="row">
+              <div class="col-12 col-md-10 m-auto">
+                
+
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2018/06/11/babel-ES6-IE8/" target="_self">
+          Babel介绍
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2018/06/11/babel-ES6-IE8/" target="_self">
+          
+          
+            
+          
+          babel默认将es6语法转为es5，如果想要在低版本浏览器上支持es6新增的api，如Array.prototype.from等方法，则需要添加polyfill。
+babel的一些主要概念介绍
+babel-preset-env ： 将es2015 ，es2016，es2017的语法转为es5。
+
+babel-core： 包含transform方法，任何需要引用babel处理文件的，则需调用该方法
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2018-06-11 15:10" pubdate>
+              2018-06-11
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/JS/">JS</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2017/12/24/js-decorator-mode/" target="_self">
+          JavaScript装饰者模式
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2017/12/24/js-decorator-mode/" target="_self">
+          
+          
+            
+          
+          装饰者模式：在不改变对象自身的基础上,在程序运行期间给对象动态地添加新功能。
+例如我们要修改以前的一个功能，function a()&#123;...&#125;,一般我们的做法是直接在a函数中添加代码，但是这样容易引起bug，万一别处调用了该函数，而我们万一又没测试到，这时可以引入装饰者模式。如：
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2017-12-24 10:10" pubdate>
+              2017-12-24
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/JS-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">JS-设计模式</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2017/12/24/js-mediator-mode/" target="_self">
+          JavaScript中介模式
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2017/12/24/js-mediator-mode/" target="_self">
+          
+          
+            
+          
+          中介模式：当对象和对象之间存在多对多的关系时，对象之间存在紧耦合关系，如果修改某一处对象，则可能会导致整个程序down了。而中介者模式是解耦对象之间的紧耦合关系，让对象和对象之间不再是直接联系，让是让对象和中介联系，通过中介获得相关的信息来处理。
+生活中常见的场景是比如火车出发和到达站台，需要由指挥调度中心来发出信息，该列车是否可以出发了，或者该列车应该停靠哪个站台，而不用让该列车去联系其他列车A
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2017-12-24 09:10" pubdate>
+              2017-12-24
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/JS-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">JS-设计模式</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2017/12/24/js-chain-mode/" target="_self">
+          JavaScript职责链模式
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2017/12/24/js-chain-mode/" target="_self">
+          
+          
+            
+          
+          职责链模式：将多个接收者串成一条链子的形式，让请求的对象在该条链子上被传送，直到某个对象可以处理。
+场景是在对象发送出时，有多个接收者可以处理该发送者的请求，一般在业务中会经常遇到一个场景，点击某个button以后，比如投资，第一个条件是否实名过，如果未实名，则提示需实名，第二个条件是如果已经实名，当余额不足时，弹出dialog让去充值，第三个条件是当余额充足时，是否已经测评过，如果未测评，则弹出
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2017-12-24 08:10" pubdate>
+              2017-12-24
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/JS-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">JS-设计模式</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2017/12/23/js-flyweight-mode/" target="_self">
+          JavaScript享元模式
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2017/12/23/js-flyweight-mode/" target="_self">
+          
+          
+            
+          
+          享元模式：剥离出对象的外部状态和内部状态，将内部状态放在类中，外部状态可以通过同一个对象共享，即用相对较少的共享对象取代大量对象，常用在创建很多类似的对象而导致内存过高的场景中。
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2017-12-23 09:30" pubdate>
+              2017-12-23
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/JS-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">JS-设计模式</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2017/12/22/js-template-mode/" target="_self">
+          JavaScript模板模式
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2017/12/22/js-template-mode/" target="_self">
+          
+          
+            
+          
+          模板模式：模板模式是由2部分组成，第一部分是抽象父类，第二部分是子类实现，父类是对子类接口方法的定义和实现，而子类需实现父类定义的方法接口，也可以覆盖父类的方法实现。
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2017-12-22 09:20" pubdate>
+              2017-12-22
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/JS-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">JS-设计模式</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2017/12/22/js-command-mode/" target="_self">
+          JavaScript命令模式
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2017/12/22/js-command-mode/" target="_self">
+          
+          
+            
+          
+          命令模式：命令是指执行特定事情的一个指令，在js中，其实高阶函数就是对命令模式的应用，将函数作为参数在整个生命周期中传递，那么函数参数就是个命令指令。
+最常见的使用场景是请求者和接收者之间并不知道对方是谁，通过命令(一般是函数)来将彼此之间连接起来。
+如果写UI的和js逻辑的是2个人，对于写UI的并不关注比如button的click事件是如何执行的，而只是预留一个onclick事件。对于写js逻辑
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2017-12-22 09:19" pubdate>
+              2017-12-22
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/JS-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">JS-设计模式</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2017/12/22/js-compose-mode/" target="_self">
+          JavaScript组合模式
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2017/12/22/js-compose-mode/" target="_self">
+          
+          
+            
+          
+          组合模式：组合模式是用小的子对象来构建更大的对象，而这些小的子对象本身也许是由更小的对象构成的。父对象和子对象拥有共同的对象接口，而他们可以组合在一起组成一个更强大的数据结构。一般由子对象进行处理，如果传递到还是非子对象，则继续往下传递直到子对象为止。
+类似于命令模式将事件包装成有统一接口的模式，而组合模式就是父对象和子对象就是有相同的对外接口，这里的父对象和子对象并不是父子关系，只是包含组合关系
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2017-12-22 09:19" pubdate>
+              2017-12-22
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/JS-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">JS-设计模式</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2017/12/22/js-observe-mode/" target="_self">
+          JavaScript观察者模式
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2017/12/22/js-observe-mode/" target="_self">
+          
+          
+            
+          
+          观察者模式：是一对多的模式，当订阅到某个对象上，当该对象改变时，将会通知所有依赖它的对象。
+在js中，很多都是观察者模式，比如事件的click，先在某个元素上注册一个onclick事件，但并不知道该click事件什么时候会触发，待等到用户触发的时候再执行函数。类似的，在node中Events事件也是观察者模式，emit触发某个事件，然后再on事件中就会收到事件触发的信息。
+观察者模式可以替代异步的
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2017-12-22 09:10" pubdate>
+              2017-12-22
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/JS-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">JS-设计模式</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2017/12/22/js-proxy-mode/" target="_self">
+          JavaScript代理模式
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2017/12/22/js-proxy-mode/" target="_self">
+          
+          
+            
+          
+          代理模式：当某个接口或者对象不满足我们的需求时，再重新定义一个对象来满足需求，重新定义的对象然后访问本体对象。
+在代码中我们经常会遇到，如果某个ajax请求已经请求过了，那么将该api返回的数据结果缓存起来，那么下次再次请求该api，则会先从缓存中查找是否有该值，如果有，则返回，否则请求。这种情况提供的缓存逻辑，也属于代理模式。
+通常我们也会遇到监听window上的scroll事件，当用户滚动鼠标
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2017-12-22 08:10" pubdate>
+              2017-12-22
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/JS-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">JS-设计模式</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+
+
+  <nav aria-label="navigation">
+    <span class="pagination" id="pagination">
+      <a class="extend prev" rel="prev" href="/page/2/#board"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/#board">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/#board">4</a><a class="extend next" rel="next" href="/page/4/#board"><i class="iconfont icon-arrowright"></i></a>
+    </span>
+  </nav>
+
+
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+    
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

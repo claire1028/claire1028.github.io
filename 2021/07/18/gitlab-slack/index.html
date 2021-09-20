@@ -1,0 +1,424 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="Ting&#39;s">
+  <meta name="keywords" content="">
+  
+  <title>如何在Gitlab pipeline中自动创建发布文档和并集成slack - Ting&#39;s blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"claire1028.github.io","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Ting's blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                Home
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                Archive
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                Tags
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                About
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/dark.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="如何在Gitlab pipeline中自动创建发布文档和并集成slack">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-07-18 20:10" pubdate>
+        July 18, 2021 pm
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      575 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      7
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">如何在Gitlab pipeline中自动创建发布文档和并集成slack</h1>
+            
+            <div class="markdown-body">
+              <p>在发布流程中我们经常需要查看当前的release 是否包含了别人的修改，并且我们还需要通知QA当前的这次发布是否可以上线，如果每次都手动去查看code 的commit changes ，然后找到相应的 code owner，效率太低并且有时候会遗漏，所以我们需要在Pipeline 中增加自动创建发布的文档，其中包括当前这次发布中包含的所有的待上线的commit 和相应的owner，并通知到Slack channel 中通知QA和相应的开发。</p>
+<p>那么如何自动生成发布文档呢，首先我们发现gitlab自己携带了wiki功能，所以我们需要先在设置中<code>enable wiki</code>，<br>Wiki Enable 了之后，需要在pipeline中去创建并生成，Gitlab 本身提供了一系列的API去上传相应的内容到wiki中，<br>当Wiki生成完之后，我们需要在Slack channel中通知大家，那么这时候需要用到Slack 的webhook url, 至于如何得到 slack 的webhook url，可以自行google下。</p>
+<p>当解决思路都串起来之后，我们就需要实现相应的流程在pipeline中，</p>
+<p>1，设置如下相应的变量在gitlab ci yaml 配置中</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs awk">RELEASE_NOTE_PATH: <span class="hljs-string">&#x27;&#123;your project wiki url&#125;/-/wikis/&#x27;</span> <span class="hljs-regexp">//gi</span>tlab 项目wiki的url<br>SLACK_CHANNEL_NAME: <span class="hljs-string">&#x27;slack channel name&#x27;</span> <span class="hljs-regexp">//</span> 需要通知的channel名字<br>SLACK_WEBHOOK_URL: <span class="hljs-string">&#x27;&#x27;</span>  <br></code></pre></td></tr></table></figure>
+<p>2, 设置创建发布的文档job stage</p>
+<figure class="highlight dsconfig"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs dsconfig"><span class="hljs-string">stages</span>:<br>  - ...<br>  - <span class="hljs-built_in">create-release-note</span>    <br>- ...<br><br> // 实现<span class="hljs-built_in">create-release-note</span> <span class="hljs-string">stage</span><br><span class="hljs-built_in">create-release-note:</span><br>  <span class="hljs-string">stage</span>: <span class="hljs-built_in">create-release-note</span><br>  <span class="hljs-string">when</span>: <span class="hljs-string">manual</span><br>  <span class="hljs-string">allow_failure</span>: <span class="hljs-string">true</span><br>  <span class="hljs-string">script</span>: <br>    - <span class="hljs-string">apk</span> <span class="hljs-string">add</span> <span class="hljs-string">git</span> <span class="hljs-string">bash</span><br>    - <span class="hljs-string">export</span> <span class="hljs-string">NOTIFICATION_HEADER</span>=<span class="hljs-string">&quot;Release &#123;Your prject name&#125; &quot;</span>  // 标题可以自定义<br>    - <span class="hljs-string">export</span> <span class="hljs-string">NOTIFICATION_MSG</span>=<span class="hljs-string">&quot;- Release Note:\n$&#123;RELEASE_NOTE_PATH&#125;&quot;</span> // 消息可以自定义<br>    - <span class="hljs-string">file_url</span>=<span class="hljs-string">&quot;&#123;Your prject name&#125;-release_$&#123;CI_COMMIT_TAG&#125;&quot;</span> // 生成的文档的<span class="hljs-string">url</span><br>    - <span class="hljs-string">LAST_VERSION</span>=$(<span class="hljs-string">curl</span> -<span class="hljs-string">k</span> <span class="hljs-string">&#x27;Here need get your latest released version.json&#x27;</span> | <span class="hljs-string">grep</span> <span class="hljs-string">&#x27;version&#x27;</span> | <span class="hljs-string">sed</span> <span class="hljs-string">&#x27;s/[^0-9.]*//g&#x27;</span>)<br>    - ./<span class="hljs-string">scripts</span>/<span class="hljs-string">update-release-note-to-wiki</span>.<span class="hljs-string">sh</span> <span class="hljs-string">&quot;v$&#123;LAST_VERSION&#125;&quot;</span> <span class="hljs-string">&quot;Your prject name&quot;</span> <span class="hljs-string">&quot;Your project approver&quot;</span>  // 上传到<span class="hljs-string">wiki</span><br>    // 发送消息到<span class="hljs-string">slack</span> <span class="hljs-string">channel</span><br>    - ./<span class="hljs-string">scripts</span>/<span class="hljs-string">slack-notify</span>.<span class="hljs-string">sh</span> <span class="hljs-string">&quot;$&#123;SLACK_WEBHOOK_URL&#125;&quot;</span> <span class="hljs-string">&quot;$&#123;SLACK_CHANNEL_NAME&#125;&quot;</span> <span class="hljs-string">&quot;$CI_PIPELINE_URL&quot;</span> <span class="hljs-string">&quot;$NOTIFICATION_HEADER$CI_COMMIT_TAG:\n$NOTIFICATION_MSG$file_url&quot;</span><br><br></code></pre></td></tr></table></figure>
+
+<p>3,  发送消息到slack channel，我们可以使用shell脚本来实现，代码如下：<br><img src="/images/gitlab-1.png" srcset="/img/loading.gif" lazyload><br><img src="/images/gitlab-2.png" srcset="/img/loading.gif" lazyload><br><img src="/images/gitlab-3.png" srcset="/img/loading.gif" lazyload></p>
+<p>4, 如何上传到gitlab wiki，我们也可以使用shell 脚本来实现，代码如下：<br>wiki content 可以自定义<br><img src="/images/gitlab-4.png" srcset="/img/loading.gif" lazyload><br><img src="/images/gitlab-5.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/images/gitlab-6.png" srcset="/img/loading.gif" lazyload></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Gitlab/">Gitlab</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/05/15/mjml-cutom-tag/">
+                        <span class="hidden-mobile">如何在Mjml中创建自定义标签</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+    
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

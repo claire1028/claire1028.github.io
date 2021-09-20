@@ -1,0 +1,448 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="node虽然是单进程单线程运行的，但是也提供创建子进程让程序运行的更加快速，稳健。创建方法如下：">
+  <meta name="author" content="Ting&#39;s">
+  <meta name="keywords" content="">
+  
+  <title>Node中子进程的创建和cluster原理 - Ting&#39;s blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"claire1028.github.io","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Ting's blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                Home
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                Archive
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                Tags
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                About
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/dark.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="Node中子进程的创建和cluster原理">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2018-09-21 12:10" pubdate>
+        September 21, 2018 pm
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.2k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      19
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Node中子进程的创建和cluster原理</h1>
+            
+            <div class="markdown-body">
+              <p>node虽然是单进程单线程运行的，但是也提供创建子进程让程序运行的更加快速，稳健。创建方法如下：</p>
+<span id="more"></span>
+<h4 id="spawn："><a href="#spawn：" class="headerlink" title="spawn："></a>spawn：</h4><p>用法：<code>spawn(command[, args][, options])</code>，具体的参数请看官网。</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs awk"><span class="hljs-regexp">//</span> app.js<br>const &#123; spawn &#125; = require(<span class="hljs-string">&#x27;child_process&#x27;</span>);<br>var sp1 = spawn(<span class="hljs-string">&#x27;node&#x27;</span>, [<span class="hljs-string">&#x27;test.js&#x27;</span>, <span class="hljs-string">&#x27;one&#x27;</span>, <span class="hljs-string">&#x27;two&#x27;</span>,<span class="hljs-string">&#x27;three&#x27;</span>],&#123;stdio:[<span class="hljs-string">&#x27;pipe&#x27;</span>,<span class="hljs-string">&#x27;ipc&#x27;</span>, <span class="hljs-string">&#x27;ignore&#x27;</span>]&#125;);<br>var sp2 = spawn(<span class="hljs-string">&#x27;node&#x27;</span>,[<span class="hljs-string">&#x27;test1.js&#x27;</span>],&#123;stdio:[<span class="hljs-string">&#x27;pipe&#x27;</span>]&#125;);<br><br>sp1.on(<span class="hljs-string">&#x27;message&#x27;</span>, <span class="hljs-keyword">function</span>(data)&#123;<br>  console.log(<span class="hljs-string">&#x27;child out:&#x27;</span>+data);<br>  sp2.stdin.write(data);<br>&#125;);<br>sp1.on(<span class="hljs-string">&#x27;exit&#x27;</span>,<span class="hljs-keyword">function</span>(code, signal)&#123;<br>  console.log(<span class="hljs-string">&#x27;exit:&#x27;</span> +code);<br>  process.<span class="hljs-keyword">exit</span>();<br>&#125;);<br>sp1.on(<span class="hljs-string">&#x27;error&#x27;</span>, <span class="hljs-keyword">function</span>(err)&#123;<br>  console.log(<span class="hljs-string">&#x27;error:&#x27;</span>+err);<br>  process.<span class="hljs-keyword">exit</span>();<br>&#125;);<br>sp1.on(<span class="hljs-string">&#x27;disconnect&#x27;</span>,<span class="hljs-keyword">function</span>()&#123;<br>  console.log(<span class="hljs-string">&#x27;ipc closed&#x27;</span>);<br>&#125;);<br></code></pre></td></tr></table></figure>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs pgsql">// test.js<br>process.send(<span class="hljs-string">&#x27;cwd:&#x27;</span>+ process.cwd());<br>process.argv.<span class="hljs-keyword">forEach</span>(<span class="hljs-keyword">function</span>(val, <span class="hljs-keyword">index</span>)&#123;<br>   process.send(<span class="hljs-string">&#x27;\r\n&#x27;</span>+<span class="hljs-keyword">index</span>+<span class="hljs-string">&#x27;:&#x27;</span>+val);<br>&#125;)<br></code></pre></td></tr></table></figure>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs awk"><span class="hljs-regexp">//</span> test1.js<br><br>var fs = require(<span class="hljs-string">&#x27;fs&#x27;</span>);<br>var out = fs.createWriteStream(<span class="hljs-string">&#x27;./space.txt&#x27;</span>);<br>process.stdin.on(<span class="hljs-string">&#x27;data&#x27;</span>,<span class="hljs-keyword">function</span>(data)&#123;<br>  out.write(data);<br>&#125;);<br>process.stdin.on(<span class="hljs-string">&#x27;end&#x27;</span>,<span class="hljs-keyword">function</span>()&#123;<br>  process.<span class="hljs-keyword">exit</span>();<br>&#125;)<br></code></pre></td></tr></table></figure>
+<p>这时直接运行：<br><img src="/images/node1.png" srcset="/img/loading.gif" lazyload></p>
+<p>发现test.js 中的data还没发送完成到父进程，程序就exit 了，查看官网exit事件，有一句解释 <strong>当 ‘exit’ 事件被触发时，子进程的 stdio 流可能依然是打开的</strong> 。也就是说，子进程一旦结束就触发exit事件，但是数据有可能还没传输完成，这样就解释的通了，<br>我们注释掉exit事件，再看看运行结果：</p>
+<p><img src="/images/node2.png" srcset="/img/loading.gif" lazyload></p>
+<p>这样就运行正确了。</p>
+<h4 id="fork"><a href="#fork" class="headerlink" title="fork:"></a>fork:</h4><p>用法：<code>fork(modulePath[, args][, options])</code><br><code>[options]silent</code>： false继承父进程的stdio，设置为true，子进程的stdin、stdout和stderr都会通过管道传递到父进程，否则他们将会从父进程继承。<br><code>[options]stdio</code>：[0,1,2,’ipc’], 如果要设置该属性值，则必须有个值为‘ipc’，否则报错。<br>该方法默认建立IPC通道</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">// app.js</span><br><br><span class="hljs-keyword">const</span> &#123; fork &#125; = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;child_process&#x27;</span>);<br><span class="hljs-keyword">var</span> sp1 = fork(<span class="hljs-string">&#x27;test.js&#x27;</span>, [<span class="hljs-string">&#x27;one&#x27;</span>, <span class="hljs-string">&#x27;two&#x27;</span>,<span class="hljs-string">&#x27;three&#x27;</span>]);<br><span class="hljs-keyword">var</span> sp2 = fork(<span class="hljs-string">&#x27;test1.js&#x27;</span>,&#123;<span class="hljs-attr">silent</span>: <span class="hljs-literal">true</span>&#125;);<br><br>sp1.on(<span class="hljs-string">&#x27;message&#x27;</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>)</span>&#123;<br>  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&#x27;child out:&#x27;</span>+data);<br>  sp2.send(data);<br>&#125;);<br><br>sp2.stdout.on(<span class="hljs-string">&#x27;data&#x27;</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>)</span>&#123;<br>  <span class="hljs-built_in">console</span>.log(data.toString() + <span class="hljs-string">&#x27;\r\n&#x27;</span>);<br>&#125;);<br><br>sp1.on(<span class="hljs-string">&#x27;error&#x27;</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err</span>)</span>&#123;<br>  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&#x27;error:&#x27;</span>+err);<br>  process.exit();<br>&#125;);<br><br>sp1.on(<span class="hljs-string">&#x27;disconnect&#x27;</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>&#123;<br>  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&#x27;ipc closed&#x27;</span>);<br>&#125;);<br></code></pre></td></tr></table></figure>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs pgsql">// test.js<br>process.send(<span class="hljs-string">&#x27;cwd:&#x27;</span>+ process.cwd());<br>process.argv.<span class="hljs-keyword">forEach</span>(<span class="hljs-keyword">function</span>(val, <span class="hljs-keyword">index</span>)&#123;<br>  console.log(<span class="hljs-string">&#x27;44444&#x27;</span>);<br>   process.send(<span class="hljs-string">&#x27;\r\n&#x27;</span>+<span class="hljs-keyword">index</span>+<span class="hljs-string">&#x27;:&#x27;</span>+val);<br>&#125;)<br></code></pre></td></tr></table></figure>
+<figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs lasso"><span class="hljs-comment">// test1.js</span><br><span class="hljs-built_in">var</span> fs = <span class="hljs-keyword">require</span>(<span class="hljs-string">&#x27;fs&#x27;</span>);<br><span class="hljs-built_in">var</span> out = fs.createWriteStream(<span class="hljs-string">&#x27;./space.txt&#x27;</span>);<br><span class="hljs-built_in">var</span> i = <span class="hljs-number">0</span>;<br>process.<span class="hljs-keyword">on</span>(<span class="hljs-string">&#x27;message&#x27;</span>,function(<span class="hljs-built_in">data</span>)&#123;<br>  console.<span class="hljs-keyword">log</span>(<span class="hljs-string">&#x27;xxx&#x27;</span>+ i);<br>  i++;<br>  out.write(<span class="hljs-built_in">data</span>);<br>&#125;);<br></code></pre></td></tr></table></figure>
+
+<p>运行结果如下：<br><img src="/images/node3.png" srcset="/img/loading.gif" lazyload></p>
+<p>可以看到<code>silent：false</code>时，和父进程共享stdio，silent为true时，子进程的stdio事件被传递到父进程上，通过监听stdio上的data事件可获取子进程中的输出数据。输出的结果杂乱无序，可以看出多进程是各自运行的。</p>
+<h4 id="exec"><a href="#exec" class="headerlink" title="exec:"></a>exec:</h4><p>用法：<code>exec(command[, options][, callback])</code><br><code>exec</code>通过命令生成一个shell来运行相关的子进程。和<code>spawn</code>的区别是<code>exec</code>子进程返回的<code>stdio</code>数据是同步的，而<code>spawn</code>是异步的。</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs awk"><span class="hljs-regexp">//</span> app.js<br>const &#123; exec &#125; = require(<span class="hljs-string">&#x27;child_process&#x27;</span>);<br>var sp1 = exec(<span class="hljs-string">&#x27;node test.js one two three&#x27;</span>,<span class="hljs-keyword">function</span>(err, stdout, stderr)&#123;<br>  <span class="hljs-keyword">if</span>(err) &#123;<br>    console.log(<span class="hljs-string">&#x27;error:&#x27;</span> + err);<br>    process.<span class="hljs-keyword">exit</span>();<br>  &#125;<span class="hljs-keyword">else</span> &#123;<br>    console.log(<span class="hljs-string">&#x27;child output:&#x27;</span>+stdout.toString());<br>    sp2.stdin.write(stdout.toString());<br>  &#125;<br><br>&#125;);<br>var sp2 = exec(<span class="hljs-string">&#x27;node test1.js&#x27;</span>,<span class="hljs-keyword">function</span>(err, stdout, stderr)&#123;<br>  process.<span class="hljs-keyword">exit</span>();<br>&#125;);<br></code></pre></td></tr></table></figure>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs lua">// test.js<br>process.<span class="hljs-built_in">stdout</span>.<span class="hljs-built_in">write</span>(<span class="hljs-string">&#x27;cwd:&#x27;</span>+ process.cwd());<br>process.argv.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(val, index)</span></span>&#123;<br>   process.<span class="hljs-built_in">stdout</span>.<span class="hljs-built_in">write</span>(<span class="hljs-string">&#x27;\r\n&#x27;</span>+index+<span class="hljs-string">&#x27;:&#x27;</span>+val);<br>&#125;)<br></code></pre></td></tr></table></figure>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs awk"><span class="hljs-regexp">//</span> test1.js<br>var fs = require(<span class="hljs-string">&#x27;fs&#x27;</span>);<br>var out = fs.createWriteStream(<span class="hljs-string">&#x27;./space.txt&#x27;</span>);<br>process.stdin.on(<span class="hljs-string">&#x27;data&#x27;</span>,<span class="hljs-keyword">function</span>(data)&#123;<br>  out.write(data);<br>  process.<span class="hljs-keyword">exit</span>();<br>&#125;);<br></code></pre></td></tr></table></figure>
+<p>运行结果：<br><img src="/images/node4.png" srcset="/img/loading.gif" lazyload></p>
+<h4 id="execFile"><a href="#execFile" class="headerlink" title="execFile:"></a>execFile:</h4><p>用法：<code>execFile(file[, args][, options][, callback])</code><br>file参数是可执行的文件，在windows中如.bat文件。<br>和exec的区别是execFile直接通过可执行文件来生成子进程，相比exec稍微高效点。</p>
+<p><strong>翻看源码exec是对execFile的封装，而execFile和fork底层都是调用的spawn。</strong></p>
+<h3 id="cluster"><a href="#cluster" class="headerlink" title="cluster:"></a>cluster:</h3><p>node提供cluster模块充分利用多核cpu对子进程处理。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">// app.js</span><br><span class="hljs-keyword">var</span> cluster = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;cluster&#x27;</span>);<br><span class="hljs-keyword">var</span> http = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;http&#x27;</span>);<br><span class="hljs-keyword">const</span> numCPUs = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;os&#x27;</span>).cpus().length;<br><span class="hljs-keyword">if</span>(cluster.isMaster)&#123;<br>  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; numCPUs; i++) &#123;         <br>    cluster.fork();                           <br>  &#125;   <br>  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&#x27;run in main process&#x27;</span>);<br>&#125; <span class="hljs-keyword">else</span> &#123;<br>  http.createServer(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res</span>)</span>&#123;<br>    <span class="hljs-keyword">if</span>(req.url !== <span class="hljs-string">&#x27;/favicon.ico&#x27;</span>) &#123;<br>      res.writeHead(<span class="hljs-number">200</span>, &#123;<span class="hljs-string">&#x27;Content-Type&#x27;</span>: <span class="hljs-string">&#x27;text/html&#x27;</span>&#125;);<br>      res.write(<span class="hljs-string">&#x27;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;/&gt;&lt;/head&gt;&#x27;</span>);<br>      res.end(<span class="hljs-string">&#x27;hello\n&#x27;</span>);<br>      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&#x27;run in child process&#x27;</span>);<br>    &#125;<br>  &#125;).listen(<span class="hljs-number">1337</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>运行node app, 先输出 run in main process, 然后打开浏览器localhost:1337,则会发现输出 run in child process.</p>
+<p><img src="/images/node5.png" srcset="/img/loading.gif" lazyload></p>
+<p>对于操作系统中其实是不允许多个进程对同一个端口进行监听的，cluster生成子进程其实是利用的<code>child_process.fork()</code>，实现的原理其实是 <strong>利用主进程process.send方法中的第二个参数process.send(message [, sendHandle])将服务器对象或者socket对象传输给子进程，从而创建的子进程们都监听同一个socket端口对象。</strong></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/node/">node</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2018/09/25/react-ref/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">React中的Ref创建</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2018/09/20/ts-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+                        <span class="hidden-mobile">TS学习笔记</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+    
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

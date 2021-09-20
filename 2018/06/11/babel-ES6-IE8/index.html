@@ -1,0 +1,455 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="Ting&#39;s">
+  <meta name="keywords" content="">
+  
+  <title>Babel介绍 - Ting&#39;s blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"claire1028.github.io","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Ting's blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                Home
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                Archive
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                Tags
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                About
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/dark.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="Babel介绍">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2018-06-11 15:10" pubdate>
+        June 11, 2018 pm
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      978 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      11
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Babel介绍</h1>
+            
+            <div class="markdown-body">
+              <p>babel默认将es6语法转为es5，如果想要在低版本浏览器上支持es6新增的api，如Array.prototype.from等方法，则需要添加polyfill。</p>
+<h5 id="babel的一些主要概念介绍"><a href="#babel的一些主要概念介绍" class="headerlink" title="babel的一些主要概念介绍"></a>babel的一些主要概念介绍</h5><ul>
+<li><p><strong>babel-preset-env</strong> ： 将es2015 ，es2016，es2017的语法转为es5。</p>
+</li>
+<li><p><strong>babel-core</strong>： 包含transform方法，任何需要引用babel处理文件的，则需调用该方法。</p>
+</li>
+<li><p><strong>babel-regiser</strong>：node中，替换require的引用，在文件中require(‘babel-register’)， 然后require 相应的es6 文件，直接运行node file.js, 如果需要polyfill还是需要引入的 。babel-register相当于对本文件中的require的文件进行转换编译，除了自己，使用方法如下：<br><img src="/images/1.png" srcset="/img/loading.gif" lazyload><br><img src="/images/2.png" srcset="/img/loading.gif" lazyload><br><img src="/images/3.png" srcset="/img/loading.gif" lazyload></p>
+</li>
+<li><p><strong>babel-cli</strong>： 提供命令行执行转换es6文件并输出。</p>
+</li>
+<li><p><strong>babel-node</strong>： 相当于提供了个node 命令，但是会在执行node命令之前对es6进行编译，不建议在production中使用，由于编译中的缓存数据存储在内存中，造成性能问题。</p>
+</li>
+<li><p><strong>babel-polyfill</strong>: 模拟了一个全面的es5环境，添加polyfill有3种方法：</p>
+<ol>
+<li><p>全局添加polyfill，在webpack的entry中，例如：entry：[‘babel-plyfill’, ‘.index.js’]；缺点是全局污染。</p>
+</li>
+<li><p>babel-runtime，将所需的polyfill 额外打包成一个help.js 文件，然后再所需之处对这个文件进行引用，手动引用的工作可以用babel-plugin-transform-runtime插件，在.babelrc文件中配置，会自动替换手动的工作。缺点是不能应用实例方法。理由：如”foobar”.includes(“foo”) （在转换时难找到相对应的目标方法替换），可以转换静态方法。</p>
+</li>
+<li><p>babel-preset-env, 有个配置选项useBuiltIn，如果true则自动添加所需的babel-polyfill，而在入口文件处需引入require（’babel-polyfill’），这也是官方推荐的。配置如下：<br> <img src="/images/4.png" srcset="/img/loading.gif" lazyload></p>
+</li>
+</ol>
+</li>
+</ul>
+<h4 id="重点说下polyfill，有了polyfill我们可以在任何低版本的浏览器上写es6的新方法，由于公司支持到ie8，所以试下在IE8上去写es6，然后想法很美好，现实很骨感！"><a href="#重点说下polyfill，有了polyfill我们可以在任何低版本的浏览器上写es6的新方法，由于公司支持到ie8，所以试下在IE8上去写es6，然后想法很美好，现实很骨感！" class="headerlink" title="重点说下polyfill，有了polyfill我们可以在任何低版本的浏览器上写es6的新方法，由于公司支持到ie8，所以试下在IE8上去写es6，然后想法很美好，现实很骨感！"></a>重点说下polyfill，有了polyfill我们可以在任何低版本的浏览器上写es6的新方法，由于公司支持到ie8，所以试下在IE8上去写es6，然后想法很美好，现实很骨感！</h4><p>步骤如下：</p>
+<h5 id="新建个main-js-，里面包含最简单的es6语法，箭头和map函数。"><a href="#新建个main-js-，里面包含最简单的es6语法，箭头和map函数。" class="headerlink" title="新建个main.js ，里面包含最简单的es6语法，箭头和map函数。"></a>新建个main.js ，里面包含最简单的es6语法，箭头和map函数。</h5><p><img src="/images/5.png" srcset="/img/loading.gif" lazyload><br>webpack.config.js配置：<br><img src="/images/6.png" srcset="/img/loading.gif" lazyload><br>.babelrc配置：<br><img src="/images/7.png" srcset="/img/loading.gif" lazyload><br>以为这样就外事大吉了，少年你还是太年轻了，打开IE8，报错如下，缺少标识符：<br><img src="/images/8.png" srcset="/img/loading.gif" lazyload><br>点击进去查看：<br><img src="/images/9.png" srcset="/img/loading.gif" lazyload><br>查找资料，得出结论是IE8中用的是es3的语法，所以需要将es5的语法转为es3的，利用babel提供的2个插件：transform-es3-member-expression-literals 和transform-es3-property-literals ，这2个插件做的事情其实是将关键字如default、return等，写法改变一下，给关键字加上引号，重新生成结果如下：<br><img src="/images/10.png" srcset="/img/loading.gif" lazyload></p>
+<p>然后打包，刷新浏览器，发现报堆栈溢出，报错如下，<br><img src="/images/17.png" srcset="/img/loading.gif" lazyload><br><img src="/images/18.png" srcset="/img/loading.gif" lazyload><br>去Github上查看，发现原来babel-polyfill 中包含的core-js是不可以经过babel转换的。<br><img src="/images/19.png" srcset="/img/loading.gif" lazyload></p>
+<p>于是在babel-loader转换处，exclude 对core-js的转换：<br><img src="/images/20.png" srcset="/img/loading.gif" lazyload></p>
+<p>刷新页面，又报错了：<br><img src="/images/21.png" srcset="/img/loading.gif" lazyload></p>
+<p>原因是由于Object.defineProperty只能用在DOM对象上，如果传入普通的js对象，则报错。自己如果手动hack，为抛错的那行加上try，catch则一切正常了。阿里的<a target="_blank" rel="noopener" href="http://www.aliued.com/?p=3240">这篇文章</a> 提供了很好的分析思路。<br>附上github上未被解决的理由…<br><img src="/images/22.png" srcset="/img/loading.gif" lazyload><br><img src="/images/29.png" srcset="/img/loading.gif" lazyload></p>
+<hr>
+<h5 id="babel-polyfill这条路走不通，按照上面core-js作者说的，还是有方法可以实现的，查找资料说是可以通过es5-shim（即es3对es5某些方法的实现）实现试试："><a href="#babel-polyfill这条路走不通，按照上面core-js作者说的，还是有方法可以实现的，查找资料说是可以通过es5-shim（即es3对es5某些方法的实现）实现试试：" class="headerlink" title="babel-polyfill这条路走不通，按照上面core-js作者说的，还是有方法可以实现的，查找资料说是可以通过es5-shim（即es3对es5某些方法的实现）实现试试："></a>babel-polyfill这条路走不通，按照上面core-js作者说的，还是有方法可以实现的，查找资料说是可以通过es5-shim（即es3对es5某些方法的实现）实现试试：</h5><p><img src="/images/30.png" srcset="/img/loading.gif" lazyload><br>打包，刷新浏览器，运行正确了，alert了三次(此处放鞭炮)。</p>
+<p>如果需要增加对import 和export的依赖，如代码：<br><img src="/images/23.png" srcset="/img/loading.gif" lazyload></p>
+<p>刷新运行，报错了，<br><img src="/images/24.png" srcset="/img/loading.gif" lazyload><br><img src="/images/25.png" srcset="/img/loading.gif" lazyload></p>
+<p>根据babel官网的介绍，需要在presets里增加loose： true 选项。<br><img src="/images/26.png" srcset="/img/loading.gif" lazyload><br>最终.babelrc的配置如下：<br><img src="/images/27.png" srcset="/img/loading.gif" lazyload></p>
+<p>以上代码在如下环境中运行：<br><img src="/images/28.png" srcset="/img/loading.gif" lazyload></p>
+<p>在ie8环境中基本实现了es6的写法，如果需支持其他的写法，则另需要增加插件polyfill的引用，如：promise，Object.assign等方法。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/JS/">JS</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2018/06/12/mobx/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">mobx概览</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2017/12/24/js-decorator-mode/">
+                        <span class="hidden-mobile">JavaScript装饰者模式</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+    
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
