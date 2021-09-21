@@ -161,8 +161,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2018-09-18 20:10" pubdate>
-        September 18, 2018 pm
+      <time datetime="2020-09-20 20:10" pubdate>
+        September 20, 2020 pm
       </time>
     </span>
   
@@ -227,7 +227,7 @@
 <p>Finally in submit we can add a retry to make sure the login success rate.</p>
 <figure class="highlight arcade"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs arcade"><span class="hljs-comment">// then we can add a retry `variable` to retry again and limit the times max 2</span><br> <span class="hljs-keyword">if</span> (!password &amp;&amp; retry !== <span class="hljs-literal">true</span>) &#123;<br>    setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> submit(e, <span class="hljs-literal">true</span>), <span class="hljs-number">100</span>); <span class="hljs-comment">// waiting for trigger next submit</span><br>    <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>   <br> &#125;<br></code></pre></td></tr></table></figure>
 
-<p> Though we do a hack for this improvement, but we don’t have a 100% to make sure the code is normal work, so we add some GA tracking in the code and log the related error information, the result is the code work as expected.</p>
+<p> Though we do a hack for this improvement, but we don’t have fully confidence to make sure the code is normal work, so we add some GA tracking in the code and log the related error information, the result is the code work as expected.</p>
 
             </div>
             <hr>
@@ -257,9 +257,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2018/09/18/css-animation/">
+                      <a href="/2021/03/18/graphql-security/">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">浅析Css中动画优化原理</span>
+                        <span class="hidden-mobile">如何预防Graphql安全问题</span>
                         <span class="visible-mobile">Previous</span>
                       </a>
                     
@@ -267,8 +267,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2018/07/12/react-loop/">
-                        <span class="hidden-mobile">React中实现循环滑动效果难点</span>
+                      <a href="/2019/11/06/rxjs-subjects/">
+                        <span class="hidden-mobile">Rxjs源码分析(四)--Subject类</span>
                         <span class="visible-mobile">Next</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
