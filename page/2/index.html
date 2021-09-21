@@ -170,6 +170,49 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
+        <a href="/2019/02/20/redux/" target="_self">
+          Redux的applyMiddleware源码分析
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2019/02/20/redux/" target="_self">
+          
+          
+            
+          
+          redux中dispatch只能是object对象，这对于同步的操作是可行的，但如果是异步的操作，那么将行不通，对此，redux提供了applyMiddleware来增强相应的disptch方法，同时将applyMiddleware返回的函数作为参数传入createStore中，替换当前store中的dispatch方法。下面我们具体结合redux-thunk中间件来分析下dispatch增强的源
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2019-02-20 12:10" pubdate>
+              2019-02-20
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/React/">React</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
         <a href="/2019/01/21/wp-devtool/" target="_self">
           webpack中的配置devtool简单分析
         </a>
@@ -536,20 +579,18 @@ shallow只会渲染一层元素，对于子组件是不渲染的。
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2018/07/12/react-loop/" target="_self">
-          React中实现循环滑动效果难点
+        <a href="/2018/09/18/chrome-autofill/" target="_self">
+          How to resolve chrome autofill but JS cannot get input value until user interaction
         </a>
       </h1>
 
       <p class="index-excerpt">
-        <a href="/2018/07/12/react-loop/" target="_self">
+        <a href="/2018/09/18/chrome-autofill/" target="_self">
           
           
             
           
-          最近有这样一个需求，在h5页面上，向左/向右滑动循环显示数据项，效果如下：
-
-比如有3个页面，从第一个页面向左滑动到第二个页面，或者从第二个页面向左滑动到第三个页面，很简单，只需要将left从0%切换到-100%，或从-100%更换到-200%，然后在对left增加transition属性，如：transition: left 0.5s，就可以简单实现从第一张滑动到第二张，第二张到第三张，那么从第
+          Recently our company refator the login page and redesign the UI. As u can see in the below ,chrome has autofill the password feature, but u also can see though the email and password is not empty, but
         </a>
       </p>
 
@@ -557,53 +598,8 @@ shallow只会渲染一层元素，对于子组件是不渲染的。
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2018-07-12 12:10" pubdate>
-              2018-07-12
-            </time>
-          </div>
-        
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/React/">React</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2018/06/12/mobx/" target="_self">
-          mobx概览
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2018/06/12/mobx/" target="_self">
-          
-          
-            
-          
-          mobx是和redux一样用于对react进行状态管理，和redux相比，编写起来更加方便，简单。
-Action：事件触发，更改Store 里的数据。State: 数据的存储。Reaction：相当于UI的改变。
-和redux最主要不同的地方就是action触发，直接修改数据，UI界面更新。背后的原理是proxy，在set 和get 相应的属性上进行截，所以observable对象或者数组中通过用
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2018-06-12 12:10" pubdate>
-              2018-06-12
+            <time datetime="2018-09-18 20:10" pubdate>
+              2018-09-18
             </time>
           </div>
         
@@ -613,6 +609,8 @@ Action：事件触发，更改Store 里的数据。State: 数据的存储。Reac
             <i class="iconfont icon-tags"></i>
             
               <a href="/tags/JS/">JS</a>
+            
+              <a href="/tags/Chrome/">Chrome</a>
             
           </div>
         

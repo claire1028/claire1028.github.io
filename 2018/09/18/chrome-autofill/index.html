@@ -18,7 +18,7 @@
   <meta name="author" content="Ting&#39;s">
   <meta name="keywords" content="">
   
-  <title>如何在Gitlab pipeline中自动创建发布文档和并集成slack - Ting&#39;s blog</title>
+  <title>How to resolve chrome autofill but JS cannot get input value until user interaction - Ting&#39;s blog</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
 
@@ -151,7 +151,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="如何在Gitlab pipeline中自动创建发布文档和并集成slack">
+            <span class="h2" id="subtitle" title="How to resolve chrome autofill but JS cannot get input value until user interaction">
               
             </span>
 
@@ -161,8 +161,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2021-07-18 20:10" pubdate>
-        July 18, 2021 pm
+      <time datetime="2018-09-18 20:10" pubdate>
+        September 18, 2018 pm
       </time>
     </span>
   
@@ -173,7 +173,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      575 字
+      349 字
     </span>
   
 
@@ -183,7 +183,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      7
+      6
        分钟
     </span>
   
@@ -213,20 +213,21 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">如何在Gitlab pipeline中自动创建发布文档和并集成slack</h1>
+            <h1 style="display: none">How to resolve chrome autofill but JS cannot get input value until user interaction</h1>
             
             <div class="markdown-body">
-              <p>在发布流程中我们经常需要查看当前的release 是否包含了别人的修改，并且我们还需要通知QA当前的这次发布是否可以上线，如果每次都手动去查看code 的commit changes ，然后找到相应的 code owner，效率太低并且有时候会遗漏，所以我们需要在Pipeline 中增加自动创建发布的文档，其中包括当前这次发布中包含的所有的待上线的commit 和相应的owner，并通知到Slack channel 中通知QA和相应的开发。</p>
-<p>那么如何自动生成发布文档呢，首先我们发现gitlab自己携带了wiki功能，所以我们需要先在设置中<code>enable wiki</code>，<br>Wiki Enable 了之后，需要在pipeline中去创建并生成，Gitlab 本身提供了一系列的API去上传相应的内容到wiki中，<br>当Wiki生成完之后，我们需要在Slack channel中通知大家，那么这时候需要用到Slack 的webhook url, 至于如何得到 slack 的webhook url，可以自行google下。</p>
-<p>当解决思路都串起来之后，我们就需要实现相应的流程在pipeline中，</p>
-<p>1，设置如下相应的变量在gitlab ci yaml 配置中</p>
-<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs awk">RELEASE_NOTE_PATH: <span class="hljs-string">&#x27;&#123;your project wiki url&#125;/-/wikis/&#x27;</span> <span class="hljs-regexp">//gi</span>tlab 项目wiki的url<br>SLACK_CHANNEL_NAME: <span class="hljs-string">&#x27;slack channel name&#x27;</span> <span class="hljs-regexp">//</span> 需要通知的channel名字<br>SLACK_WEBHOOK_URL: <span class="hljs-string">&#x27;&#x27;</span>  <br></code></pre></td></tr></table></figure>
-<p>2, 设置创建发布的文档job stage</p>
-<figure class="highlight dsconfig"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs dsconfig"><span class="hljs-string">stages</span>:<br>  - ...<br>  - <span class="hljs-built_in">create-release-note</span>    <br>- ...<br><br> // 实现<span class="hljs-built_in">create-release-note</span> <span class="hljs-string">stage</span><br><span class="hljs-built_in">create-release-note:</span><br>  <span class="hljs-string">stage</span>: <span class="hljs-built_in">create-release-note</span><br>  <span class="hljs-string">when</span>: <span class="hljs-string">manual</span><br>  <span class="hljs-string">allow_failure</span>: <span class="hljs-string">true</span><br>  <span class="hljs-string">script</span>: <br>    - <span class="hljs-string">apk</span> <span class="hljs-string">add</span> <span class="hljs-string">git</span> <span class="hljs-string">bash</span><br>    - <span class="hljs-string">export</span> <span class="hljs-string">NOTIFICATION_HEADER</span>=<span class="hljs-string">&quot;Release &#123;Your prject name&#125; &quot;</span>  // 标题可以自定义<br>    - <span class="hljs-string">export</span> <span class="hljs-string">NOTIFICATION_MSG</span>=<span class="hljs-string">&quot;- Release Note:\n$&#123;RELEASE_NOTE_PATH&#125;&quot;</span> // 消息可以自定义<br>    - <span class="hljs-string">file_url</span>=<span class="hljs-string">&quot;&#123;Your prject name&#125;-release_$&#123;CI_COMMIT_TAG&#125;&quot;</span> // 生成的文档的<span class="hljs-string">url</span><br>    - <span class="hljs-string">LAST_VERSION</span>=$(<span class="hljs-string">curl</span> -<span class="hljs-string">k</span> <span class="hljs-string">&#x27;Here need get your latest released version.json&#x27;</span> | <span class="hljs-string">grep</span> <span class="hljs-string">&#x27;version&#x27;</span> | <span class="hljs-string">sed</span> <span class="hljs-string">&#x27;s/[^0-9.]*//g&#x27;</span>)<br>    - ./<span class="hljs-string">scripts</span>/<span class="hljs-string">update-release-note-to-wiki</span>.<span class="hljs-string">sh</span> <span class="hljs-string">&quot;v$&#123;LAST_VERSION&#125;&quot;</span> <span class="hljs-string">&quot;Your prject name&quot;</span> <span class="hljs-string">&quot;Your project approver&quot;</span>  // 上传到<span class="hljs-string">wiki</span><br>    // 发送消息到<span class="hljs-string">slack</span> <span class="hljs-string">channel</span><br>    - ./<span class="hljs-string">scripts</span>/<span class="hljs-string">slack-notify</span>.<span class="hljs-string">sh</span> <span class="hljs-string">&quot;$&#123;SLACK_WEBHOOK_URL&#125;&quot;</span> <span class="hljs-string">&quot;$&#123;SLACK_CHANNEL_NAME&#125;&quot;</span> <span class="hljs-string">&quot;$CI_PIPELINE_URL&quot;</span> <span class="hljs-string">&quot;$NOTIFICATION_HEADER$CI_COMMIT_TAG:\n$NOTIFICATION_MSG$file_url&quot;</span><br><br></code></pre></td></tr></table></figure>
+              <p>Recently our company refator the login page and redesign the UI. As u can see in the below ,chrome has autofill the password feature, but u also can see though the email and password is not empty, but the <code>login</code> button is also still disabled. So it’s weired.<br><img src="/images/chrome-js.png" srcset="/img/loading.gif" lazyload></p>
+<p>Here said this behavior is working as expected and mitigates a privacy/security attack,<br>values of auto-filled inputs on page load are not accessible through JS until a user interacts with a page.<br><a target="_blank" rel="noopener" href="https://bugs.chromium.org/p/chromium/issues/detail?id=1166619">https://bugs.chromium.org/p/chromium/issues/detail?id=1166619</a>,<br><a target="_blank" rel="noopener" href="https://bugs.chromium.org/p/chromium/issues/detail?id=163072">https://bugs.chromium.org/p/chromium/issues/detail?id=163072</a></p>
+<p>So then we need find a workaround about the behavior, and we find <code>window.getComputedStyle(element, null).getPropertyValue(&#39;appearance&#39;)</code> the value is <code>menulist-button</code>, so the we can from here to find a hack solution.</p>
+<p>Detect the button is filled or not:</p>
+<figure class="highlight coffeescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs coffeescript">const detectAutofill = (element: HTMLBaseElement): <span class="hljs-built_in">Promise</span>&lt;boolean&gt; =&gt;<br><br>  <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function"><span class="hljs-params">(resolve)</span> =&gt;</span> &#123;<br><br>    <span class="hljs-built_in">setTimeout</span>(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> &#123;<br><br>      resolve(<span class="hljs-built_in">window</span>.getComputedStyle(element, <span class="hljs-literal">null</span>).getPropertyValue(<span class="hljs-string">&#x27;appearance&#x27;</span>) === <span class="hljs-string">&#x27;menulist-button&#x27;</span>);<br><br>    &#125;, <span class="hljs-number">600</span>);<br><br>  &#125;);<br></code></pre></td></tr></table></figure>
 
-<p>3,  发送消息到slack channel，我们可以使用shell脚本来实现，代码如下：<br><img src="/images/gitlab-1.png" srcset="/img/loading.gif" lazyload><br><img src="/images/gitlab-2.png" srcset="/img/loading.gif" lazyload><br><img src="/images/gitlab-3.png" srcset="/img/loading.gif" lazyload></p>
-<p>4, 如何上传到gitlab wiki，我们也可以使用shell 脚本来实现，代码如下：<br>wiki content 可以自定义<br><img src="/images/gitlab-4.png" srcset="/img/loading.gif" lazyload><br><img src="/images/gitlab-5.png" srcset="/img/loading.gif" lazyload></p>
-<p><img src="/images/gitlab-6.png" srcset="/img/loading.gif" lazyload></p>
+<p>Then we need add a variable to enable the submit button if the value is true:</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs reasonml">const <span class="hljs-literal">[<span class="hljs-identifier">isPasswordAutoFilled</span>, <span class="hljs-identifier">setIsPasswordAutoFilled</span>]</span> = use<span class="hljs-constructor">State(<span class="hljs-params">false</span>)</span>; <span class="hljs-comment">// for enable the submit button</span><br><br>const passwordEl = use<span class="hljs-constructor">Ref(<span class="hljs-params">null</span>)</span>; <span class="hljs-comment">// put the ref on password element</span><br><br>use<span class="hljs-constructor">Effect(()</span> =&gt; &#123;<br><br>  const checkAutoFill = async<span class="hljs-function"> <span class="hljs-params">()</span> =&gt;</span> &#123;<br><br>    const passwordFilled = await detect<span class="hljs-constructor">Autofill(<span class="hljs-params">passwordEl</span>.<span class="hljs-params">current</span>)</span>;<br><br>    <span class="hljs-comment">// if the password is auto filled by chrome, then we set the value to the state.</span><br>    set<span class="hljs-constructor">IsPasswordAutoFilled(<span class="hljs-params">passwordFilled</span>)</span>;<br><br>  &#125;;<br><br>  check<span class="hljs-constructor">AutoFill()</span>;<br><br>&#125;, <span class="hljs-literal">[<span class="hljs-identifier">password</span>]</span>);<br></code></pre></td></tr></table></figure>
+<p>Finally in submit we can add a retry to make sure the login success rate.</p>
+<figure class="highlight arcade"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs arcade"><span class="hljs-comment">// then we can add a retry `variable` to retry again and limit the times max 2</span><br> <span class="hljs-keyword">if</span> (!password &amp;&amp; retry !== <span class="hljs-literal">true</span>) &#123;<br>    setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> submit(e, <span class="hljs-literal">true</span>), <span class="hljs-number">100</span>); <span class="hljs-comment">// waiting for trigger next submit</span><br>    <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>   <br> &#125;<br></code></pre></td></tr></table></figure>
+
+<p> Though we do a hack for this improvement, but we don’t have a 100% to make sure the code is normal work, so we add some GA tracking in the code and log the related error information, the result is the code work as expected.</p>
 
             </div>
             <hr>
@@ -237,7 +238,9 @@
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/Gitlab/">Gitlab</a>
+                      <a class="hover-with-bg" href="/tags/JS/">JS</a>
+                    
+                      <a class="hover-with-bg" href="/tags/Chrome/">Chrome</a>
                     
                   </div>
                 
@@ -254,9 +257,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2021/09/01/contentful-gitlab/">
+                      <a href="/2018/09/18/css-animation/">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">How to cache contentful to google storage bucket</span>
+                        <span class="hidden-mobile">浅析Css中动画优化原理</span>
                         <span class="visible-mobile">Previous</span>
                       </a>
                     
@@ -264,8 +267,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2021/05/15/mjml-cutom-tag/">
-                        <span class="hidden-mobile">如何在Mjml中创建自定义标签</span>
+                      <a href="/2018/07/12/react-loop/">
+                        <span class="hidden-mobile">React中实现循环滑动效果难点</span>
                         <span class="visible-mobile">Next</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

@@ -4,6 +4,27 @@
   
   
   <entry>
+    <title>How to cache contentful to google storage bucket</title>
+    <link href="/2021/09/01/contentful-gitlab/"/>
+    <url>/2021/09/01/contentful-gitlab/</url>
+    
+    <content type="html"><![CDATA[<p>Recently our email </p><ol><li>need support custom for differernt partner</li><li>need adopt new master email template</li></ol><p>So we can create new email template by contentful(CMS), but also have some advantages and disadvantages:</p><ul><li><p>Pros:<br>No need FE developer to modify text or image in code.<br>Repo code will be much cleaner.<br>All email template will adopt the one style.</p></li><li><p>Cons:<br>If the contentful server down, and we connect the api with contentful directly, then our email service will down, so we need cache the contentful email template data in some place. which is google bucket storage.</p></li></ul><p>So then we need to resolve the contentful server problem, then we need cache the data from contentful, we find two solutions to cache the data.</p><ol><li>Contentful Webhook call Google Cloud function to generate template data files and upload to bucket.</li><li>Contentful Webhook trigger pipeline to generate template data files and upload to bucket.</li></ol><h5 id="Google-Cloud-Funtion"><a href="#Google-Cloud-Funtion" class="headerlink" title="Google Cloud Funtion"></a>Google Cloud Funtion</h5><ul><li><p>In google cloud function, if u want to generate temp files , u need to use <code>/tmp</code> folder or will not work, maybe appear no access to write files.</p></li><li><p>If u want local fetch bucket files from gcp, u need access ,  appear this error :  <code>Could not load the default credentials. Browse to https://cloud.google.com/docs/authentication/getting-started for more information.</code>, you need run command gcloud auth application-default login, if u don’t install gloud , pls install this sdk first <a href="https://cloud.google.com/sdk/install">https://cloud.google.com/sdk/install</a>.</p></li><li><p>In some place maybe u will meet cloud function <code>does not have storage.objects.create access to the Google Cloud Storage object.</code>, u need  add this service account to storage bucket admin in IAM.</p></li></ul><p>The gcloud access token <code>expire time is 1h</code>, cause contentful no provide a function to get gcloud access token dynamic. If we open the public invoke, then we will maybe receive DDOS attack.</p><p>So we change to <code>gitlab pipeline</code> to response contentful webhook.</p><ul><li>Pros: Support access token trigger.</li><li>Cons: trigger pipeline cost much time than google cloud function. </li></ul><h5 id="Gitlab-pipeline-setting"><a href="#Gitlab-pipeline-setting" class="headerlink" title="Gitlab pipeline setting"></a>Gitlab pipeline setting</h5><p>1，need to generate a trigger token, in gitlab setttings -&gt; CI/CD -&gt; Pipeline triggers<br><img src="/images/content-1.png"></p><p>2, Need copy this token to contentful webhook request body. like below<br><img src="/images/content-2.png"></p><p>3, If we want to trigger for different env,  we need to add a variable like <code>TRIGGER_EVENT: &quot;AUTO_SAVE || PUBLISHED&quot;</code>, then in the gitlab-ci.yml file, we can trigger stage conditional on TRIGGER_EVENT.</p><p>4, Then trigger pipeline like below.<br><img src="/images/content-3.png"></p>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>contentful</tag>
+      
+      <tag>bucket</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>如何在Gitlab pipeline中自动创建发布文档和并集成slack</title>
     <link href="/2021/07/18/gitlab-slack/"/>
     <url>/2021/07/18/gitlab-slack/</url>
@@ -338,6 +359,27 @@
     <tags>
       
       <tag>CSS</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>How to resolve chrome autofill but JS cannot get input value until user interaction</title>
+    <link href="/2018/09/18/chrome-autofill/"/>
+    <url>/2018/09/18/chrome-autofill/</url>
+    
+    <content type="html"><![CDATA[<p>Recently our company refator the login page and redesign the UI. As u can see in the below ,chrome has autofill the password feature, but u also can see though the email and password is not empty, but the <code>login</code> button is also still disabled. So it’s weired.<br><img src="/images/chrome-js.png"></p><p>Here said this behavior is working as expected and mitigates a privacy/security attack,<br>values of auto-filled inputs on page load are not accessible through JS until a user interacts with a page.<br><a href="https://bugs.chromium.org/p/chromium/issues/detail?id=1166619">https://bugs.chromium.org/p/chromium/issues/detail?id=1166619</a>,<br><a href="https://bugs.chromium.org/p/chromium/issues/detail?id=163072">https://bugs.chromium.org/p/chromium/issues/detail?id=163072</a></p><p>So then we need find a workaround about the behavior, and we find <code>window.getComputedStyle(element, null).getPropertyValue(&#39;appearance&#39;)</code> the value is <code>menulist-button</code>, so the we can from here to find a hack solution.</p><p>Detect the button is filled or not:</p><figure class="highlight coffeescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs coffeescript">const detectAutofill = (element: HTMLBaseElement): <span class="hljs-built_in">Promise</span>&lt;boolean&gt; =&gt;<br><br>  <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function"><span class="hljs-params">(resolve)</span> =&gt;</span> &#123;<br><br>    <span class="hljs-built_in">setTimeout</span>(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> &#123;<br><br>      resolve(<span class="hljs-built_in">window</span>.getComputedStyle(element, <span class="hljs-literal">null</span>).getPropertyValue(<span class="hljs-string">&#x27;appearance&#x27;</span>) === <span class="hljs-string">&#x27;menulist-button&#x27;</span>);<br><br>    &#125;, <span class="hljs-number">600</span>);<br><br>  &#125;);<br></code></pre></td></tr></table></figure><p>Then we need add a variable to enable the submit button if the value is true:</p><figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs reasonml">const <span class="hljs-literal">[<span class="hljs-identifier">isPasswordAutoFilled</span>, <span class="hljs-identifier">setIsPasswordAutoFilled</span>]</span> = use<span class="hljs-constructor">State(<span class="hljs-params">false</span>)</span>; <span class="hljs-comment">// for enable the submit button</span><br><br>const passwordEl = use<span class="hljs-constructor">Ref(<span class="hljs-params">null</span>)</span>; <span class="hljs-comment">// put the ref on password element</span><br><br>use<span class="hljs-constructor">Effect(()</span> =&gt; &#123;<br><br>  const checkAutoFill = async<span class="hljs-function"> <span class="hljs-params">()</span> =&gt;</span> &#123;<br><br>    const passwordFilled = await detect<span class="hljs-constructor">Autofill(<span class="hljs-params">passwordEl</span>.<span class="hljs-params">current</span>)</span>;<br><br>    <span class="hljs-comment">// if the password is auto filled by chrome, then we set the value to the state.</span><br>    set<span class="hljs-constructor">IsPasswordAutoFilled(<span class="hljs-params">passwordFilled</span>)</span>;<br><br>  &#125;;<br><br>  check<span class="hljs-constructor">AutoFill()</span>;<br><br>&#125;, <span class="hljs-literal">[<span class="hljs-identifier">password</span>]</span>);<br></code></pre></td></tr></table></figure><p>Finally in submit we can add a retry to make sure the login success rate.</p><figure class="highlight arcade"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs arcade"><span class="hljs-comment">// then we can add a retry `variable` to retry again and limit the times max 2</span><br> <span class="hljs-keyword">if</span> (!password &amp;&amp; retry !== <span class="hljs-literal">true</span>) &#123;<br>    setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> submit(e, <span class="hljs-literal">true</span>), <span class="hljs-number">100</span>); <span class="hljs-comment">// waiting for trigger next submit</span><br>    <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>   <br> &#125;<br></code></pre></td></tr></table></figure><p> Though we do a hack for this improvement, but we don’t have a 100% to make sure the code is normal work, so we add some GA tracking in the code and log the related error information, the result is the code work as expected.</p>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>JS</tag>
+      
+      <tag>Chrome</tag>
       
     </tags>
     

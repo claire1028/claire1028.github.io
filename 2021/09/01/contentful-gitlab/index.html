@@ -18,9 +18,25 @@
   <meta name="author" content="Ting&#39;s">
   <meta name="keywords" content="">
   
-  <title>Archives - Ting&#39;s blog</title>
+  <title>How to cache contentful to google storage bucket - Ting&#39;s blog</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
 
 
 
@@ -48,7 +64,7 @@
 
 
 <body>
-  <header style="height: 60vh;">
+  <header style="height: 70vh;">
     <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
   <div class="container">
     <a class="navbar-brand"
@@ -135,9 +151,46 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="Archive">
+            <span class="h2" id="subtitle" title="How to cache contentful to google storage bucket">
               
             </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-09-01 20:10" pubdate>
+        September 1, 2021 pm
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      403 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      8
+       分钟
+    </span>
+  
+
+  
+  
+</div>
 
             
           </div>
@@ -150,88 +203,118 @@
 
   <main>
     
-      <div class="container nopadding-x-md">
-        <div class="py-5" id="board"
-          >
-          
-          <div class="container">
-            <div class="row">
-              <div class="col-12 col-md-10 m-auto">
-                
-
-<div class="list-group">
-  <p class="h4">37 posts in total.</p>
-  <hr>
-  
-  
-    
       
-      <p class="h5">2019</p>
-    
-    <a href="/2019/11/06/rxjs-subjects/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">Rxjs源码分析(四)--Subject类</span>
-      <time style="float: right;">11-06</time>
-    </a>
-  
-    
-    <a href="/2019/11/05/rxjs-Subscription/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">Rxjs源码分析(三)--Subscription类</span>
-      <time style="float: right;">11-05</time>
-    </a>
-  
-    
-    <a href="/2019/11/04/rxjs-Subscriber/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">Rxjs源码分析(二)--Subscriber类</span>
-      <time style="float: right;">11-04</time>
-    </a>
-  
-    
-    <a href="/2019/11/03/rxjs-Observable/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">Rxjs源码分析(一)--Observable类</span>
-      <time style="float: right;">11-03</time>
-    </a>
-  
-    
-    <a href="/2019/11/02/rxjs-overview/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">Rxjs主要类图</span>
-      <time style="float: right;">11-02</time>
-    </a>
-  
-    
-    <a href="/2019/03/20/react-angular/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">React Vs Angular</span>
-      <time style="float: right;">03-20</time>
-    </a>
-  
-    
-    <a href="/2019/02/20/redux/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">Redux的applyMiddleware源码分析</span>
-      <time style="float: right;">02-20</time>
-    </a>
-  
-    
-    <a href="/2019/01/21/wp-devtool/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">webpack中的配置devtool简单分析</span>
-      <time style="float: right;">01-21</time>
-    </a>
-  
-    
-    <a href="/2019/01/15/loader/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">如何简单创建一个webpack loader</span>
-      <time style="float: right;">01-15</time>
-    </a>
-  
-</div>
 
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">How to cache contentful to google storage bucket</h1>
+            
+            <div class="markdown-body">
+              <p>Recently our email </p>
+<ol>
+<li>need support custom for differernt partner</li>
+<li>need adopt new master email template</li>
+</ol>
+<p>So we can create new email template by contentful(CMS), but also have some advantages and disadvantages:</p>
+<ul>
+<li><p>Pros:<br>No need FE developer to modify text or image in code.<br>Repo code will be much cleaner.<br>All email template will adopt the one style.</p>
+</li>
+<li><p>Cons:<br>If the contentful server down, and we connect the api with contentful directly, then our email service will down, so we need cache the contentful email template data in some place. which is google bucket storage.</p>
+</li>
+</ul>
+<p>So then we need to resolve the contentful server problem, then we need cache the data from contentful, we find two solutions to cache the data.</p>
+<ol>
+<li>Contentful Webhook call Google Cloud function to generate template data files and upload to bucket.</li>
+<li>Contentful Webhook trigger pipeline to generate template data files and upload to bucket.</li>
+</ol>
+<h5 id="Google-Cloud-Funtion"><a href="#Google-Cloud-Funtion" class="headerlink" title="Google Cloud Funtion"></a>Google Cloud Funtion</h5><ul>
+<li><p>In google cloud function, if u want to generate temp files , u need to use <code>/tmp</code> folder or will not work, maybe appear no access to write files.</p>
+</li>
+<li><p>If u want local fetch bucket files from gcp, u need access ,  appear this error :  <code>Could not load the default credentials. Browse to https://cloud.google.com/docs/authentication/getting-started for more information.</code>, you need run command gcloud auth application-default login, if u don’t install gloud , pls install this sdk first <a target="_blank" rel="noopener" href="https://cloud.google.com/sdk/install">https://cloud.google.com/sdk/install</a>.</p>
+</li>
+<li><p>In some place maybe u will meet cloud function <code>does not have storage.objects.create access to the Google Cloud Storage object.</code>, u need  add this service account to storage bucket admin in IAM.</p>
+</li>
+</ul>
+<p>The gcloud access token <code>expire time is 1h</code>, cause contentful no provide a function to get gcloud access token dynamic. If we open the public invoke, then we will maybe receive DDOS attack.</p>
+<p>So we change to <code>gitlab pipeline</code> to response contentful webhook.</p>
+<ul>
+<li>Pros: Support access token trigger.</li>
+<li>Cons: trigger pipeline cost much time than google cloud function. </li>
+</ul>
+<h5 id="Gitlab-pipeline-setting"><a href="#Gitlab-pipeline-setting" class="headerlink" title="Gitlab pipeline setting"></a>Gitlab pipeline setting</h5><p>1，need to generate a trigger token, in gitlab setttings -&gt; CI/CD -&gt; Pipeline triggers<br><img src="/images/content-1.png" srcset="/img/loading.gif" lazyload></p>
+<p>2, Need copy this token to contentful webhook request body. like below<br><img src="/images/content-2.png" srcset="/img/loading.gif" lazyload></p>
+<p>3, If we want to trigger for different env,  we need to add a variable like <code>TRIGGER_EVENT: &quot;AUTO_SAVE || PUBLISHED&quot;</code>, then in the gitlab-ci.yml file, we can trigger stage conditional on TRIGGER_EVENT.</p>
+<p>4, Then trigger pipeline like below.<br><img src="/images/content-3.png" srcset="/img/loading.gif" lazyload></p>
 
-
-
-
-              </div>
             </div>
-          </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/contentful/">contentful</a>
+                    
+                      <a class="hover-with-bg" href="/tags/bucket/">bucket</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/07/18/gitlab-slack/">
+                        <span class="hidden-mobile">如何在Gitlab pipeline中自动创建发布文档和并集成slack</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
         </div>
       </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
     
 
     
@@ -311,9 +394,15 @@
 
 
 
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js" ></script>
 
 
 
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js" ></script>
 
 
 
